@@ -319,12 +319,12 @@ export default function EstradasRurais() {
           <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-blue-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Estados Ativos</p>
-                <p className="text-2xl font-bold text-gray-900">{estadosDisponiveis.length - 1}</p>
+                <p className="text-sm font-medium text-gray-600">Municípios Únicos</p>
+                <p className="text-2xl font-bold text-gray-900">{new Set(dados.map(d => d.municipio)).size}</p>
               </div>
-              <div className="text-3xl">🗺️</div>
+              <div className="text-3xl">🏛️</div>
             </div>
-          </div>
+          </div></div>
 
           <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-yellow-500">
             <div className="flex items-center justify-between">
