@@ -324,7 +324,7 @@ export default function EstradasRurais() {
               </div>
               <div className="text-3xl">🏛️</div>
             </div>
-          </div></div>
+          </div>
 
           <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-yellow-500">
             <div className="flex items-center justify-between">
