@@ -19,30 +19,9 @@ const EstradasRurais = () => {
     const fetchData = async () => {
       try {
         setCarregando(true);
-        // Tentar múltiplas URLs para garantir acesso aos dados
-        const urls = [
-          `https://docs.google.com/spreadsheets/d/1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490/export?format=csv`,
-          `https://docs.google.com/spreadsheets/d/1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490/gviz/tq?tqx=out:json&tq=select%20*`,
-          `https://docs.google.com/spreadsheets/d/1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490/gviz/tq?tqx=out:csv&tq=select%20*`
-        ];
-
-        let response;
-        let isCSV = false;
-        
-        for (const [index, url] of urls.entries()) {
-          try {
-            console.log(`Tentando URL ${index + 1}:`, url);
-            response = await fetch(url);
-            if (response.ok) {
-              isCSV = url.includes('csv');
-              console.log(`✅ Sucesso com URL ${index + 1}`, isCSV ? '(CSV)' : '(JSON)');
-              break;
-            }
-          } catch (err) {
-            console.log(`❌ Falhou URL ${index + 1}:`, err.message);
-            if (index === urls.length - 1) throw err;
-          }
-        }
+        const response = await fetch(
+          `https://docs.google.com/spreadsheets/d/1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490/gviz/tq?tqx=out:json&tq=select%20*`
+        );
         
         if (!response.ok) {
           throw new Error('Erro ao carregar dados da planilha');
