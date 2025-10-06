@@ -181,38 +181,151 @@ export default function EstradasRurais() {
   const sumFilteredValues = useMemo(() => filtrados.reduce((acc, r) => acc + (r._valorNum || 0), 0), [filtrados]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
-        <header className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold">🛣️ Estradas Rurais — Painel</h1>
-          <div className="flex gap-2 items-center">
-            <button onClick={() => fetchData()} className="px-3 py-2 rounded-lg bg-blue-600 text-white shadow">Atualizar</button>
-            <button onClick={exportCSV} className="px-3 py-2 rounded-lg bg-green-600 text-white shadow">Exportar CSV</button>
+        {/* Header Principal */}
+        <header className="bg-white rounded-xl shadow-lg p-6 mb-6 border-l-4 border-blue-600">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-800 flex items-center gap-3">
+                🛣️ Estradas Rurais
+              </h1>
+              <p className="text-gray-600 mt-2 text-lg">Painel de Investimentos Municipais</p>
+            </div>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => fetchData()} 
+                className="px-4 py-2 rounded-lg bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              >
+                🔄 Atualizar
+              </button>
+              <button 
+                onClick={exportCSV} 
+                className="px-4 py-2 rounded-lg bg-green-600 text-white shadow-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+              >
+                📥 Exportar CSV
+              </button>
+            </div>
           </div>
         </header>
 
-        <section className="bg-white p-4 rounded-lg shadow mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <input value={busca} onChange={(e) => { setBusca(e.target.value); setPage(1); }} placeholder="Pesquisar por município..." className="p-2 border rounded" />
-            <select value={estadoFiltro} onChange={(e) => { setEstadoFiltro(e.target.value); setPage(1); }} className="p-2 border rounded">
-              {estadosDisponiveis.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
-            <div className="flex gap-2">
-              <input value={minValor} onChange={(e) => { setMinValor(e.target.value); setPage(1); }} placeholder="Valor mínimo" className="p-2 border rounded w-full" />
-              <input value={maxValor} onChange={(e) => { setMaxValor(e.target.value); setPage(1); }} placeholder="Valor máximo" className="p-2 border rounded w-full" />
+        {/* Estatísticas Resumo */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-green-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total de Registros</p>
+                <p className="text-2xl font-bold text-gray-900">{total}</p>
+              </div>
+              <div className="text-3xl">📊</div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-blue-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Estados Ativos</p>
+                <p className="text-2xl font-bold text-gray-900">{estadosDisponiveis.length - 1}</p>
+              </div>
+              <div className="text-3xl">🗺️</div>
             </div>
           </div>
 
-          <div className="mt-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div className="text-sm text-gray-600">Registros: <strong>{total}</strong> — Somatório (filtro): <strong>{formatNumber(sumFilteredValues)}</strong></div>
-
-            <div className="flex gap-2 items-center">
-              <label className="text-sm">Auto refresh</label>
-              <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} />
-              <input type="number" min={5} value={refreshIntervalSeconds} onChange={(e) => setRefreshIntervalSeconds(Number(e.target.value))} className="p-1 w-20 border rounded" />
-              <span className="text-sm text-gray-500">segundos</span>
-              <button onClick={clearFilters} className="px-2 py-1 bg-gray-200 rounded">Limpar filtros</button>
+          <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-yellow-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Valor Total</p>
+                <p className="text-xl font-bold text-green-600">{formatNumber(sumFilteredValues)}</p>
+              </div>
+              <div className="text-3xl">💰</div>
             </div>
+          </div>
+        </div>
+
+        {/* Filtros */}
+        <section className="bg-white rounded-xl shadow-lg p-6 mb-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            🔍 Filtros de Busca
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Município
+              </label>
+              <input 
+                value={busca} 
+                onChange={(e) => { setBusca(e.target.value); setPage(1); }} 
+                placeholder="Digite o nome do município..." 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Estado
+              </label>
+              <select 
+                value={estadoFiltro} 
+                onChange={(e) => { setEstadoFiltro(e.target.value); setPage(1); }} 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              >
+                {estadosDisponiveis.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Valor Mínimo
+              </label>
+              <input 
+                value={minValor} 
+                onChange={(e) => { setMinValor(e.target.value); setPage(1); }} 
+                placeholder="Ex: 1000000" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Valor Máximo
+              </label>
+              <input 
+                value={maxValor} 
+                onChange={(e) => { setMaxValor(e.target.value); setPage(1); }} 
+                placeholder="Ex: 50000000" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex gap-3 items-center">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                <input 
+                  type="checkbox" 
+                  checked={autoRefresh} 
+                  onChange={(e) => setAutoRefresh(e.target.checked)} 
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                />
+                Auto-refresh
+              </label>
+              <input 
+                type="number" 
+                min={5} 
+                value={refreshIntervalSeconds} 
+                onChange={(e) => setRefreshIntervalSeconds(Number(e.target.value))} 
+                className="p-2 w-20 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" 
+              />
+              <span className="text-sm text-gray-500">segundos</span>
+            </div>
+
+            <button 
+              onClick={clearFilters} 
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-2"
+            >
+              🗑️ Limpar Filtros
+            </button>
           </div>
         </section>
 
