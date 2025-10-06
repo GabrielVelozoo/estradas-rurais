@@ -329,36 +329,106 @@ export default function EstradasRurais() {
           </div>
         </section>
 
-        <section className="bg-white rounded-lg shadow overflow-x-auto">
+        {/* Tabela de Dados */}
+        <section className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="px-6 py-4 bg-gray-50 border-b">
+            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+              📋 Dados das Estradas Rurais
+            </h2>
+          </div>
+
           {carregando ? (
-            <div className="p-6 text-center text-gray-600">Carregando dados...</div>
+            <div className="p-12 text-center">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600 text-lg">Carregando dados...</p>
+            </div>
           ) : erro ? (
-            <div className="p-6 text-center text-red-600">Erro: {erro}</div>
+            <div className="p-12 text-center">
+              <div className="text-6xl mb-4">⚠️</div>
+              <p className="text-red-600 text-lg font-medium">Erro: {erro}</p>
+            </div>
           ) : (
-            <table className="w-full table-auto">
-              <thead className="bg-gray-100 text-sm text-gray-700">
-                <tr>
-                  <th className="p-3 text-left cursor-pointer" onClick={() => toggleSort("municipio")}>Município {sortBy === "municipio" ? (sortDir === "asc" ? "▲" : "▼") : ""}</th>
-                  <th className="p-3 text-left">Protocolo</th>
-                  <th className="p-3 text-left">Prefeito</th>
-                  <th className="p-3 text-left cursor-pointer" onClick={() => toggleSort("estado")}>Estado {sortBy === "estado" ? (sortDir === "asc" ? "▲" : "▼") : ""}</th>
-                  <th className="p-3 text-left">Descrição</th>
-                  <th className="p-3 text-right cursor-pointer" onClick={() => toggleSort("valor")}>Valor {sortBy === "valor" ? (sortDir === "asc" ? "▲" : "▼") : ""}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pageData.map((r, i) => (
-                  <tr key={`${r.municipio}-${r.protocolo}-${i}`} className="border-t hover:bg-gray-50">
-                    <td className="p-3">{r.municipio}</td>
-                    <td className="p-3">{r.protocolo}</td>
-                    <td className="p-3">{r.prefeito}</td>
-                    <td className="p-3">{r.estado}</td>
-                    <td className="p-3">{r.descricao}</td>
-                    <td className="p-3 text-right">{r.valor}</td>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-blue-50 to-blue-100">
+                  <tr>
+                    <th 
+                      className="px-6 py-4 text-left text-sm font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
+                      onClick={() => toggleSort("municipio")}
+                    >
+                      <div className="flex items-center gap-2">
+                        🏛️ Município 
+                        {sortBy === "municipio" && (
+                          <span className="text-blue-600">{sortDir === "asc" ? "▲" : "▼"}</span>
+                        )}
+                      </div>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
+                      📄 Protocolo
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
+                      👤 Prefeito
+                    </th>
+                    <th 
+                      className="px-6 py-4 text-left text-sm font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
+                      onClick={() => toggleSort("estado")}
+                    >
+                      <div className="flex items-center gap-2">
+                        🗺️ Estado
+                        {sortBy === "estado" && (
+                          <span className="text-blue-600">{sortDir === "asc" ? "▲" : "▼"}</span>
+                        )}
+                      </div>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
+                      📝 Descrição
+                    </th>
+                    <th 
+                      className="px-6 py-4 text-right text-sm font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
+                      onClick={() => toggleSort("valor")}
+                    >
+                      <div className="flex items-center justify-end gap-2">
+                        💰 Valor
+                        {sortBy === "valor" && (
+                          <span className="text-blue-600">{sortDir === "asc" ? "▲" : "▼"}</span>
+                        )}
+                      </div>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {pageData.map((r, i) => (
+                    <tr 
+                      key={`${r.municipio}-${r.protocolo}-${i}`} 
+                      className="hover:bg-blue-50 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="font-semibold text-gray-900">{r.municipio}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-gray-700 font-mono text-sm">{r.protocolo}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-gray-700">{r.prefeito}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                          {r.estado}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-gray-700 max-w-md truncate" title={r.descricao}>
+                          {r.descricao}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="font-bold text-green-600 text-lg">{r.valor}</div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </section>
 
