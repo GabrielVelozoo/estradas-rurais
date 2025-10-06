@@ -3,6 +3,64 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 const SHEET_ID = process.env.REACT_APP_SHEET_ID || "1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490";
 const API_KEY = process.env.REACT_APP_SHEETS_API_KEY || "AIzaSyBdd6E9Dz5W68XdhLCsLIlErt1ylwTt5Jk";
 
+// Componente para linha da tabela com descrição expansível
+const TabelaLinha = ({ r, i }) => {
+  const [expandedDescricao, setExpandedDescricao] = useState(false);
+
+  const toggleDescricao = () => {
+    setExpandedDescricao(!expandedDescricao);
+  };
+
+  const shouldTruncate = r.descricao && r.descricao.length > 100;
+  
+  return (
+    <tr 
+      className="hover:bg-blue-50 transition-colors"
+    >
+      <td className="px-6 py-4">
+        <div className="font-semibold text-gray-900 min-w-max">
+          {r.municipio || "Não informado"}
+        </div>
+      </td>
+      <td className="px-6 py-4">
+        <div className="text-gray-700 font-mono text-sm whitespace-nowrap">{r.protocolo}</div>
+      </td>
+      <td className="px-6 py-4">
+        <div className="text-gray-700">{r.prefeito}</div>
+      </td>
+      <td className="px-6 py-4">
+        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 whitespace-nowrap">
+          {r.estado || "N/A"}
+        </span>
+      </td>
+      <td className="px-6 py-4 max-w-lg">
+        {shouldTruncate ? (
+          <div>
+            <div className={`text-gray-700 ${expandedDescricao ? '' : 'line-clamp-3'}`}>
+              {expandedDescricao ? r.descricao : `${r.descricao.substring(0, 120)}...`}
+            </div>
+            <button
+              onClick={toggleDescricao}
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2 flex items-center gap-1 transition-colors"
+            >
+              {expandedDescricao ? (
+                <>🔼 Mostrar menos</>
+              ) : (
+                <>🔽 Ver completa</>
+              )}
+            </button>
+          </div>
+        ) : (
+          <div className="text-gray-700">{r.descricao}</div>
+        )}
+      </td>
+      <td className="px-6 py-4 text-right">
+        <div className="font-bold text-green-600 text-lg whitespace-nowrap">{r.valor}</div>
+      </td>
+    </tr>
+  );
+};
+
 export default function EstradasRurais() {
   const [dados, setDados] = useState([]);
   const [carregando, setCarregando] = useState(true);
