@@ -20,7 +20,7 @@ const EstradasRurais = () => {
       try {
         setCarregando(true);
         const response = await fetch(
-          `https://docs.google.com/spreadsheets/d/1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490/gviz/tq?tqx=out:json&tq=select%20*%20limit%20200`
+          `https://docs.google.com/spreadsheets/d/1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490/gviz/tq?tqx=out:json&tq=select+*+limit+1000`
         );
         
         if (!response.ok) {
