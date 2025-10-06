@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-// App configurável: prefira usar variáveis de ambiente
 const SHEET_ID = process.env.REACT_APP_SHEET_ID || "1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490";
 const API_KEY = process.env.REACT_APP_SHEETS_API_KEY || "AIzaSyBdd6E9Dz5W68XdhLCsLIlErt1ylwTt5Jk";
 
@@ -8,25 +7,18 @@ export default function EstradasRurais() {
   const [dados, setDados] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
-
-  // filtros/estado da interface
   const [busca, setBusca] = useState("");
   const [estadoFiltro, setEstadoFiltro] = useState("Todos");
   const [minValor, setMinValor] = useState("");
   const [maxValor, setMaxValor] = useState("");
-
-  // paginação e ordenação
   const [sortBy, setSortBy] = useState("municipio");
   const [sortDir, setSortDir] = useState("asc");
   const [pageSize, setPageSize] = useState(25);
   const [page, setPage] = useState(1);
-
-  // auto refresh
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [refreshIntervalSeconds, setRefreshIntervalSeconds] = useState(60);
   const intervalRef = useRef(null);
 
-  // fetch dos dados
   const fetchData = async () => {
     setCarregando(true);
     setErro(null);
@@ -35,14 +27,11 @@ export default function EstradasRurais() {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Erro na requisição: ${res.status} ${res.statusText}`);
       const data = await res.json();
-
       if (!data.values) {
         setDados([]);
         setErro("Planilha retornou sem valores (data.values está vazio). Verifique permissões e intervalo A:F");
         return;
       }
-
-      // primeira linha -> cabeçalho
       const rows = data.values.slice(1).map((c) => ({
         municipio: (c[0] || "").toString(),
         protocolo: (c[1] || "").toString(),
@@ -52,7 +41,6 @@ export default function EstradasRurais() {
         valor: (c[5] || "").toString(),
         _valorNum: parseCurrencyToNumber(c[5] || ""),
       }));
-
       setDados(rows);
     } catch (e) {
       console.error(e);
@@ -64,62 +52,42 @@ export default function EstradasRurais() {
 
   useEffect(() => {
     fetchData();
-    // limpar interval se componente desmontar
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // auto refresh handler
   useEffect(() => {
     if (autoRefresh) {
-      // limpa caso já exista
       if (intervalRef.current) clearInterval(intervalRef.current);
       intervalRef.current = setInterval(() => fetchData(), Math.max(5, refreshIntervalSeconds) * 1000);
     } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
     }
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [autoRefresh, refreshIntervalSeconds]);
 
-  // helpers
   function parseCurrencyToNumber(value) {
     if (!value && value !== 0) return 0;
     const s = value.toString().trim();
     if (s === "") return 0;
-    // lida com formatos BR: "R$ 1.234,56" ou "1234,56" e en-US "1,234.56"
-    // estratégia: remover letras, manter dígitos, ponto e vírgula; se houver vírgula e ponto, inferir formato
     const only = s.replace(/[^0-9.,-]/g, "");
-    // se tiver ambos '.' e ',' -> assumimos que '.' é separador de milhares e ',' decimal (BR)
     if (only.indexOf(".") > -1 && only.indexOf(",") > -1) {
       const cleaned = only.replace(/\./g, "").replace(/,/g, ".");
       const n = parseFloat(cleaned);
       return isNaN(n) ? 0 : n;
     }
-    // se tiver só vírgula -> substituir por ponto
     if (only.indexOf(",") > -1) {
       const cleaned = only.replace(/,/g, ".");
       const n = parseFloat(cleaned);
       return isNaN(n) ? 0 : n;
     }
-    // caso contrário parse direto (ponto decimal ou inteiro)
     const n = parseFloat(only);
     return isNaN(n) ? 0 : n;
   }
 
-  // filtro aplicado nos dados
   const estadosDisponiveis = useMemo(() => {
     const s = new Set(dados.map((d) => (d.estado || "").trim()).filter((x) => x !== ""));
     return ["Todos", ...Array.from(s).sort()];
@@ -127,7 +95,6 @@ export default function EstradasRurais() {
 
   const filtrados = useMemo(() => {
     const lowerBusca = busca.trim().toLowerCase();
-
     let out = dados.filter((d) => {
       if (lowerBusca && !d.municipio.toLowerCase().includes(lowerBusca)) return false;
       if (estadoFiltro !== "Todos" && d.estado.trim() !== estadoFiltro) return false;
@@ -137,12 +104,9 @@ export default function EstradasRurais() {
       if (!isNaN(maxN) && d._valorNum > maxN) return false;
       return true;
     });
-
-    // sort
     out.sort((a, b) => {
       let va = a[sortBy];
       let vb = b[sortBy];
-      // para valor use _valorNum
       if (sortBy === "valor") {
         va = a._valorNum;
         vb = b._valorNum;
@@ -154,11 +118,9 @@ export default function EstradasRurais() {
       if (va > vb) return sortDir === "asc" ? 1 : -1;
       return 0;
     });
-
     return out;
   }, [dados, busca, estadoFiltro, minValor, maxValor, sortBy, sortDir]);
 
-  // paginação
   const total = filtrados.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   useEffect(() => {
@@ -169,7 +131,6 @@ export default function EstradasRurais() {
     return filtrados.slice(start, start + pageSize);
   }, [filtrados, page, pageSize]);
 
-  // export CSV
   const exportCSV = () => {
     const headers = ["Município", "Protocolo", "Prefeito", "Estado", "Descrição", "Valor"];
     const rows = filtrados.map((r) => [r.municipio, r.protocolo, r.prefeito, r.estado, r.descricao, r.valor]);
@@ -190,7 +151,6 @@ export default function EstradasRurais() {
     setMaxValor("");
   };
 
-  // UI helpers
   const toggleSort = (col) => {
     if (sortBy === col) {
       setSortDir((s) => (s === "asc" ? "desc" : "asc"));
@@ -216,13 +176,9 @@ export default function EstradasRurais() {
         <section className="bg-white p-4 rounded-lg shadow mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <input value={busca} onChange={(e) => { setBusca(e.target.value); setPage(1); }} placeholder="Pesquisar por município..." className="p-2 border rounded" />
-
             <select value={estadoFiltro} onChange={(e) => { setEstadoFiltro(e.target.value); setPage(1); }} className="p-2 border rounded">
-              {estadosDisponiveis.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
+              {estadosDisponiveis.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
-
             <div className="flex gap-2">
               <input value={minValor} onChange={(e) => { setMinValor(e.target.value); setPage(1); }} placeholder="Valor mínimo" className="p-2 border rounded w-full" />
               <input value={maxValor} onChange={(e) => { setMaxValor(e.target.value); setPage(1); }} placeholder="Valor máximo" className="p-2 border rounded w-full" />
@@ -284,20 +240,18 @@ export default function EstradasRurais() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button onClick={() => setPage(1)} disabled={page === 1} className="px-2 py-1 border rounded"><<</button>
-            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="px-2 py-1 border rounded"><</button>
+            <button onClick={() => setPage(1)} disabled={page === 1} className="px-2 py-1 border rounded">&laquo;</button>
+            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="px-2 py-1 border rounded">&lsaquo;</button>
             <span>Página {page} / {totalPages}</span>
-            <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-2 py-1 border rounded">></button>
-            <button onClick={() => setPage(totalPages)} disabled={page === totalPages} className="px-2 py-1 border rounded">>></button>
+            <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-2 py-1 border rounded">&rsaquo;</button>
+            <button onClick={() => setPage(totalPages)} disabled={page === totalPages} className="px-2 py-1 border rounded">&raquo;</button>
           </div>
         </footer>
-
       </div>
     </div>
   );
 }
 
-// util
 function formatNumber(n) {
   if (typeof n !== "number") return "0";
   return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
