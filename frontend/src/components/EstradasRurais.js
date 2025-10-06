@@ -199,10 +199,7 @@ export default function EstradasRurais() {
     }).format(num);
   }
 
-  const estadosDisponiveis = useMemo(() => {
-    const s = new Set(dados.map((d) => (d.estado || "").trim()).filter((x) => x !== ""));
-    return ["Todos", ...Array.from(s).sort()];
-  }, [dados]);
+  // Estados removidos dos filtros conforme solicitado
 
   const filtrados = useMemo(() => {
     const lowerBusca = busca.trim().toLowerCase();
