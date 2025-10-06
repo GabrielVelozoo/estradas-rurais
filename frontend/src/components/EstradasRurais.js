@@ -29,6 +29,9 @@ const EstradasRurais = () => {
         
         const text = await response.text();
         const json = JSON.parse(text.substring(47).slice(0, -2));
+        
+        console.log('Total rows from API:', json.table.rows.length);
+        
         const rows = json.table.rows.map((r) => {
           const c = r.c.map((x) => (x ? x.v : ''));
           return {
@@ -39,7 +42,9 @@ const EstradasRurais = () => {
             descricao: c[4] || '',
             valor: c[5] || 0,
           };
-        }).filter(row => row.municipio); // Remove linhas vazias
+        }).filter(row => row.municipio && row.municipio.trim() !== ''); // Remove linhas vazias
+        
+        console.log('Filtered rows:', rows.length);
         
         setDados(rows);
         setDadosFiltrados(rows);
