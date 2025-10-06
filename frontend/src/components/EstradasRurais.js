@@ -36,12 +36,21 @@ export default function EstradasRurais() {
       }
       const rows = data.values.slice(1)
         .filter((c) => {
-          // Filtrar apenas linhas completamente vazias e linhas de controle específicas
+          // Incluir linha se tem protocolo ou descrição (mesmo sem município)
           const municipio = (c[0] || "").toString().trim();
-          return municipio !== "" && 
-                 municipio.toUpperCase() !== "VALOR TOTAL" &&
-                 municipio.toUpperCase() !== "MUNICÍPIO" &&
-                 !municipio.toUpperCase().includes("ULTIMA ATUALIZAÇÃO");
+          const protocolo = (c[1] || "").toString().trim();
+          const descricao = (c[4] || "").toString().trim();
+          const valor = (c[5] || "").toString().trim();
+          
+          // Filtrar apenas linhas de controle específicas
+          if (municipio.toUpperCase() === "VALOR TOTAL" || 
+              municipio.toUpperCase() === "MUNICÍPIO" ||
+              municipio.toUpperCase().includes("ULTIMA ATUALIZAÇÃO")) {
+            return false;
+          }
+          
+          // Incluir se tem dados significativos
+          return protocolo !== "" || descricao !== "" || valor !== "";
         })
         .map((c) => ({
           municipio: (c[0] || "").toString(),
