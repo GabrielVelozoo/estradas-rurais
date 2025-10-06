@@ -96,6 +96,16 @@ export default function EstradasRurais() {
     return isNaN(n) ? 0 : n;
   }
 
+  function formatCurrency(value) {
+    if (!value) return "R$ 0,00";
+    const num = parseCurrencyToNumber(value);
+    if (num === 0) return "R$ 0,00";
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(num);
+  }
+
   const estadosDisponiveis = useMemo(() => {
     const s = new Set(dados.map((d) => (d.estado || "").trim()).filter((x) => x !== ""));
     return ["Todos", ...Array.from(s).sort()];
