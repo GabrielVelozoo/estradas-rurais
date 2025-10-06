@@ -110,15 +110,37 @@ export default function EstradasRurais() {
           // Incluir se tem dados significativos
           return protocolo !== "" || descricao !== "" || valor !== "";
         })
-        .map((c) => ({
-          municipio: (c[0] || "").toString(),
-          protocolo: (c[1] || "").toString(),
-          prefeito: (c[2] || "").toString(),
-          estado: (c[3] || "").toString(),
-          descricao: (c[4] || "").toString(),
-          valor: formatCurrency((c[5] || "").toString()),
-          _valorNum: parseCurrencyToNumber(c[5] || ""),
-        }));
+        .map((c) => {
+          // Ajustar mapeamento baseado na estrutura real dos dados
+          let municipio = (c[0] || "").toString().trim();
+          let protocolo = (c[1] || "").toString().trim();
+          let prefeito = (c[2] || "").toString().trim();
+          let descricaoCompleta = (c[3] || "").toString().trim();
+          let nomeEstrada = (c[4] || "").toString().trim();
+          let valor = (c[5] || "").toString().trim();
+          
+          // Extrair estado da descrição se necessário
+          let estado = "";
+          if (descricaoCompleta.includes("PARANÁ") || descricaoCompleta.includes("PR")) {
+            estado = "PR";
+          } else if (descricaoCompleta.includes("SÃO PAULO") || descricaoCompleta.includes("SP")) {
+            estado = "SP";
+          } else if (descricaoCompleta.includes("MINAS GERAIS") || descricaoCompleta.includes("MG")) {
+            estado = "MG";
+          }
+          // Se não conseguir extrair, deixar vazio
+          
+          return {
+            municipio: municipio || "Não informado",
+            protocolo: protocolo,
+            prefeito: prefeito,
+            estado: estado,
+            descricao: descricaoCompleta,
+            nomeEstrada: nomeEstrada,
+            valor: formatCurrency(valor),
+            _valorNum: parseCurrencyToNumber(valor),
+          };
+        });
       setDados(rows);
     } catch (e) {
       console.error(e);
