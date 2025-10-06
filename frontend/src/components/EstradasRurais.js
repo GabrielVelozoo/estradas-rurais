@@ -69,7 +69,6 @@ export default function EstradasRurais() {
   const [erro, setErro] = useState(null);
   const [busca, setBusca] = useState("");
   const [buscaEstrada, setBuscaEstrada] = useState("");
-  const [estadoFiltro, setEstadoFiltro] = useState("Todos");
   const [minValor, setMinValor] = useState("");
   const [maxValor, setMaxValor] = useState("");
   const [sortBy, setSortBy] = useState("municipio");
