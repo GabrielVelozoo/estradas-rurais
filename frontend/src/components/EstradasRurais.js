@@ -42,7 +42,7 @@ const EstradasRurais = () => {
             descricao: c[4] || '',
             valor: c[5] || 0,
           };
-        }).filter(row => row.municipio && row.municipio.trim() !== ''); // Remove linhas vazias
+        }).filter(row => row.municipio && typeof row.municipio === 'string' && row.municipio.trim() !== '' && row.municipio !== 'MUNICÍPIO'); // Remove linhas vazias e header
         
         console.log('Filtered rows:', rows.length);
         
