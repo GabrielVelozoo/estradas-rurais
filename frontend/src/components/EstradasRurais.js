@@ -32,15 +32,23 @@ export default function EstradasRurais() {
         setErro("Planilha retornou sem valores (data.values está vazio). Verifique permissões e intervalo A:F");
         return;
       }
-      const rows = data.values.slice(1).map((c) => ({
-        municipio: (c[0] || "").toString(),
-        protocolo: (c[1] || "").toString(),
-        prefeito: (c[2] || "").toString(),
-        estado: (c[3] || "").toString(),
-        descricao: (c[4] || "").toString(),
-        valor: (c[5] || "").toString(),
-        _valorNum: parseCurrencyToNumber(c[5] || ""),
-      }));
+      const rows = data.values.slice(1)
+        .filter((c) => {
+          // Filtrar linhas vazias e a linha do "VALOR TOTAL" 
+          const municipio = (c[0] || "").toString().trim();
+          return municipio !== "" && 
+                 !municipio.toUpperCase().includes("VALOR TOTAL") &&
+                 !municipio.toUpperCase().includes("ULTIMA ATUALIZAÇÃO");
+        })
+        .map((c) => ({
+          municipio: (c[0] || "").toString(),
+          protocolo: (c[1] || "").toString(),
+          prefeito: (c[2] || "").toString(),
+          estado: (c[3] || "").toString(),
+          descricao: (c[4] || "").toString(),
+          valor: formatCurrency((c[5] || "").toString()),
+          _valorNum: parseCurrencyToNumber(c[5] || ""),
+        }));
       setDados(rows);
     } catch (e) {
       console.error(e);
