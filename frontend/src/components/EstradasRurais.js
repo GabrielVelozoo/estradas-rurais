@@ -34,10 +34,11 @@ export default function EstradasRurais() {
       }
       const rows = data.values.slice(1)
         .filter((c) => {
-          // Filtrar linhas vazias e a linha do "VALOR TOTAL" 
+          // Filtrar apenas linhas completamente vazias e linhas de controle específicas
           const municipio = (c[0] || "").toString().trim();
           return municipio !== "" && 
-                 !municipio.toUpperCase().includes("VALOR TOTAL") &&
+                 municipio.toUpperCase() !== "VALOR TOTAL" &&
+                 municipio.toUpperCase() !== "MUNICÍPIO" &&
                  !municipio.toUpperCase().includes("ULTIMA ATUALIZAÇÃO");
         })
         .map((c) => ({
