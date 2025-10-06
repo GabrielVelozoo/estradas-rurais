@@ -27,22 +27,28 @@ const EstradasRurais = () => {
           throw new Error('Erro ao carregar dados da planilha');
         }
         
-        const text = await response.text();
-        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const json = await response.json();
         
-        console.log('Total rows from Google Sheets API:', json.table.rows.length);
+        console.log('Google Sheets API v4 response:', json);
+        console.log('Total rows from API v4:', json.values ? json.values.length : 0);
         
-        const rows = json.table.rows.map((r) => {
-          const c = r.c.map((x) => (x ? x.v : ''));
+        if (!json.values || json.values.length === 0) {
+          throw new Error('Nenhum dado encontrado na planilha');
+        }
+        
+        // Remover o header (primeira linha) e processar os dados
+        const dataRows = json.values.slice(1);
+        
+        const rows = dataRows.map((row, index) => {
           return {
-            municipio: c[0] || '',
-            protocolo: c[1] || '',
-            prefeito: c[2] || '',
-            estado: c[3] || '',
-            descricao: c[4] || '',
-            valor: c[5] || 0,
+            municipio: row[0] || '',
+            protocolo: row[1] || '',
+            prefeito: row[2] || '',
+            estado: row[3] || '',
+            descricao: row[4] || '',
+            valor: row[5] || 0,
           };
-        }).filter(row => row.municipio && row.municipio.trim() !== '' && row.municipio !== 'MUNICÍPIO');
+        }).filter(row => row.municipio && row.municipio.trim() !== '');
         
         setDados(rows);
         setDadosFiltrados(rows);
