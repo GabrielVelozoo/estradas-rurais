@@ -500,17 +500,6 @@ export default function EstradasRurais() {
                     <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">
                       👤 Prefeito
                     </th>
-                    <th 
-                      className="px-4 py-3 text-left text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
-                      onClick={() => toggleSort("estado")}
-                    >
-                      <div className="flex items-center gap-1">
-                        🗺️ UF
-                        {sortBy === "estado" && (
-                          <span className="text-blue-600">{sortDir === "asc" ? "▲" : "▼"}</span>
-                        )}
-                      </div>
-                    </th>
                     <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">
                       📝 Estrada & Descrição
                     </th>
