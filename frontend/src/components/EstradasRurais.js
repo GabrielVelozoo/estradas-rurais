@@ -38,8 +38,10 @@ const EstradasRurais = () => {
         
         const json = await response.json();
         
-        console.log('Google Sheets API v4 response:', json);
+        console.log('✅ API v4 Response received successfully');
+        console.log('Range:', json.range);
         console.log('Total rows from API v4:', json.values ? json.values.length : 0);
+        console.log('Sample data:', json.values ? json.values.slice(0, 3) : 'No data');
         
         if (!json.values || json.values.length === 0) {
           throw new Error('Nenhum dado encontrado na planilha');
