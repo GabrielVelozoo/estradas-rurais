@@ -343,7 +343,7 @@ export default function EstradasRurais() {
             🔍 Filtros de Busca
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 🏛️ Município
@@ -367,8 +367,6 @@ export default function EstradasRurais() {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
               />
             </div>
-            
-            {/* Filtro de estado removido conforme solicitado */}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
