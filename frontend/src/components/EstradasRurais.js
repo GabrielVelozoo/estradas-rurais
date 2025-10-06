@@ -478,8 +478,7 @@ export default function EstradasRurais() {
                   <col style={{width: '200px'}} />  {/* Município */}
                   <col style={{width: '120px'}} />  {/* Protocolo */}
                   <col style={{width: '150px'}} />  {/* Prefeito */}
-                  <col style={{width: '60px'}} />   {/* Estado */}
-                  <col style={{minWidth: '300px'}} /> {/* Descrição */}
+                  <col style={{minWidth: '350px'}} /> {/* Descrição */}
                   <col style={{width: '140px'}} />  {/* Valor */}
                 </colgroup>
                 <thead className="bg-gradient-to-r from-blue-50 to-blue-100 sticky top-0">
