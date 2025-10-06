@@ -31,10 +31,11 @@ const EstradasRurais = () => {
         const json = JSON.parse(text.substring(47).slice(0, -2));
         
         console.log('Total rows from API:', json.table.rows.length);
+        console.log('Raw API response table:', json.table);
         
-        const rows = json.table.rows.map((r) => {
-          const c = r.c.map((x) => (x ? x.v : ''));
-          return {
+        const allRows = json.table.rows.map((r, index) => {
+          const c = r.c ? r.c.map((x) => (x ? x.v : '')) : [];
+          const row = {
             municipio: c[0] || '',
             protocolo: c[1] || '',
             prefeito: c[2] || '',
@@ -42,9 +43,23 @@ const EstradasRurais = () => {
             descricao: c[4] || '',
             valor: c[5] || 0,
           };
-        }).filter(row => row.municipio && typeof row.municipio === 'string' && row.municipio.trim() !== '' && row.municipio !== 'MUNICÍPIO'); // Remove linhas vazias e header
+          if (index < 5) console.log('Sample row', index, ':', row);
+          return row;
+        });
         
-        console.log('Filtered rows:', rows.length);
+        console.log('Total mapped rows:', allRows.length);
+        
+        // Filtro mais permissivo - apenas remove linhas completamente vazias ou header
+        const rows = allRows.filter(row => {
+          const hasData = row.municipio && 
+                         typeof row.municipio === 'string' && 
+                         row.municipio.trim() !== '' && 
+                         row.municipio.toUpperCase() !== 'MUNICÍPIO';
+          return hasData;
+        });
+        
+        console.log('Final filtered rows:', rows.length);
+        console.log('Sample filtered data:', rows.slice(0, 3));
         
         setDados(rows);
         setDadosFiltrados(rows);
