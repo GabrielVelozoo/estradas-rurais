@@ -21,16 +21,9 @@ const EstradasRurais = () => {
         setCarregando(true);
         setErro(null);
         
-        console.log('Tentando carregar dados via API v4...');
-        const response = await fetch(
-          `https://sheets.googleapis.com/v4/spreadsheets/1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490/values/A:F?key=AIzaSyBdd6E9Dz5W68XdhLCsLIlErt1ylwTt5Jk`,
-          {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/json',
-            },
-          }
-        );
+        console.log('Carregando dados via backend...');
+        const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+        const response = await fetch(`${BACKEND_URL}/api/estradas-rurais`);
         
         if (!response.ok) {
           throw new Error('Erro ao carregar dados da planilha');
