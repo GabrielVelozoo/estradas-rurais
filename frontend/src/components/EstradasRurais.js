@@ -49,24 +49,49 @@ const EstradasRurais = () => {
         }
         
         const text = await response.text();
-        const json = JSON.parse(text.substring(47).slice(0, -2));
+        let allRows = [];
         
-        console.log('Total rows from API:', json.table.rows.length);
-        console.log('Raw API response table:', json.table);
-        
-        const allRows = json.table.rows.map((r, index) => {
-          const c = r.c ? r.c.map((x) => (x ? x.v : '')) : [];
-          const row = {
-            municipio: c[0] || '',
-            protocolo: c[1] || '',
-            prefeito: c[2] || '',
-            estado: c[3] || '',
-            descricao: c[4] || '',
-            valor: c[5] || 0,
-          };
-          if (index < 5) console.log('Sample row', index, ':', row);
-          return row;
-        });
+        if (isCSV) {
+          console.log('Processando dados CSV...');
+          const lines = text.split('\\n');
+          console.log('Total CSV lines:', lines.length);
+          
+          // Pular header (primeira linha)
+          for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (line) {
+              const cols = line.split(',').map(col => col.replace(/^"|"$/g, ''));
+              if (cols.length >= 6) {
+                allRows.push({
+                  municipio: cols[0] || '',
+                  protocolo: cols[1] || '',
+                  prefeito: cols[2] || '',
+                  estado: cols[3] || '',
+                  descricao: cols[4] || '',
+                  valor: cols[5] || 0,
+                });
+              }
+            }
+          }
+        } else {
+          console.log('Processando dados JSON...');
+          const json = JSON.parse(text.substring(47).slice(0, -2));
+          console.log('Total rows from API:', json.table.rows.length);
+          
+          allRows = json.table.rows.map((r, index) => {
+            const c = r.c ? r.c.map((x) => (x ? x.v : '')) : [];
+            const row = {
+              municipio: c[0] || '',
+              protocolo: c[1] || '',
+              prefeito: c[2] || '',
+              estado: c[3] || '',
+              descricao: c[4] || '',
+              valor: c[5] || 0,
+            };
+            if (index < 5) console.log('Sample row', index, ':', row);
+            return row;
+          });
+        }
         
         console.log('Total mapped rows:', allRows.length);
         
