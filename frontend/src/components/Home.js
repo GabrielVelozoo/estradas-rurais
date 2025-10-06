@@ -80,17 +80,17 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Card Placeholder 2 */}
+          {/* Card Pedido de Maquinários */}
           <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 opacity-75">
             <div className="text-center">
               <div className="text-5xl mb-4 opacity-50">
-                📊
+                🚜
               </div>
               <h2 className="text-2xl font-bold text-gray-500 mb-3">
-                Relatórios
+                Pedido de Maquinários
               </h2>
               <p className="text-gray-400 mb-4">
-                Em breve: Dashboards e relatórios analíticos
+                Em breve: lista de maquinários pedidos por municípios de lideranças
               </p>
               <div className="text-gray-400">
                 Em desenvolvimento
