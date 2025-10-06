@@ -115,8 +115,10 @@ export default function EstradasRurais() {
 
   const filtrados = useMemo(() => {
     const lowerBusca = busca.trim().toLowerCase();
+    const lowerBuscaEstrada = buscaEstrada.trim().toLowerCase();
     let out = dados.filter((d) => {
       if (lowerBusca && !d.municipio.toLowerCase().includes(lowerBusca)) return false;
+      if (lowerBuscaEstrada && !d.descricao.toLowerCase().includes(lowerBuscaEstrada)) return false;
       if (estadoFiltro !== "Todos" && d.estado.trim() !== estadoFiltro) return false;
       const minN = parseFloat(String(minValor).replace(/[^0-9.-]/g, ""));
       const maxN = parseFloat(String(maxValor).replace(/[^0-9.-]/g, ""));
