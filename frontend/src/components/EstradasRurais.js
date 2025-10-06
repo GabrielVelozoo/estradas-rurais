@@ -478,44 +478,44 @@ export default function EstradasRurais() {
                   <col style={{minWidth: '300px'}} /> {/* Descrição */}
                   <col style={{width: '140px'}} />  {/* Valor */}
                 </colgroup>
-                <thead className="bg-gradient-to-r from-blue-50 to-blue-100">
+                <thead className="bg-gradient-to-r from-blue-50 to-blue-100 sticky top-0">
                   <tr>
                     <th 
-                      className="px-6 py-4 text-left text-sm font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
+                      className="px-4 py-3 text-left text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
                       onClick={() => toggleSort("municipio")}
                     >
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         🏛️ Município 
                         {sortBy === "municipio" && (
                           <span className="text-blue-600">{sortDir === "asc" ? "▲" : "▼"}</span>
                         )}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">
                       📄 Protocolo
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">
                       👤 Prefeito
                     </th>
                     <th 
-                      className="px-6 py-4 text-left text-sm font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
+                      className="px-4 py-3 text-left text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
                       onClick={() => toggleSort("estado")}
                     >
-                      <div className="flex items-center gap-2">
-                        🗺️ Estado
+                      <div className="flex items-center gap-1">
+                        🗺️ UF
                         {sortBy === "estado" && (
                           <span className="text-blue-600">{sortDir === "asc" ? "▲" : "▼"}</span>
                         )}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
-                      📝 Descrição da Estrada
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">
+                      📝 Estrada & Descrição
                     </th>
                     <th 
-                      className="px-6 py-4 text-right text-sm font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
+                      className="px-4 py-3 text-right text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
                       onClick={() => toggleSort("valor")}
                     >
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1">
                         💰 Valor
                         {sortBy === "valor" && (
                           <span className="text-blue-600">{sortDir === "asc" ? "▲" : "▼"}</span>
