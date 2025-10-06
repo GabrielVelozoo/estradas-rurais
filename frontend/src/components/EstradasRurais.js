@@ -253,10 +253,10 @@ export default function EstradasRurais() {
             🔍 Filtros de Busca
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Município
+                🏛️ Município
               </label>
               <input 
                 value={busca} 
@@ -265,10 +265,22 @@ export default function EstradasRurais() {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                🛣️ Nome da Estrada
+              </label>
+              <input 
+                value={buscaEstrada} 
+                onChange={(e) => { setBuscaEstrada(e.target.value); setPage(1); }} 
+                placeholder="Digite o nome da estrada..." 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+              />
+            </div>
             
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Estado
+                🗺️ Estado
               </label>
               <select 
                 value={estadoFiltro} 
@@ -278,10 +290,12 @@ export default function EstradasRurais() {
                 {estadosDisponiveis.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
-            
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Valor Mínimo
+                💰 Valor Mínimo
               </label>
               <input 
                 value={minValor} 
@@ -293,7 +307,7 @@ export default function EstradasRurais() {
             
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Valor Máximo
+                💰 Valor Máximo
               </label>
               <input 
                 value={maxValor} 
