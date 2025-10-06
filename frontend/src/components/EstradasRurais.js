@@ -219,8 +219,12 @@ export default function EstradasRurais() {
     const lowerBuscaEstrada = buscaEstrada.trim().toLowerCase();
     let out = dados.filter((d) => {
       if (lowerBusca && !d.municipio.toLowerCase().includes(lowerBusca)) return false;
-      if (lowerBuscaEstrada && !d.descricao.toLowerCase().includes(lowerBuscaEstrada)) return false;
-      if (estadoFiltro !== "Todos" && d.estado.trim() !== estadoFiltro) return false;
+      if (lowerBuscaEstrada) {
+        const buscaEstradaMatch = (d.nomeEstrada && d.nomeEstrada.toLowerCase().includes(lowerBuscaEstrada)) ||
+                                  (d.descricao && d.descricao.toLowerCase().includes(lowerBuscaEstrada));
+        if (!buscaEstradaMatch) return false;
+      }
+      if (estadoFiltro !== "Todos" && d.estado !== estadoFiltro) return false;
       const minN = parseFloat(String(minValor).replace(/[^0-9.-]/g, ""));
       const maxN = parseFloat(String(maxValor).replace(/[^0-9.-]/g, ""));
       if (!isNaN(minN) && d._valorNum < minN) return false;
