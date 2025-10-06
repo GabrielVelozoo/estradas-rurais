@@ -368,18 +368,7 @@ export default function EstradasRurais() {
               />
             </div>
             
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                🗺️ Estado
-              </label>
-              <select 
-                value={estadoFiltro} 
-                onChange={(e) => { setEstadoFiltro(e.target.value); setPage(1); }} 
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              >
-                {estadosDisponiveis.map((s) => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
+            {/* Filtro de estado removido conforme solicitado */}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
