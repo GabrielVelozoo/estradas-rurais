@@ -52,6 +52,23 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+@api_router.get("/estradas-rurais")
+async def get_estradas_rurais():
+    import aiohttp
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://sheets.googleapis.com/v4/spreadsheets/1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490/values/A:F?key=AIzaSyBdd6E9Dz5W68XdhLCsLIlErt1ylwTt5Jk"
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return data
+                else:
+                    raise Exception(f"API request failed with status {response.status}")
+    except Exception as e:
+        logger.error(f"Error fetching Google Sheets data: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching data from Google Sheets")
+
 # Include the router in the main app
 app.include_router(api_router)
 
