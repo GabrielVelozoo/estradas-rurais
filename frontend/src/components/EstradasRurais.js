@@ -28,63 +28,21 @@ const EstradasRurais = () => {
         }
         
         const text = await response.text();
-        let allRows = [];
+        const json = JSON.parse(text.substring(47).slice(0, -2));
         
-        if (isCSV) {
-          console.log('Processando dados CSV...');
-          const lines = text.split('\\n');
-          console.log('Total CSV lines:', lines.length);
-          
-          // Pular header (primeira linha)
-          for (let i = 1; i < lines.length; i++) {
-            const line = lines[i].trim();
-            if (line) {
-              const cols = line.split(',').map(col => col.replace(/^"|"$/g, ''));
-              if (cols.length >= 6) {
-                allRows.push({
-                  municipio: cols[0] || '',
-                  protocolo: cols[1] || '',
-                  prefeito: cols[2] || '',
-                  estado: cols[3] || '',
-                  descricao: cols[4] || '',
-                  valor: cols[5] || 0,
-                });
-              }
-            }
-          }
-        } else {
-          console.log('Processando dados JSON...');
-          const json = JSON.parse(text.substring(47).slice(0, -2));
-          console.log('Total rows from API:', json.table.rows.length);
-          
-          allRows = json.table.rows.map((r, index) => {
-            const c = r.c ? r.c.map((x) => (x ? x.v : '')) : [];
-            const row = {
-              municipio: c[0] || '',
-              protocolo: c[1] || '',
-              prefeito: c[2] || '',
-              estado: c[3] || '',
-              descricao: c[4] || '',
-              valor: c[5] || 0,
-            };
-            if (index < 5) console.log('Sample row', index, ':', row);
-            return row;
-          });
-        }
+        console.log('Total rows from Google Sheets API:', json.table.rows.length);
         
-        console.log('Total mapped rows:', allRows.length);
-        
-        // Filtro mais permissivo - apenas remove linhas completamente vazias ou header
-        const rows = allRows.filter(row => {
-          const hasData = row.municipio && 
-                         typeof row.municipio === 'string' && 
-                         row.municipio.trim() !== '' && 
-                         row.municipio.toUpperCase() !== 'MUNICÍPIO';
-          return hasData;
-        });
-        
-        console.log('Final filtered rows:', rows.length);
-        console.log('Sample filtered data:', rows.slice(0, 3));
+        const rows = json.table.rows.map((r) => {
+          const c = r.c.map((x) => (x ? x.v : ''));
+          return {
+            municipio: c[0] || '',
+            protocolo: c[1] || '',
+            prefeito: c[2] || '',
+            estado: c[3] || '',
+            descricao: c[4] || '',
+            valor: c[5] || 0,
+          };
+        }).filter(row => row.municipio && row.municipio.trim() !== '' && row.municipio !== 'MUNICÍPIO');
         
         setDados(rows);
         setDadosFiltrados(rows);
