@@ -436,7 +436,15 @@ export default function EstradasRurais() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full table-fixed">
+                <colgroup>
+                  <col className="w-48" />  {/* Município - largura fixa maior */}
+                  <col className="w-32" />  {/* Protocolo */}
+                  <col className="w-40" />  {/* Prefeito */}
+                  <col className="w-24" />  {/* Estado */}
+                  <col className="w-auto" /> {/* Descrição - flexível */}
+                  <col className="w-36" />  {/* Valor */}
+                </colgroup>
                 <thead className="bg-gradient-to-r from-blue-50 to-blue-100">
                   <tr>
                     <th 
@@ -468,7 +476,7 @@ export default function EstradasRurais() {
                       </div>
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
-                      📝 Descrição
+                      📝 Descrição da Estrada
                     </th>
                     <th 
                       className="px-6 py-4 text-right text-sm font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
