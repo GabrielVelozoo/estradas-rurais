@@ -80,17 +80,35 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Card Pedido de Maquinários */}
+          {/* Card Relatórios */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 opacity-75">
+            <div className="text-center">
+              <div className="text-5xl mb-4 opacity-50">
+                📊
+              </div>
+              <h2 className="text-2xl font-bold text-gray-500 mb-3">
+                Relatórios
+              </h2>
+              <p className="text-gray-400 mb-4">
+                Em breve: Dashboards e relatórios analíticos
+              </p>
+              <div className="text-gray-400">
+                Em desenvolvimento
+              </div>
+            </div>
+          </div>
+
+          {/* Card Pedidos de Maquinários */}
           <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 opacity-75">
             <div className="text-center">
               <div className="text-5xl mb-4 opacity-50">
                 🚜
               </div>
               <h2 className="text-2xl font-bold text-gray-500 mb-3">
-                Pedido de Maquinários
+                Pedidos de Maquinários
               </h2>
               <p className="text-gray-400 mb-4">
-                Em breve: lista de maquinários pedidos por municípios de lideranças
+                Em breve: Lista de maquinários pedidos por municípios e lideranças
               </p>
               <div className="text-gray-400">
                 Em desenvolvimento
