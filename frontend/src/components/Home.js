@@ -124,20 +124,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-12">
-          <p className="text-gray-500">
-            Desenvolvido com 💻 usando{" "}
-            <a 
-              href="https://emergent.sh" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Emergent
-            </a>
-          </p>
-        </div>
+        {/* Footer removido conforme solicitado */}
       </div>
     </div>
   );
