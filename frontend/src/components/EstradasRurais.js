@@ -458,14 +458,14 @@ export default function EstradasRurais() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full table-fixed">
+              <table className="w-full table-auto">
                 <colgroup>
-                  <col className="w-48" />  {/* Município - largura fixa maior */}
-                  <col className="w-32" />  {/* Protocolo */}
-                  <col className="w-40" />  {/* Prefeito */}
-                  <col className="w-24" />  {/* Estado */}
-                  <col className="w-auto" /> {/* Descrição - flexível */}
-                  <col className="w-36" />  {/* Valor */}
+                  <col style={{width: '200px'}} />  {/* Município */}
+                  <col style={{width: '120px'}} />  {/* Protocolo */}
+                  <col style={{width: '150px'}} />  {/* Prefeito */}
+                  <col style={{width: '60px'}} />   {/* Estado */}
+                  <col style={{minWidth: '300px'}} /> {/* Descrição */}
+                  <col style={{width: '140px'}} />  {/* Valor */}
                 </colgroup>
                 <thead className="bg-gradient-to-r from-blue-50 to-blue-100">
                   <tr>
