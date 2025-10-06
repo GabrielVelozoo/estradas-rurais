@@ -69,10 +69,10 @@ const Home = () => {
                 🏛️
               </div>
               <h2 className="text-2xl font-bold text-gray-500 mb-3">
-                Obras Públicas
+                dados do gov - teste
               </h2>
               <p className="text-gray-400 mb-4">
-                Em breve: Sistema de acompanhamento de obras e licitações
+                Em breve: Sistema de acompanhamento em tempo real dos protocolos do gov, com maior velocidade e acertividade na busca
               </p>
               <div className="text-gray-400">
                 Em desenvolvimento
