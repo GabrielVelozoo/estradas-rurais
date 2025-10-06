@@ -484,67 +484,13 @@ export default function EstradasRurais() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {pageData.map((r, i) => {
-                    const [expandedDescricao, setExpandedDescricao] = useState({});
-                    
-                    const toggleDescricao = (index) => {
-                      setExpandedDescricao(prev => ({
-                        ...prev,
-                        [index]: !prev[index]
-                      }));
-                    };
-
-                    const isExpanded = expandedDescricao[i] || false;
-                    const shouldTruncate = r.descricao && r.descricao.length > 100;
-                    
-                    return (
-                      <tr 
-                        key={`${r.municipio}-${r.protocolo}-${i}`} 
-                        className="hover:bg-blue-50 transition-colors"
-                      >
-                        <td className="px-6 py-4">
-                          <div className="font-semibold text-gray-900 min-w-max whitespace-nowrap">
-                            {r.municipio || "Não informado"}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-gray-700 font-mono text-sm">{r.protocolo}</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-gray-700">{r.prefeito}</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                            {r.estado || "N/A"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 max-w-lg">
-                          {shouldTruncate ? (
-                            <div>
-                              <div className={`text-gray-700 ${isExpanded ? '' : 'line-clamp-2'}`}>
-                                {isExpanded ? r.descricao : `${r.descricao.substring(0, 100)}...`}
-                              </div>
-                              <button
-                                onClick={() => toggleDescricao(i)}
-                                className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-1 flex items-center gap-1"
-                              >
-                                {isExpanded ? (
-                                  <>🔼 Mostrar menos</>
-                                ) : (
-                                  <>🔽 Mostrar mais</>
-                                )}
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="text-gray-700">{r.descricao}</div>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="font-bold text-green-600 text-lg whitespace-nowrap">{r.valor}</div>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {pageData.map((r, i) => (
+                    <TabelaLinha 
+                      key={`${r.municipio}-${r.protocolo}-${i}`} 
+                      r={r} 
+                      i={i} 
+                    />
+                  ))}
                 </tbody>
               </table>
             </div>
