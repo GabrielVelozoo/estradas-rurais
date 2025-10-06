@@ -11,51 +11,62 @@ const TabelaLinha = ({ r, i }) => {
     setExpandedDescricao(!expandedDescricao);
   };
 
-  const shouldTruncate = r.descricao && r.descricao.length > 100;
+  const shouldTruncate = r.descricao && r.descricao.length > 150;
   
   return (
-    <tr 
-      className="hover:bg-blue-50 transition-colors"
-    >
-      <td className="px-6 py-4">
-        <div className="font-semibold text-gray-900 min-w-max">
-          {r.municipio || "Não informado"}
+    <tr className="hover:bg-blue-50 transition-colors border-b border-gray-100">
+      <td className="px-4 py-3 align-top">
+        <div className="font-semibold text-gray-900 text-sm break-words">
+          {r.municipio}
         </div>
       </td>
-      <td className="px-6 py-4">
-        <div className="text-gray-700 font-mono text-sm whitespace-nowrap">{r.protocolo}</div>
+      <td className="px-4 py-3 align-top">
+        <div className="text-gray-700 font-mono text-xs break-all">
+          {r.protocolo}
+        </div>
       </td>
-      <td className="px-6 py-4">
-        <div className="text-gray-700">{r.prefeito}</div>
+      <td className="px-4 py-3 align-top">
+        <div className="text-gray-700 text-sm break-words">
+          {r.prefeito}
+        </div>
       </td>
-      <td className="px-6 py-4">
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 whitespace-nowrap">
-          {r.estado || "N/A"}
-        </span>
-      </td>
-      <td className="px-6 py-4 max-w-lg">
-        {shouldTruncate ? (
-          <div>
-            <div className={`text-gray-700 ${expandedDescricao ? '' : 'line-clamp-3'}`}>
-              {expandedDescricao ? r.descricao : `${r.descricao.substring(0, 120)}...`}
-            </div>
-            <button
-              onClick={toggleDescricao}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2 flex items-center gap-1 transition-colors"
-            >
-              {expandedDescricao ? (
-                <>🔼 Mostrar menos</>
-              ) : (
-                <>🔽 Ver completa</>
-              )}
-            </button>
-          </div>
+      <td className="px-4 py-3 align-top">
+        {r.estado ? (
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            {r.estado}
+          </span>
         ) : (
-          <div className="text-gray-700">{r.descricao}</div>
+          <span className="text-gray-400 text-xs">-</span>
         )}
       </td>
-      <td className="px-6 py-4 text-right">
-        <div className="font-bold text-green-600 text-lg whitespace-nowrap">{r.valor}</div>
+      <td className="px-4 py-3 align-top">
+        <div className="space-y-2">
+          {r.nomeEstrada && (
+            <div className="font-medium text-gray-900 text-sm">
+              🛣️ {r.nomeEstrada}
+            </div>
+          )}
+          {shouldTruncate ? (
+            <div>
+              <div className="text-gray-600 text-sm">
+                {expandedDescricao ? r.descricao : `${r.descricao.substring(0, 150)}...`}
+              </div>
+              <button
+                onClick={toggleDescricao}
+                className="text-blue-600 hover:text-blue-800 text-xs font-medium mt-1 inline-flex items-center gap-1"
+              >
+                {expandedDescricao ? "🔼 Menos" : "🔽 Mais"}
+              </button>
+            </div>
+          ) : (
+            <div className="text-gray-600 text-sm">{r.descricao}</div>
+          )}
+        </div>
+      </td>
+      <td className="px-4 py-3 text-right align-top">
+        <div className="font-bold text-green-600 text-sm whitespace-nowrap">
+          {r.valor}
+        </div>
       </td>
     </tr>
   );
