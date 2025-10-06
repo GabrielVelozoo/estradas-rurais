@@ -1,403 +1,304 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
-const EstradasRurais = () => {
+// App configurável: prefira usar variáveis de ambiente
+const SHEET_ID = process.env.REACT_APP_SHEET_ID || "1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490";
+const API_KEY = process.env.REACT_APP_SHEETS_API_KEY || "AIzaSyBdd6E9Dz5W68XdhLCsLIlErt1ylwTt5Jk";
+
+export default function EstradasRurais() {
   const [dados, setDados] = useState([]);
-  const [dadosFiltrados, setDadosFiltrados] = useState([]);
-  const [filtros, setFiltros] = useState({
-    municipio: '',
-    estado: '',
-    valorMin: '',
-    valorMax: ''
-  });
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
-  const [paginaAtual, setPaginaAtual] = useState(1);
-  const [estados, setEstados] = useState([]);
-  const itensPorPagina = 10;
+
+  // filtros/estado da interface
+  const [busca, setBusca] = useState("");
+  const [estadoFiltro, setEstadoFiltro] = useState("Todos");
+  const [minValor, setMinValor] = useState("");
+  const [maxValor, setMaxValor] = useState("");
+
+  // paginação e ordenação
+  const [sortBy, setSortBy] = useState("municipio");
+  const [sortDir, setSortDir] = useState("asc");
+  const [pageSize, setPageSize] = useState(25);
+  const [page, setPage] = useState(1);
+
+  // auto refresh
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [refreshIntervalSeconds, setRefreshIntervalSeconds] = useState(60);
+  const intervalRef = useRef(null);
+
+  // fetch dos dados
+  const fetchData = async () => {
+    setCarregando(true);
+    setErro(null);
+    try {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/A:F?key=${API_KEY}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Erro na requisição: ${res.status} ${res.statusText}`);
+      const data = await res.json();
+
+      if (!data.values) {
+        setDados([]);
+        setErro("Planilha retornou sem valores (data.values está vazio). Verifique permissões e intervalo A:F");
+        return;
+      }
+
+      // primeira linha -> cabeçalho
+      const rows = data.values.slice(1).map((c) => ({
+        municipio: (c[0] || "").toString(),
+        protocolo: (c[1] || "").toString(),
+        prefeito: (c[2] || "").toString(),
+        estado: (c[3] || "").toString(),
+        descricao: (c[4] || "").toString(),
+        valor: (c[5] || "").toString(),
+        _valorNum: parseCurrencyToNumber(c[5] || ""),
+      }));
+
+      setDados(rows);
+    } catch (e) {
+      console.error(e);
+      setErro(e.message || String(e));
+    } finally {
+      setCarregando(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setCarregando(true);
-        setErro(null);
-        
-        console.log('Carregando dados via backend...');
-        const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-        const response = await fetch(`${BACKEND_URL}/api/estradas-rurais`);
-        
-        if (!response.ok) {
-          throw new Error('Erro ao carregar dados da planilha');
-        }
-        
-        const json = await response.json();
-        
-        console.log('✅ API v4 Response received successfully');
-        console.log('Range:', json.range);
-        console.log('Total rows from API v4:', json.values ? json.values.length : 0);
-        console.log('Sample data:', json.values ? json.values.slice(0, 3) : 'No data');
-        
-        if (!json.values || json.values.length === 0) {
-          throw new Error('Nenhum dado encontrado na planilha');
-        }
-        
-        // Remover o header (primeira linha) e processar os dados
-        const dataRows = json.values.slice(1);
-        
-        const rows = dataRows.map((row, index) => {
-          return {
-            municipio: row[0] || '',
-            protocolo: row[1] || '',
-            prefeito: row[2] || '',
-            estado: row[3] || '',
-            descricao: row[4] || '',
-            valor: row[5] || 0,
-          };
-        }).filter(row => row.municipio && row.municipio.trim() !== '');
-        
-        setDados(rows);
-        setDadosFiltrados(rows);
-        
-        // Extrair estados únicos para filtro
-        const estadosUnicos = [...new Set(rows.map(item => item.estado))]
-          .filter(estado => estado)
-          .sort();
-        setEstados(estadosUnicos);
-        
-      } catch (err) {
-        console.error('Erro ao carregar planilha:', err);
-        setErro('Não foi possível carregar os dados. Tente novamente mais tarde.');
-      } finally {
-        setCarregando(false);
+    fetchData();
+    // limpar interval se componente desmontar
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
-    
-    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // auto refresh handler
   useEffect(() => {
-    aplicarFiltros();
-  }, [filtros, dados]);
-
-  const aplicarFiltros = () => {
-    let resultados = dados;
-
-    if (filtros.municipio) {
-      resultados = resultados.filter(item =>
-        item.municipio.toLowerCase().includes(filtros.municipio.toLowerCase())
-      );
+    if (autoRefresh) {
+      // limpa caso já exista
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(() => fetchData(), Math.max(5, refreshIntervalSeconds) * 1000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     }
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [autoRefresh, refreshIntervalSeconds]);
 
-    if (filtros.estado) {
-      resultados = resultados.filter(item => item.estado === filtros.estado);
+  // helpers
+  function parseCurrencyToNumber(value) {
+    if (!value && value !== 0) return 0;
+    const s = value.toString().trim();
+    if (s === "") return 0;
+    // lida com formatos BR: "R$ 1.234,56" ou "1234,56" e en-US "1,234.56"
+    // estratégia: remover letras, manter dígitos, ponto e vírgula; se houver vírgula e ponto, inferir formato
+    const only = s.replace(/[^0-9.,-]/g, "");
+    // se tiver ambos '.' e ',' -> assumimos que '.' é separador de milhares e ',' decimal (BR)
+    if (only.indexOf(".") > -1 && only.indexOf(",") > -1) {
+      const cleaned = only.replace(/\./g, "").replace(/,/g, ".");
+      const n = parseFloat(cleaned);
+      return isNaN(n) ? 0 : n;
     }
-
-    if (filtros.valorMin) {
-      resultados = resultados.filter(item => {
-        const valor = parseFloat(String(item.valor).replace(/[^0-9.,]/g, '').replace(',', '.'));
-        return valor >= parseFloat(filtros.valorMin);
-      });
+    // se tiver só vírgula -> substituir por ponto
+    if (only.indexOf(",") > -1) {
+      const cleaned = only.replace(/,/g, ".");
+      const n = parseFloat(cleaned);
+      return isNaN(n) ? 0 : n;
     }
+    // caso contrário parse direto (ponto decimal ou inteiro)
+    const n = parseFloat(only);
+    return isNaN(n) ? 0 : n;
+  }
 
-    if (filtros.valorMax) {
-      resultados = resultados.filter(item => {
-        const valor = parseFloat(String(item.valor).replace(/[^0-9.,]/g, '').replace(',', '.'));
-        return valor <= parseFloat(filtros.valorMax);
-      });
-    }
+  // filtro aplicado nos dados
+  const estadosDisponiveis = useMemo(() => {
+    const s = new Set(dados.map((d) => (d.estado || "").trim()).filter((x) => x !== ""));
+    return ["Todos", ...Array.from(s).sort()];
+  }, [dados]);
 
-    setDadosFiltrados(resultados);
-    setPaginaAtual(1);
-  };
+  const filtrados = useMemo(() => {
+    const lowerBusca = busca.trim().toLowerCase();
 
-  const handleFiltroChange = (campo, valor) => {
-    setFiltros(prev => ({ ...prev, [campo]: valor }));
-  };
-
-  const limparFiltros = () => {
-    setFiltros({
-      municipio: '',
-      estado: '',
-      valorMin: '',
-      valorMax: ''
+    let out = dados.filter((d) => {
+      if (lowerBusca && !d.municipio.toLowerCase().includes(lowerBusca)) return false;
+      if (estadoFiltro !== "Todos" && d.estado.trim() !== estadoFiltro) return false;
+      const minN = parseFloat(String(minValor).replace(/[^0-9.-]/g, ""));
+      const maxN = parseFloat(String(maxValor).replace(/[^0-9.-]/g, ""));
+      if (!isNaN(minN) && d._valorNum < minN) return false;
+      if (!isNaN(maxN) && d._valorNum > maxN) return false;
+      return true;
     });
+
+    // sort
+    out.sort((a, b) => {
+      let va = a[sortBy];
+      let vb = b[sortBy];
+      // para valor use _valorNum
+      if (sortBy === "valor") {
+        va = a._valorNum;
+        vb = b._valorNum;
+      } else {
+        va = (va || "").toString().toLowerCase();
+        vb = (vb || "").toString().toLowerCase();
+      }
+      if (va < vb) return sortDir === "asc" ? -1 : 1;
+      if (va > vb) return sortDir === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    return out;
+  }, [dados, busca, estadoFiltro, minValor, maxValor, sortBy, sortDir]);
+
+  // paginação
+  const total = filtrados.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [totalPages, page]);
+  const pageData = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filtrados.slice(start, start + pageSize);
+  }, [filtrados, page, pageSize]);
+
+  // export CSV
+  const exportCSV = () => {
+    const headers = ["Município", "Protocolo", "Prefeito", "Estado", "Descrição", "Valor"];
+    const rows = filtrados.map((r) => [r.municipio, r.protocolo, r.prefeito, r.estado, r.descricao, r.valor]);
+    const csvContent = [headers, ...rows].map((e) => e.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "estradas_rurais_export.csv";
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
-  const exportarCSV = () => {
-    const headers = ['Município', 'Protocolo', 'Prefeito', 'Estado', 'Descrição', 'Valor'];
-    const csvContent = [
-      headers.join(','),
-      ...dadosFiltrados.map(item => [
-        `"${item.municipio}"`,
-        `"${item.protocolo}"`,
-        `"${item.prefeito}"`,
-        `"${item.estado}"`,
-        `"${item.descricao}"`,
-        `"${item.valor}"`
-      ].join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'estradas-rurais.csv';
-    link.click();
+  const clearFilters = () => {
+    setBusca("");
+    setEstadoFiltro("Todos");
+    setMinValor("");
+    setMaxValor("");
   };
 
-  // Cálculos da paginação
-  const totalPaginas = Math.ceil(dadosFiltrados.length / itensPorPagina);
-  const indiceInicio = (paginaAtual - 1) * itensPorPagina;
-  const indiceFim = indiceInicio + itensPorPagina;
-  const itensPaginaAtual = dadosFiltrados.slice(indiceInicio, indiceFim);
-
-  const formatarValor = (valor) => {
-    if (!valor) return 'N/A';
-    const valorStr = String(valor);
-    // Se já está formatado como moeda, retorna como está
-    if (valorStr.includes('R$')) return valorStr;
-    
-    // Tenta converter para número e formatar
-    const numero = parseFloat(valorStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
-    if (isNaN(numero)) return valorStr;
-    
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(numero);
+  // UI helpers
+  const toggleSort = (col) => {
+    if (sortBy === col) {
+      setSortDir((s) => (s === "asc" ? "desc" : "asc"));
+    } else {
+      setSortBy(col);
+      setSortDir("asc");
+    }
   };
 
-  if (carregando) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando dados das estradas rurais...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (erro) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <p className="font-bold">Erro ao carregar dados</p>
-            <p>{erro}</p>
-          </div>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Tentar Novamente
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const sumFilteredValues = useMemo(() => filtrados.reduce((acc, r) => acc + (r._valorNum || 0), 0), [filtrados]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-2">
-                🛣️ Estradas Rurais
-              </h1>
-              <p className="text-gray-600 mt-1">Consulta de registros municipais</p>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={exportarCSV}
-                disabled={dadosFiltrados.length === 0}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                📥 Exportar CSV
-              </button>
-            </div>
+        <header className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold">🛣️ Estradas Rurais — Painel</h1>
+          <div className="flex gap-2 items-center">
+            <button onClick={() => fetchData()} className="px-3 py-2 rounded-lg bg-blue-600 text-white shadow">Atualizar</button>
+            <button onClick={exportCSV} className="px-3 py-2 rounded-lg bg-green-600 text-white shadow">Exportar CSV</button>
           </div>
-        </div>
+        </header>
 
-        {/* Filtros */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">Filtros</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Município
-              </label>
-              <input
-                type="text"
-                placeholder="Buscar por município..."
-                value={filtros.municipio}
-                onChange={(e) => handleFiltroChange('municipio', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Estado
-              </label>
-              <select
-                value={filtros.estado}
-                onChange={(e) => handleFiltroChange('estado', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Todos os estados</option>
-                {estados.map(estado => (
-                  <option key={estado} value={estado}>{estado}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Valor Mínimo (R$)
-              </label>
-              <input
-                type="number"
-                placeholder="0,00"
-                value={filtros.valorMin}
-                onChange={(e) => handleFiltroChange('valorMin', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Valor Máximo (R$)
-              </label>
-              <input
-                type="number"
-                placeholder="999999,00"
-                value={filtros.valorMax}
-                onChange={(e) => handleFiltroChange('valorMax', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-          
-          <div className="mt-4">
-            <button
-              onClick={limparFiltros}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-            >
-              🗑️ Limpar todos os filtros
-            </button>
-          </div>
-        </div>
+        <section className="bg-white p-4 rounded-lg shadow mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input value={busca} onChange={(e) => { setBusca(e.target.value); setPage(1); }} placeholder="Pesquisar por município..." className="p-2 border rounded" />
 
-        {/* Resultados */}
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold">
-                Resultados ({dadosFiltrados.length} registros)
-              </h2>
+            <select value={estadoFiltro} onChange={(e) => { setEstadoFiltro(e.target.value); setPage(1); }} className="p-2 border rounded">
+              {estadosDisponiveis.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+
+            <div className="flex gap-2">
+              <input value={minValor} onChange={(e) => { setMinValor(e.target.value); setPage(1); }} placeholder="Valor mínimo" className="p-2 border rounded w-full" />
+              <input value={maxValor} onChange={(e) => { setMaxValor(e.target.value); setPage(1); }} placeholder="Valor máximo" className="p-2 border rounded w-full" />
             </div>
           </div>
 
-          {dadosFiltrados.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              <div className="text-4xl mb-4">🔍</div>
-              <p className="text-lg font-medium mb-2">Nenhum registro encontrado</p>
-              <p>Tente ajustar os filtros para encontrar os dados desejados.</p>
+          <div className="mt-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="text-sm text-gray-600">Registros: <strong>{total}</strong> — Somatório (filtro): <strong>{formatNumber(sumFilteredValues)}</strong></div>
+
+            <div className="flex gap-2 items-center">
+              <label className="text-sm">Auto refresh</label>
+              <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} />
+              <input type="number" min={5} value={refreshIntervalSeconds} onChange={(e) => setRefreshIntervalSeconds(Number(e.target.value))} className="p-1 w-20 border rounded" />
+              <span className="text-sm text-gray-500">segundos</span>
+              <button onClick={clearFilters} className="px-2 py-1 bg-gray-200 rounded">Limpar filtros</button>
             </div>
+          </div>
+        </section>
+
+        <section className="bg-white rounded-lg shadow overflow-x-auto">
+          {carregando ? (
+            <div className="p-6 text-center text-gray-600">Carregando dados...</div>
+          ) : erro ? (
+            <div className="p-6 text-center text-red-600">Erro: {erro}</div>
           ) : (
-            <>
-              {/* Tabela */}
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Município
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Protocolo
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Prefeito
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Estado
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Descrição
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Valor
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {itensPaginaAtual.map((item, i) => (
-                      <tr key={i} className="hover:bg-gray-50">
-                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {item.municipio}
-                        </td>
-                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.protocolo}
-                        </td>
-                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.prefeito}
-                        </td>
-                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {item.estado}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 text-sm text-gray-500 max-w-xs truncate" title={item.descricao}>
-                          {item.descricao}
-                        </td>
-                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-green-600">
-                          {formatarValor(item.valor)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Paginação */}
-              {totalPaginas > 1 && (
-                <div className="px-6 py-4 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-700">
-                      Mostrando {indiceInicio + 1} até {Math.min(indiceFim, dadosFiltrados.length)} de {dadosFiltrados.length} resultados
-                    </div>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => setPaginaAtual(Math.max(1, paginaAtual - 1))}
-                        disabled={paginaAtual === 1}
-                        className="px-3 py-1 text-sm border border-gray-300 rounded disabled:bg-gray-100 disabled:cursor-not-allowed hover:bg-gray-50"
-                      >
-                        Anterior
-                      </button>
-                      
-                      <span className="px-3 py-1 text-sm">
-                        Página {paginaAtual} de {totalPaginas}
-                      </span>
-                      
-                      <button
-                        onClick={() => setPaginaAtual(Math.min(totalPaginas, paginaAtual + 1))}
-                        disabled={paginaAtual === totalPaginas}
-                        className="px-3 py-1 text-sm border border-gray-300 rounded disabled:bg-gray-100 disabled:cursor-not-allowed hover:bg-gray-50"
-                      >
-                        Próxima
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
+            <table className="w-full table-auto">
+              <thead className="bg-gray-100 text-sm text-gray-700">
+                <tr>
+                  <th className="p-3 text-left cursor-pointer" onClick={() => toggleSort("municipio")}>Município {sortBy === "municipio" ? (sortDir === "asc" ? "▲" : "▼") : ""}</th>
+                  <th className="p-3 text-left">Protocolo</th>
+                  <th className="p-3 text-left">Prefeito</th>
+                  <th className="p-3 text-left cursor-pointer" onClick={() => toggleSort("estado")}>Estado {sortBy === "estado" ? (sortDir === "asc" ? "▲" : "▼") : ""}</th>
+                  <th className="p-3 text-left">Descrição</th>
+                  <th className="p-3 text-right cursor-pointer" onClick={() => toggleSort("valor")}>Valor {sortBy === "valor" ? (sortDir === "asc" ? "▲" : "▼") : ""}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pageData.map((r, i) => (
+                  <tr key={`${r.municipio}-${r.protocolo}-${i}`} className="border-t hover:bg-gray-50">
+                    <td className="p-3">{r.municipio}</td>
+                    <td className="p-3">{r.protocolo}</td>
+                    <td className="p-3">{r.prefeito}</td>
+                    <td className="p-3">{r.estado}</td>
+                    <td className="p-3">{r.descricao}</td>
+                    <td className="p-3 text-right">{r.valor}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
-        </div>
+        </section>
+
+        <footer className="mt-4 flex items-center justify-between">
+          <div>
+            <label>Linhas por página: </label>
+            <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }} className="p-1 border rounded">
+              {[10, 25, 50, 100].map((n) => <option key={n} value={n}>{n}</option>)}
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button onClick={() => setPage(1)} disabled={page === 1} className="px-2 py-1 border rounded"><<</button>
+            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="px-2 py-1 border rounded"><</button>
+            <span>Página {page} / {totalPages}</span>
+            <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-2 py-1 border rounded">></button>
+            <button onClick={() => setPage(totalPages)} disabled={page === totalPages} className="px-2 py-1 border rounded">>></button>
+          </div>
+        </footer>
+
       </div>
     </div>
   );
-};
+}
 
-export default EstradasRurais;
+// util
+function formatNumber(n) {
+  if (typeof n !== "number") return "0";
+  return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
