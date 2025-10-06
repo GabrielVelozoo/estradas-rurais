@@ -432,20 +432,58 @@ export default function EstradasRurais() {
           )}
         </section>
 
-        <footer className="mt-4 flex items-center justify-between">
-          <div>
-            <label>Linhas por página: </label>
-            <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }} className="p-1 border rounded">
-              {[10, 25, 50, 100].map((n) => <option key={n} value={n}>{n}</option>)}
-            </select>
-          </div>
+        {/* Paginação */}
+        <footer className="mt-6 bg-white rounded-xl shadow-lg p-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium text-gray-700">Itens por página:</label>
+              <select 
+                value={pageSize} 
+                onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }} 
+                className="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                {[10, 25, 50, 100].map((n) => <option key={n} value={n}>{n}</option>)}
+              </select>
+              <span className="text-sm text-gray-600">
+                Mostrando {((page - 1) * pageSize) + 1} a {Math.min(page * pageSize, total)} de {total} registros
+              </span>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <button onClick={() => setPage(1)} disabled={page === 1} className="px-2 py-1 border rounded">&laquo;</button>
-            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="px-2 py-1 border rounded">&lsaquo;</button>
-            <span>Página {page} / {totalPages}</span>
-            <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-2 py-1 border rounded">&rsaquo;</button>
-            <button onClick={() => setPage(totalPages)} disabled={page === totalPages} className="px-2 py-1 border rounded">&raquo;</button>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setPage(1)} 
+                disabled={page === 1} 
+                className="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+              >
+                &laquo; Primeiro
+              </button>
+              <button 
+                onClick={() => setPage((p) => Math.max(1, p - 1))} 
+                disabled={page === 1} 
+                className="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+              >
+                &lsaquo; Anterior
+              </button>
+              
+              <span className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">
+                Página {page} de {totalPages}
+              </span>
+              
+              <button 
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))} 
+                disabled={page === totalPages} 
+                className="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+              >
+                Próxima &rsaquo;
+              </button>
+              <button 
+                onClick={() => setPage(totalPages)} 
+                disabled={page === totalPages} 
+                className="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+              >
+                Último &raquo;
+              </button>
+            </div>
           </div>
         </footer>
       </div>
