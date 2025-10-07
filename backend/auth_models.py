@@ -33,7 +33,7 @@ class UserResponse(User):
 
 # Auth Models
 class LoginRequest(BaseModel):
-    email: EmailStr
+    username: str
     password: str
 
 class LoginResponse(BaseModel):
