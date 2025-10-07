@@ -14,10 +14,21 @@ const TabelaLinha = ({ r, i }) => {
   const shouldTruncate = r.descricao && r.descricao.length > 150;
   
   return (
-    <tr className="hover:bg-blue-50 transition-colors border-b border-gray-100">
+    <tr className={`transition-colors border-b border-gray-100 ${
+      r.isPrioridade 
+        ? 'bg-red-50 hover:bg-red-100 border-l-4 border-l-red-500' 
+        : 'hover:bg-blue-50'
+    }`}>
       <td className="px-4 py-3 align-top">
-        <div className="font-semibold text-gray-900 text-sm break-words">
-          {r.municipio}
+        <div className="flex items-center gap-2">
+          <div className="font-semibold text-gray-900 text-sm break-words">
+            {r.municipio}
+          </div>
+          {r.isPrioridade && (
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-red-600 text-white animate-pulse">
+              🚨 PRIORIDADE
+            </span>
+          )}
         </div>
       </td>
       <td className="px-4 py-3 align-top">
@@ -33,8 +44,10 @@ const TabelaLinha = ({ r, i }) => {
       <td className="px-4 py-3 align-top">
         <div className="space-y-2">
           {r.nomeEstrada && (
-            <div className="font-medium text-gray-900 text-sm">
-              🛣️ {r.nomeEstrada}
+            <div className={`font-medium text-sm ${
+              r.isPrioridade ? 'text-red-900' : 'text-gray-900'
+            }`}>
+              {r.isPrioridade ? '🚨🛣️' : '🛣️'} {r.nomeEstrada}
             </div>
           )}
           {shouldTruncate ? (
@@ -55,7 +68,9 @@ const TabelaLinha = ({ r, i }) => {
         </div>
       </td>
       <td className="px-4 py-3 text-right align-top">
-        <div className="font-bold text-green-600 text-sm whitespace-nowrap">
+        <div className={`font-bold text-sm whitespace-nowrap ${
+          r.isPrioridade ? 'text-red-600' : 'text-green-600'
+        }`}>
           {r.valor}
         </div>
       </td>
