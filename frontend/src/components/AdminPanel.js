@@ -278,15 +278,17 @@ const AdminPanel = () => {
                                 <div className="flex-shrink-0 h-10 w-10">
                                   <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center">
                                     <span className="text-sm font-medium text-white">
-                                      {userData.email.charAt(0).toUpperCase()}
+                                      {userData.username.charAt(0).toUpperCase()}
                                     </span>
                                   </div>
                                 </div>
                                 <div className="ml-4">
                                   <div className="text-sm font-medium text-gray-900">
-                                    {userData.username || 'Sem nome'}
+                                    {userData.username}
                                   </div>
-                                  <div className="text-sm text-gray-500">{userData.email}</div>
+                                  {userData.email && (
+                                    <div className="text-sm text-gray-500">{userData.email}</div>
+                                  )}
                                 </div>
                               </div>
                             </td>
