@@ -92,11 +92,11 @@ async def create_user(
     """Create a new user (admin only)"""
     
     # Check if user already exists
-    existing_user = await db.users.find_one({"email": user_data.email})
+    existing_user = await db.users.find_one({"username": user_data.username})
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User with this email already exists"
+            detail="User with this username already exists"
         )
     
     # Hash password
