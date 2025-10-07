@@ -13,7 +13,6 @@ const AdminPanel = () => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
   const [formData, setFormData] = useState({
-    email: '',
     username: '',
     password: '',
     role: 'user',
