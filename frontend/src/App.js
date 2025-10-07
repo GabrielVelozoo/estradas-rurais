@@ -21,7 +21,7 @@ function App() {
 
 // Componente principal que gerencia o roteamento baseado na autenticação
 function MainApp() {
-  const { isAuthenticated, loading } = require('./contexts/AuthContext').useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return (
