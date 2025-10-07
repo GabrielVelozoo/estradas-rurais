@@ -1,7 +1,6 @@
 from fastapi import Request, HTTPException, Depends, Cookie, status
 from fastapi.security import HTTPBearer
 from typing import Optional
-from motor.motor_asyncio import AsyncIOMotorDatabase
 from auth_models import User, UserInDB, TokenData
 from auth_utils import verify_token, parse_user_from_mongo
 import os
