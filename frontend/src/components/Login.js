@@ -23,21 +23,48 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <div className="mx-auto h-12 w-auto flex items-center justify-center">
-            <svg className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50">
+      {/* Header with government styling */}
+      <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-6a1 1 0 00-1-1H9a1 1 0 00-1 1v6a1 1 0 01-1 1H4a1 1 0 110-2V4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-lg font-bold">Prefeitura Municipal</h1>
+                <p className="text-blue-200 text-sm">Gabinete do Prefeito</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-blue-200 text-sm">Sistema Oficial</p>
+              <p className="text-white font-medium">Portal de Consultas</p>
+            </div>
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Portal de Consultas do Gabinete
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Sistema de informações resumidos
-          </p>
         </div>
+      </div>
+
+      <div className="flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          {/* Login Card */}
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-8">
+            <div className="text-center">
+              <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center mb-6">
+                <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Portal de Consultas do Gabinete
+              </h2>
+              <p className="text-gray-600 mb-2">
+                Sistema de informações resumidos
+              </p>
+              <div className="w-16 h-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full mx-auto"></div>
+            </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
