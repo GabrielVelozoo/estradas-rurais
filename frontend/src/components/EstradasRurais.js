@@ -47,7 +47,7 @@ const TabelaLinha = ({ r, i }) => {
             <div className={`font-medium text-sm ${
               r.isPrioridade ? 'text-red-900' : 'text-gray-900'
             }`}>
-              {r.isPrioridade ? '🚨🛣️' : '🛣️'} {r.nomeEstrada}
+              🛣️ {r.nomeEstrada}
             </div>
           )}
           {shouldTruncate ? (
