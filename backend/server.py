@@ -78,8 +78,9 @@ async def get_estradas_rurais(current_user: User = Depends(get_current_active_us
         logger.error(f"Error fetching Google Sheets data: {e}")
         raise HTTPException(status_code=500, detail="Error fetching data from Google Sheets")
 
-# Include the router in the main app
+# Include routers in the main app
 app.include_router(api_router)
+app.include_router(auth_router, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
