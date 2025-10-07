@@ -31,13 +31,13 @@ const Navbar = () => {
           <div className="flex items-center">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <img 
-                src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" 
-                alt="Logo"
-                className="w-8 h-8 rounded-full"
-              />
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" clipRule="evenodd" />
+                </svg>
+              </div>
               <span className="text-xl font-bold text-gray-800">
-                Portal Municipal
+                Portal de Consultas
               </span>
             </Link>
           </div>
