@@ -39,12 +39,12 @@ def verify_token(token: str) -> Optional[TokenData]:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
-        email: str = payload.get("email")
+        username: str = payload.get("username")
         
         if user_id is None:
             return None
         
-        return TokenData(user_id=user_id, email=email)
+        return TokenData(user_id=user_id, username=username)
     except jwt.PyJWTError:
         return None
 
