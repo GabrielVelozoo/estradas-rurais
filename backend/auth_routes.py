@@ -16,8 +16,8 @@ from auth_middleware import get_current_user, get_current_admin_user
 
 router = APIRouter()
 
-# Database dependency
-async def get_db(request: Request) -> AsyncIOMotorDatabase:
+# Database dependency - remove type annotation to avoid FastAPI validation
+async def get_db(request: Request):
     return request.app.state.db
 
 @router.post("/auth/login", response_model=LoginResponse)
