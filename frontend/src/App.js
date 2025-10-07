@@ -49,7 +49,7 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            {/* PONTO ÚNICO DE ENTRADA - Estradas Rurais */}
+            {/* ÚNICA ROTA VÁLIDA - Estradas Rurais */}
             <Route 
               path="/estradas-rurais" 
               element={
@@ -62,7 +62,7 @@ function App() {
               } 
             />
             
-            {/* Rotas internas - acessíveis após login */}
+            {/* Admin route - acessível após login */}
             <Route 
               path="/admin" 
               element={
@@ -77,10 +77,13 @@ function App() {
               } 
             />
             
-            {/* TODAS as outras rotas redirecionam para /estradas-rurais */}
-            <Route path="/" element={<ForceRedirect />} />
-            <Route path="/home" element={<ForceRedirect />} />
-            <Route path="*" element={<ForceRedirect />} />
+            {/* QUALQUER OUTRA ROTA - redireciona imediatamente */}
+            <Route 
+              path="*" 
+              element={
+                <ForceRedirect />
+              } 
+            />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
