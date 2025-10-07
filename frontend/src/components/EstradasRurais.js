@@ -26,7 +26,7 @@ const TabelaLinha = ({ r, i }) => {
           </div>
           {r.isPrioridade && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-red-600 text-white animate-pulse">
-              🚨 PRIORIDADE
+              PRIORIDADE
             </span>
           )}
         </div>
