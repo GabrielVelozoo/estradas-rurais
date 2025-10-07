@@ -37,7 +37,7 @@ const Navbar = () => {
                 </svg>
               </div>
               <span className="text-xl font-bold text-gray-800">
-                Portal de Consultas
+                Informações Gabinete
               </span>
             </Link>
           </div>
