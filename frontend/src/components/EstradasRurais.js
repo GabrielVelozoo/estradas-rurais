@@ -135,6 +135,7 @@ export default function EstradasRurais() {
           let descricaoCompleta = (c[3] || "").toString().trim();
           let nomeEstrada = (c[4] || "").toString().trim();
           let valor = (c[5] || "").toString().trim();
+          let prioridadeColuna = (c[6] || "").toString().trim(); // Coluna G
           
           // Extrair estado da descrição se necessário
           let estado = "";
@@ -145,11 +146,10 @@ export default function EstradasRurais() {
           } else if (descricaoCompleta.includes("MINAS GERAIS") || descricaoCompleta.includes("MG")) {
             estado = "MG";
           }
-          // Se não conseguir extrair, deixar vazio
           
-          // Verificar se é prioridade
-          const isPrioridade = (nomeEstrada && nomeEstrada.toUpperCase().includes("PRIORIDADE")) ||
-                              (descricaoCompleta && descricaoCompleta.toUpperCase().includes("PRIORIDADE"));
+          // Verificar se é prioridade usando a coluna G
+          const isPrioridade = prioridadeColuna && 
+                              prioridadeColuna.toUpperCase().includes("PRIORIDADE");
           
           return {
             municipio: municipio || "Não informado",
@@ -160,6 +160,7 @@ export default function EstradasRurais() {
             nomeEstrada: nomeEstrada,
             valor: formatCurrency(valor),
             _valorNum: parseCurrencyToNumber(valor),
+            prioridadeInfo: prioridadeColuna,
             isPrioridade: isPrioridade,
           };
         });
