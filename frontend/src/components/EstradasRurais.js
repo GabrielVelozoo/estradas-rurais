@@ -484,7 +484,7 @@ export default function EstradasRurais() {
                 <p className="text-sm font-medium text-gray-600">Estradas Prioritárias</p>
                 <p className="text-2xl font-bold text-red-600">{dados.filter(d => d.isPrioridade).length}</p>
               </div>
-              <div className="text-3xl">🚨</div>
+              <div className="text-3xl">🎯</div>
             </div>
           </div>
         </div>
