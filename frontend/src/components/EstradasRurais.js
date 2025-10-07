@@ -476,6 +476,16 @@ export default function EstradasRurais() {
               <div className="text-3xl">💰</div>
             </div>
           </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-red-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Estradas Prioritárias</p>
+                <p className="text-2xl font-bold text-red-600">{dados.filter(d => d.isPrioridade).length}</p>
+              </div>
+              <div className="text-3xl">🚨</div>
+            </div>
+          </div>
         </div>
 
         {/* Filtros */}
