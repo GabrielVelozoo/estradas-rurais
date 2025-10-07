@@ -32,10 +32,10 @@ const Login = () => {
             </svg>
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Portal de Consultas
+            Portal de Consultas do Gabinete
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Acesse o sistema de estradas rurais
+            Sistema de informações resumidos
           </p>
         </div>
         
