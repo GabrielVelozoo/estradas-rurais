@@ -33,27 +33,17 @@ function App() {
         <AuthProvider>
           <Navbar />
           <Routes>
-            {/* Página principal - único ponto de entrada */}
+            {/* PONTO ÚNICO DE ENTRADA - Estradas Rurais */}
             <Route 
-              path="/" 
+              path="/estradas-rurais" 
               element={
                 <ProtectedRoute>
-                  <Home />
+                  <EstradasRurais />
                 </ProtectedRoute>
               } 
             />
             
-            {/* Rotas internas - redirecionam para home se não autenticado */}
-            <Route 
-              path="/estradas-rurais" 
-              element={
-                <RedirectIfNotAuth>
-                  <ProtectedRoute>
-                    <EstradasRurais />
-                  </ProtectedRoute>
-                </RedirectIfNotAuth>
-              } 
-            />
+            {/* Rotas internas - acessíveis após login */}
             <Route 
               path="/admin" 
               element={
@@ -65,8 +55,9 @@ function App() {
               } 
             />
             
-            {/* TODAS as outras rotas redirecionam para a página principal */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* TODAS as outras rotas (incluindo /) redirecionam para /estradas-rurais */}
+            <Route path="/" element={<Navigate to="/estradas-rurais" replace />} />
+            <Route path="*" element={<Navigate to="/estradas-rurais" replace />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
