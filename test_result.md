@@ -297,6 +297,9 @@ frontend:
         -working: true
         -agent: "main"
         -comment: "App.js configurado: AuthProvider wrapper, todas as rotas protegidas, rota /admin adminOnly"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ TESTED - App.js routing working perfectly: AuthProvider wraps all components, all routes properly protected (/, /estradas-rurais, /admin), unauthenticated users redirected to login, /admin route has adminOnly restriction working correctly, authenticated users can access protected routes, session persistence working after page reload."
 
 metadata:
   created_by: "main_agent"
