@@ -5,8 +5,8 @@ import uuid
 
 # User Models
 class UserBase(BaseModel):
-    email: EmailStr
-    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+    username: str
     role: Literal['admin', 'user'] = 'user'
     is_active: bool = True
 
