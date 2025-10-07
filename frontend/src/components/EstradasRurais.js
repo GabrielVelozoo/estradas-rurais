@@ -147,9 +147,9 @@ export default function EstradasRurais() {
             estado = "MG";
           }
           
-          // Verificar se é prioridade usando a coluna G
-          const isPrioridade = prioridadeColuna && 
-                              prioridadeColuna.toUpperCase().includes("PRIORIDADE");
+          // Verificar se é prioridade na descrição (coluna de estrada)
+          const isPrioridade = (nomeEstrada && nomeEstrada.toUpperCase().includes("PRIORIDADE")) ||
+                              (descricaoCompleta && descricaoCompleta.toUpperCase().includes("PRIORIDADE"));
           
           return {
             municipio: municipio || "Não informado",
