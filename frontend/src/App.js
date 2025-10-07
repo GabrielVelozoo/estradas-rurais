@@ -61,9 +61,30 @@ function App() {
             />
             
             {/* TODAS as outras rotas redirecionam para /estradas-rurais */}
-            <Route path="/" element={<Navigate to="/estradas-rurais" replace />} />
-            <Route path="/home" element={<Navigate to="/estradas-rurais" replace />} />
-            <Route path="*" element={<Navigate to="/estradas-rurais" replace />} />
+            <Route 
+              path="/" 
+              element={
+                <div>
+                  <Navigate to="/estradas-rurais" replace />
+                </div>
+              } 
+            />
+            <Route 
+              path="/home" 
+              element={
+                <div>
+                  <Navigate to="/estradas-rurais" replace />
+                </div>
+              } 
+            />
+            <Route 
+              path="*" 
+              element={
+                <div>
+                  <Navigate to="/estradas-rurais" replace />
+                </div>
+              } 
+            />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
