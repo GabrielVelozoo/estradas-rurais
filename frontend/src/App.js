@@ -24,21 +24,25 @@ function App() {
               } 
             />
             
-            {/* Rotas internas - só acessíveis após login através da navbar */}
+            {/* Rotas internas - redirecionam para home se não autenticado */}
             <Route 
               path="/estradas-rurais" 
               element={
-                <ProtectedRoute>
-                  <EstradasRurais />
-                </ProtectedRoute>
+                <RedirectIfNotAuth>
+                  <ProtectedRoute>
+                    <EstradasRurais />
+                  </ProtectedRoute>
+                </RedirectIfNotAuth>
               } 
             />
             <Route 
               path="/admin" 
               element={
-                <ProtectedRoute adminOnly={true}>
-                  <AdminPanel />
-                </ProtectedRoute>
+                <RedirectIfNotAuth>
+                  <ProtectedRoute adminOnly={true}>
+                    <AdminPanel />
+                  </ProtectedRoute>
+                </RedirectIfNotAuth>
               } 
             />
             
