@@ -99,9 +99,8 @@ export default function EstradasRurais() {
     setCarregando(true);
     setErro(null);
     try {
-      // Usar backend como proxy para evitar problemas de CORS
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-      const res = await fetch(`${BACKEND_URL}/api/estradas-rurais`);
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/A:G?key=${API_KEY}`;
+      const res = await fetch(url);
       if (!res.ok) throw new Error(`Erro na requisição: ${res.status} ${res.statusText}`);
       const data = await res.json();
       if (!data.values) {
