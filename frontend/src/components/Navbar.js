@@ -139,7 +139,9 @@ const Navbar = () => {
                 <div className="border-t pt-4">
                   <div className="px-3 py-2 text-sm text-gray-700">
                     <div className="font-medium">{user.username || 'Usuário'}</div>
-                    <div className="text-gray-500">{user.email}</div>
+                    {user.email && (
+                      <div className="text-gray-500">{user.email}</div>
+                    )}
                   </div>
                   <button
                     onClick={handleLogout}
