@@ -55,7 +55,7 @@ async def login(
     
     # Create access token
     access_token = create_access_token(
-        data={"sub": user_in_db.id, "email": user_in_db.email}
+        data={"sub": user_in_db.id, "username": user_in_db.username}
     )
     
     # Set secure cookie (7 days expiration)
