@@ -102,17 +102,17 @@ async def startup_event():
     """Create default admin user if it doesn't exist"""
     try:
         # Check if admin user exists
-        admin_user = await db.users.find_one({"email": "admin@portal.gov.br"})
+        admin_user = await db.users.find_one({"email": "gabrielvelozoanjos@gmail.com"})
         
         if not admin_user:
             # Create default admin user
             from auth_models import UserCreate, UserInDB
             
             admin_data = UserCreate(
-                email="admin@portal.gov.br",
-                username="Administrador",
+                email="gabrielvelozoanjos@gmail.com",
+                username="Gabriel Velozo dos Anjos",
                 role="admin",
-                password="admin123",  # Change this in production!
+                password="gggr181330",
                 is_active=True
             )
             
@@ -127,7 +127,7 @@ async def startup_event():
             admin_mongo_data = prepare_user_for_mongo(admin_obj.dict())
             await db.users.insert_one(admin_mongo_data)
             
-            logger.info("Default admin user created: admin@portal.gov.br / admin123")
+            logger.info("Default admin user created: gabrielvelozoanjos@gmail.com")
         else:
             logger.info("Admin user already exists")
             
