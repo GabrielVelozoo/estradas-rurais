@@ -97,6 +97,43 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@app.on_event("startup")
+async def startup_event():
+    """Create default admin user if it doesn't exist"""
+    try:
+        # Check if admin user exists
+        admin_user = await db.users.find_one({"email": "admin@portal.gov.br"})
+        
+        if not admin_user:
+            # Create default admin user
+            from auth_models import UserCreate, UserInDB
+            
+            admin_data = UserCreate(
+                email="admin@portal.gov.br",
+                username="Administrador",
+                role="admin",
+                password="admin123",  # Change this in production!
+                is_active=True
+            )
+            
+            # Hash password and create user
+            password_hash = hash_password(admin_data.password)
+            admin_obj = UserInDB(
+                **admin_data.dict(exclude={"password"}),
+                password_hash=password_hash
+            )
+            
+            # Prepare for MongoDB and insert
+            admin_mongo_data = prepare_user_for_mongo(admin_obj.dict())
+            await db.users.insert_one(admin_mongo_data)
+            
+            logger.info("Default admin user created: admin@portal.gov.br / admin123")
+        else:
+            logger.info("Admin user already exists")
+            
+    except Exception as e:
+        logger.error(f"Error creating admin user: {e}")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
