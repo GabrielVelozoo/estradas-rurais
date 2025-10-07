@@ -428,7 +428,7 @@ export default function EstradasRurais() {
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                {apensPrioridades ? '🚨 Mostrando Prioridades' : '🚨 Ver Prioridades'}
+                {apensPrioridades ? 'Mostrando Prioridades' : 'Ver Prioridades'}
               </button>
               <button 
                 onClick={imprimirRegistros} 
