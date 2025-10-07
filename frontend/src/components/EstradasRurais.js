@@ -373,7 +373,7 @@ export default function EstradasRurais() {
         <tr class="${registro.isPrioridade ? 'prioridade' : ''}">
           <td>
             ${registro.municipio}
-            ${registro.isPrioridade ? '<br><span class="prioridade-badge">🚨 PRIORIDADE</span>' : ''}
+            ${registro.isPrioridade ? '<br><span class="prioridade-badge">PRIORIDADE</span>' : ''}
           </td>
           <td>${registro.protocolo || '-'}</td>
           <td>${registro.prefeito || '-'}</td>
