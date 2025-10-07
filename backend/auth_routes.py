@@ -43,7 +43,7 @@ async def login(
     if not verify_password(login_data.password, user_in_db.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid email or password"
+            detail="Invalid username or password"
         )
     
     # Check if user is active
