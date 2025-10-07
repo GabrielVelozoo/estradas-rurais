@@ -132,6 +132,10 @@ export default function EstradasRurais() {
           }
           // Se não conseguir extrair, deixar vazio
           
+          // Verificar se é prioridade
+          const isPrioridade = (nomeEstrada && nomeEstrada.toUpperCase().includes("PRIORIDADE")) ||
+                              (descricaoCompleta && descricaoCompleta.toUpperCase().includes("PRIORIDADE"));
+          
           return {
             municipio: municipio || "Não informado",
             protocolo: protocolo,
@@ -141,6 +145,7 @@ export default function EstradasRurais() {
             nomeEstrada: nomeEstrada,
             valor: formatCurrency(valor),
             _valorNum: parseCurrencyToNumber(valor),
+            isPrioridade: isPrioridade,
           };
         });
       setDados(rows);
