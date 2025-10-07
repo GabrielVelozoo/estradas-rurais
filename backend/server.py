@@ -109,7 +109,6 @@ async def startup_event():
             from auth_models import UserCreate, UserInDB
             
             admin_data = UserCreate(
-                email="gabrielvelozoanjos@gmail.com",
                 username="gabriel",
                 role="admin",
                 password="gggr181330",
