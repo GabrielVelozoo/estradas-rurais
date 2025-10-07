@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Depends
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -8,7 +8,13 @@ from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
+
+# Import auth modules
+from auth_routes import router as auth_router
+from auth_middleware import get_current_active_user
+from auth_models import User
+from auth_utils import hash_password, prepare_user_for_mongo
 
 
 ROOT_DIR = Path(__file__).parent
