@@ -36,7 +36,7 @@ const Login = () => {
               </div>
               <div>
                 <h1 className="text-lg font-bold">Sistema Institucional</h1>
-                <p className="text-blue-200 text-sm">Portal de Consultas</p>
+                <p className="text-blue-200 text-sm">Informações Gabinete</p>
               </div>
             </div>
             <div className="text-right">
