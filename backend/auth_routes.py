@@ -27,12 +27,12 @@ async def login(
 ):
     """Login endpoint - authenticates user and sets secure cookie"""
     
-    # Find user by email
-    user_data = await db.users.find_one({"email": login_data.email})
+    # Find user by username
+    user_data = await db.users.find_one({"username": login_data.username})
     if not user_data:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid email or password"
+            detail="Invalid username or password"
         )
     
     # Parse user data
