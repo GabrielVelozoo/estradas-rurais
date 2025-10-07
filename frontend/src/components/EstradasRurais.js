@@ -339,7 +339,7 @@ export default function EstradasRurais() {
             • Total de registros: ${filtrados.length}<br>
             • Valor total: ${formatNumber(sumFilteredValues)}<br>
             • Data/Hora: ${dataAtual} às ${horaAtual}<br>
-            ${apensPrioridades ? '• <span class="prioridade-badge">🚨 Apenas PRIORIDADES</span>' : ''}
+            ${apensPrioridades ? '• <span class="prioridade-badge">Apenas PRIORIDADES</span>' : ''}
           </div>`;
 
     if (busca || buscaEstrada || minValor || maxValor || apensPrioridades) {
