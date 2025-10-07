@@ -29,11 +29,11 @@ async def get_current_user(
     
     # Verify token
     token_data: TokenData = verify_token(token)
-    if token_data is None or token_data.username is None:
+    if token_data is None or token_data.user_id is None:
         raise credentials_exception
     
     # Get user from database
-    user_data = await db.users.find_one({"username": token_data.username})
+    user_data = await db.users.find_one({"id": token_data.user_id})
     if user_data is None:
         raise credentials_exception
     
