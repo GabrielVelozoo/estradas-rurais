@@ -217,6 +217,9 @@ export default function EstradasRurais() {
                                   (d.descricao && d.descricao.toLowerCase().includes(lowerBuscaEstrada));
         if (!buscaEstradaMatch) return false;
       }
+      // Filtro por prioridades
+      if (apensPrioridades && !d.isPrioridade) return false;
+      
       const minN = parseFloat(String(minValor).replace(/[^0-9.-]/g, ""));
       const maxN = parseFloat(String(maxValor).replace(/[^0-9.-]/g, ""));
       if (!isNaN(minN) && d._valorNum < minN) return false;
