@@ -131,6 +131,23 @@ const Navbar = () => {
                   <span>{item.label}</span>
                 </Link>
               ))}
+
+              {/* Mobile User Info */}
+              {user && (
+                <div className="border-t pt-4">
+                  <div className="px-3 py-2 text-sm text-gray-700">
+                    <div className="font-medium">{user.username || 'Usuário'}</div>
+                    <div className="text-gray-500">{user.email}</div>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center w-full px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
+                  >
+                    <span className="mr-2">🚪</span>
+                    <span>Sair</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
