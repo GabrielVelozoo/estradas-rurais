@@ -35,8 +35,8 @@ const Login = () => {
                 </svg>
               </div>
               <div>
-                <h1 className="text-lg font-bold">Prefeitura Municipal</h1>
-                <p className="text-blue-200 text-sm">Gabinete do Prefeito</p>
+                <h1 className="text-lg font-bold">Sistema Institucional</h1>
+                <p className="text-blue-200 text-sm">Portal de Consultas</p>
               </div>
             </div>
             <div className="text-right">
