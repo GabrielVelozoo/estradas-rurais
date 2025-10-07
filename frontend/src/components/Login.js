@@ -169,7 +169,7 @@ const Login = () => {
           <div className="mt-8 text-center">
             <div className="border-t border-gray-200 pt-6">
               <p className="text-xs text-gray-500 mb-2">
-                Sistema oficial da Prefeitura Municipal
+                Sistema oficial de consultas
               </p>
               <div className="flex items-center justify-center space-x-4 text-xs text-gray-400">
                 <span className="flex items-center">
