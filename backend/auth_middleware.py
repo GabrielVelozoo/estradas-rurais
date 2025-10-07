@@ -29,7 +29,7 @@ async def get_current_user(
     
     # Verify token
     token_data: TokenData = verify_token(token)
-    if token_data is None or token_data.user_id is None:
+    if token_data is None or token_data.username is None:
         raise credentials_exception
     
     # Get user from database
