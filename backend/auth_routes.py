@@ -181,7 +181,7 @@ async def update_user(
 async def delete_user(
     user_id: str,
     current_admin: User = Depends(get_current_admin_user),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Delete a user (admin only)"""
     
