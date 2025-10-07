@@ -4,14 +4,25 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, logout, isAdmin } = useAuth();
 
   const isActive = (path) => location.pathname === path;
 
-  const navItems = [
+  const baseNavItems = [
     { path: '/', label: 'Início', icon: '🏠' },
     { path: '/estradas-rurais', label: 'Estradas Rurais', icon: '🛣️' }
   ];
+
+  const navItems = isAdmin() 
+    ? [...baseNavItems, { path: '/admin', label: 'Admin', icon: '⚙️' }]
+    : baseNavItems;
+
+  const handleLogout = async () => {
+    await logout();
+    setIsUserMenuOpen(false);
+  };
 
   return (
     <nav className="bg-white shadow-lg border-b">
