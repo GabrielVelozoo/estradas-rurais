@@ -420,6 +420,22 @@ export default function EstradasRurais() {
                 🔄 Atualizar
               </button>
               <button 
+                onClick={() => setApenasPrioridades(!apensPrioridades)}
+                className={`px-4 py-2 rounded-lg shadow-lg transition-colors flex items-center gap-2 ${
+                  apensPrioridades 
+                    ? 'bg-red-600 text-white hover:bg-red-700' 
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {apensPrioridades ? '🚨 Mostrando Prioridades' : '🚨 Ver Prioridades'}
+              </button>
+              <button 
+                onClick={imprimirRegistros} 
+                className="px-4 py-2 rounded-lg bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+              >
+                🖨️ Imprimir
+              </button>
+              <button 
                 onClick={exportCSV} 
                 className="px-4 py-2 rounded-lg bg-green-600 text-white shadow-lg hover:bg-green-700 transition-colors flex items-center gap-2"
               >
