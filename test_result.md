@@ -179,6 +179,9 @@ backend:
         -working: true
         -agent: "main"
         -comment: "Rota protegida com get_current_active_user dependency"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ TESTED - Route protection working correctly: returns 401 without authentication, returns 200 with valid authentication. Security middleware functioning properly."
 
   - task: "Criar usuário admin padrão no startup"
     implemented: true
