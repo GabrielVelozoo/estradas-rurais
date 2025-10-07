@@ -33,7 +33,7 @@ async def get_current_user(
         raise credentials_exception
     
     # Get user from database
-    user_data = await db.users.find_one({"id": token_data.user_id})
+    user_data = await db.users.find_one({"username": token_data.username})
     if user_data is None:
         raise credentials_exception
     
