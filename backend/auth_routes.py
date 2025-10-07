@@ -24,7 +24,7 @@ async def get_db(request: Request):
 async def login(
     login_data: LoginRequest, 
     response: Response,
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Login endpoint - authenticates user and sets secure cookie"""
     
