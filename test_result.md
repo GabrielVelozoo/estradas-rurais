@@ -194,6 +194,9 @@ backend:
         -working: true
         -agent: "main"
         -comment: "Usuário admin criado automaticamente: admin@portal.gov.br / admin123"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ VERIFIED - Default admin user working perfectly: login successful with admin@portal.gov.br / admin123, admin role confirmed, all admin privileges functional."
 
   - task: "Configurar JWT_SECRET_KEY no .env"
     implemented: true
