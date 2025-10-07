@@ -31,15 +31,17 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <AuthProvider>
-          <Navbar />
           <Routes>
             {/* PONTO ÚNICO DE ENTRADA - Estradas Rurais */}
             <Route 
               path="/estradas-rurais" 
               element={
-                <ProtectedRoute>
-                  <EstradasRurais />
-                </ProtectedRoute>
+                <>
+                  <Navbar />
+                  <ProtectedRoute>
+                    <EstradasRurais />
+                  </ProtectedRoute>
+                </>
               } 
             />
             
@@ -47,16 +49,20 @@ function App() {
             <Route 
               path="/admin" 
               element={
-                <RedirectIfNotAuth>
-                  <ProtectedRoute adminOnly={true}>
-                    <AdminPanel />
-                  </ProtectedRoute>
-                </RedirectIfNotAuth>
+                <>
+                  <Navbar />
+                  <RedirectIfNotAuth>
+                    <ProtectedRoute adminOnly={true}>
+                      <AdminPanel />
+                    </ProtectedRoute>
+                  </RedirectIfNotAuth>
+                </>
               } 
             />
             
-            {/* TODAS as outras rotas (incluindo /) redirecionam para /estradas-rurais */}
+            {/* TODAS as outras rotas redirecionam para /estradas-rurais */}
             <Route path="/" element={<Navigate to="/estradas-rurais" replace />} />
+            <Route path="/home" element={<Navigate to="/estradas-rurais" replace />} />
             <Route path="*" element={<Navigate to="/estradas-rurais" replace />} />
           </Routes>
         </AuthProvider>
