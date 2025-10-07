@@ -42,7 +42,7 @@ class LoginResponse(BaseModel):
 
 class TokenData(BaseModel):
     user_id: Optional[str] = None
-    email: Optional[str] = None
+    username: Optional[str] = None
 
 class AuthContext(BaseModel):
     user: User
