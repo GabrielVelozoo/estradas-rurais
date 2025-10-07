@@ -108,9 +108,18 @@ export default function EstradasRurais() {
         setErro("Planilha retornou sem valores (data.values está vazio). Verifique permissões e intervalo A:F");
         return;
       }
-      const rows = data.values.slice(1)
+      // ✅ 2) Detectar automaticamente qual é a coluna de prioridade
+      const header = data.values[0].map(h => (h || '').toString().trim().toLowerCase());
+      let priIndex = header.findIndex(h => h.includes('priorid') || h.includes('priorit'));
+      if (priIndex === -1) priIndex = 6; // Fallback para coluna G
+      
+      console.log('HEADER:', header);
+      console.log('priIndex:', priIndex);
+
+      // ✅ 3) Monte as linhas corretamente
+      const allRows = data.values.slice(1)
         .filter((c) => {
-          // Incluir linha se tem protocolo ou descrição (mesmo sem município)
+          // Incluir linha se tem dados significativos
           const municipio = (c[0] || "").toString().trim();
           const protocolo = (c[1] || "").toString().trim();
           const descricao = (c[4] || "").toString().trim();
@@ -123,46 +132,64 @@ export default function EstradasRurais() {
             return false;
           }
           
-          // Incluir se tem dados significativos
-          return protocolo !== "" || descricao !== "" || valor !== "";
+          return municipio !== "" || protocolo !== "" || descricao !== "" || valor !== "";
         })
         .map((c) => {
-          // Ajustar mapeamento baseado na estrutura real dos dados
-          let municipio = (c[0] || "").toString().trim();
-          let protocolo = (c[1] || "").toString().trim();
-          let prefeito = (c[2] || "").toString().trim();
-          let descricaoCompleta = (c[3] || "").toString().trim();
-          let nomeEstrada = (c[4] || "").toString().trim();
-          let valor = (c[5] || "").toString().trim();
-          let prioridadeColuna = (c[6] || "").toString().trim(); // Coluna G
-          
-          // Extrair estado da descrição se necessário
-          let estado = "";
-          if (descricaoCompleta.includes("PARANÁ") || descricaoCompleta.includes("PR")) {
-            estado = "PR";
-          } else if (descricaoCompleta.includes("SÃO PAULO") || descricaoCompleta.includes("SP")) {
-            estado = "SP";
-          } else if (descricaoCompleta.includes("MINAS GERAIS") || descricaoCompleta.includes("MG")) {
-            estado = "MG";
-          }
-          
-          // Verificar se é prioridade na descrição (coluna de estrada)
-          const isPrioridade = (nomeEstrada && nomeEstrada.toUpperCase().includes("PRIORIDADE")) ||
-                              (descricaoCompleta && descricaoCompleta.toUpperCase().includes("PRIORIDADE"));
+          const municipio = (c[0] || "").toString().trim();
+          const protocolo = (c[1] || "").toString().trim();
+          const prefeito = (c[2] || "").toString().trim();
+          const estado = (c[3] || "").toString().trim();
+          const descricao = (c[4] || "").toString().trim();
+          const valor = (c[5] || "").toString().trim();
+          const prioridadeCell = (c[priIndex] || "").toString().trim().toLowerCase();
           
           return {
             municipio: municipio || "Não informado",
             protocolo: protocolo,
             prefeito: prefeito,
             estado: estado,
-            descricao: descricaoCompleta,
-            nomeEstrada: nomeEstrada,
+            descricao: descricao,
+            nomeEstrada: descricao, // Usando descrição como nome da estrada
             valor: formatCurrency(valor),
             _valorNum: parseCurrencyToNumber(valor),
-            prioridadeInfo: prioridadeColuna,
-            isPrioridade: isPrioridade,
+            prioridadeRaw: prioridadeCell,
+            prioridade: prioridadeCell.includes('priorid') || prioridadeCell.includes('priorit'),
+            isPrioridade: false // Será definido abaixo
           };
         });
+
+      console.log('rows com prioridade:', allRows.filter(r => r.prioridadeRaw));
+
+      // ✅ 4) Garantir que cada município tenha apenas 1 prioridade
+      const municipioTemPrioridade = {};
+      allRows.forEach(r => {
+        const key = r.municipio.toLowerCase();
+        if (!municipioTemPrioridade[key]) municipioTemPrioridade[key] = false;
+        if (r.prioridade) municipioTemPrioridade[key] = true;
+      });
+
+      const usado = new Set();
+      // Primeiro passo: marcar as que já têm "prioridade" explícita
+      allRows.forEach(r => {
+        const key = r.municipio.toLowerCase();
+        r.isPrioridade = false;
+        if (r.prioridade && !usado.has(key)) {
+          r.isPrioridade = true;
+          usado.add(key);
+        }
+      });
+
+      // Segundo passo: para municípios sem prioridade explícita, marcar a primeira entrada
+      allRows.forEach(r => {
+        const key = r.municipio.toLowerCase();
+        if (municipioTemPrioridade[key] && !usado.has(key) && r.municipio !== "Não informado") {
+          r.isPrioridade = true;
+          usado.add(key);
+        }
+      });
+
+      const rows = allRows;
+      console.log('total prioridades finais:', rows.filter(r => r.isPrioridade).length);
       setDados(rows);
     } catch (e) {
       console.error(e);
