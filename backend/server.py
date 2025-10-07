@@ -58,7 +58,7 @@ async def get_estradas_rurais():
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                "https://sheets.googleapis.com/v4/spreadsheets/1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490/values/A:F?key=AIzaSyBdd6E9Dz5W68XdhLCsLIlErt1ylwTt5Jk"
+                "https://sheets.googleapis.com/v4/spreadsheets/1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490/values/A:G?key=AIzaSyBdd6E9Dz5W68XdhLCsLIlErt1ylwTt5Jk"
             ) as response:
                 if response.status == 200:
                     data = await response.json()
