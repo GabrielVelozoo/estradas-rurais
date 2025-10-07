@@ -5,7 +5,7 @@ import EstradasRurais from "./components/EstradasRurais";
 import Navbar from "./components/Navbar";
 import AdminPanel from "./components/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 function App() {
   return (
