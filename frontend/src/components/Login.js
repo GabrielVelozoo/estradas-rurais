@@ -13,7 +13,7 @@ const Login = () => {
     setLoading(true);
     setError('');
 
-    const result = await login(email, password);
+    const result = await login(username, password);
     
     if (!result.success) {
       setError(result.message);
