@@ -20,43 +20,22 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white">
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center">
-            <div className="flex justify-center mb-8">
-              <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-2xl">
-                <svg className="w-12 h-12 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-6a1 1 0 00-1-1H9a1 1 0 00-1 1v6a1 1 0 01-1 1H4a1 1 0 110-2V4z" clipRule="evenodd" />
-                </svg>
-              </div>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              Portal de Consultas do Gabinete
-            </h1>
-            <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-8">
-              Sistema de informações resumidos da administração municipal
-            </p>
-            <div className="flex justify-center">
-              <div className="bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
-                <span className="text-blue-100 text-sm font-medium">
-                  🏛️ Gabinete do Prefeito • Sistema Oficial
-                </span>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-12">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex justify-center mb-6">
+            <img 
+              src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" 
+              alt="Emergent Logo"
+              className="w-20 h-20 rounded-full shadow-lg"
+            />
           </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-16">
-        {/* Seção de boas-vindas */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">
-            Bem-vindo ao Sistema Integrado
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Acesse informações consolidadas e relatórios executivos para apoiar a tomada de decisões no gabinete
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">
+            Portal de Consultas
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Sistema de informações resumidos
           </p>
         </div>
 
