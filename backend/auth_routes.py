@@ -143,7 +143,7 @@ async def update_user(
     user_id: str,
     update_data: UserUpdate,
     current_admin: User = Depends(get_current_admin_user),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Update a user (admin only)"""
     
