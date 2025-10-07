@@ -271,6 +271,7 @@ export default function EstradasRurais() {
     setBuscaEstrada("");
     setMinValor("");
     setMaxValor("");
+    setApenasPrioridades(false);
   };
 
   const toggleSort = (col) => {
