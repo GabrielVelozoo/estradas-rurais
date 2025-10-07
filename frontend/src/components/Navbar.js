@@ -11,7 +11,6 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   const baseNavItems = [
-    { path: '/', label: 'Início', icon: '🏠' },
     { path: '/estradas-rurais', label: 'Estradas Rurais', icon: '🛣️' }
   ];
 
