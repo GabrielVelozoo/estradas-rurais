@@ -62,7 +62,7 @@ async def get_status_checks():
     return [StatusCheck(**status_check) for status_check in status_checks]
 
 @api_router.get("/estradas-rurais")
-async def get_estradas_rurais():
+async def get_estradas_rurais(current_user: User = Depends(get_current_active_user)):
     import aiohttp
     try:
         async with aiohttp.ClientSession() as session:
