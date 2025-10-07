@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Response, Cookie, Request, status
 from fastapi.responses import JSONResponse
-from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import List
 from datetime import datetime, timezone, timedelta
 
