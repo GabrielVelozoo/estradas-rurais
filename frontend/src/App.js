@@ -7,7 +7,7 @@ import AdminPanel from "./components/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
-// Componente que redireciona para home se não estiver autenticado
+// Componente que redireciona para estradas-rurais se não estiver autenticado
 function RedirectIfNotAuth({ children }) {
   const { isAuthenticated, loading } = useAuth();
 
@@ -20,7 +20,7 @@ function RedirectIfNotAuth({ children }) {
   }
 
   if (!isAuthenticated()) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/estradas-rurais" replace />;
   }
 
   return children;
