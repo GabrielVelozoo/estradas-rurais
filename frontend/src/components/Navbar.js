@@ -71,7 +71,7 @@ const Navbar = () => {
                 >
                   <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
                     <span className="text-sm font-medium text-white">
-                      {user.email.charAt(0).toUpperCase()}
+                      {user.username.charAt(0).toUpperCase()}
                     </span>
                   </div>
                 </button>
