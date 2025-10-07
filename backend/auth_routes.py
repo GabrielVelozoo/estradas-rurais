@@ -88,7 +88,7 @@ async def get_current_user_info(current_user: User = Depends(get_current_user)):
 async def create_user(
     user_data: UserCreate,
     current_admin: User = Depends(get_current_admin_user),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Create a new user (admin only)"""
     
