@@ -300,6 +300,106 @@ export default function EstradasRurais() {
 
   const sumFilteredValues = useMemo(() => filtrados.reduce((acc, r) => acc + (r._valorNum || 0), 0), [filtrados]);
 
+  // Função para imprimir os registros atuais
+  const imprimirRegistros = () => {
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+    const horaAtual = new Date().toLocaleTimeString('pt-BR');
+    
+    let conteudoHTML = `
+      <html>
+        <head>
+          <title>Relatório de Estradas Rurais</title>
+          <meta charset="utf-8">
+          <style>
+            @page { margin: 2cm; size: A4; }
+            body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; }
+            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+            .header h1 { margin: 0; color: #333; font-size: 24px; }
+            .info { background: #f5f5f5; padding: 10px; margin: 20px 0; border-radius: 5px; }
+            .filtros { margin: 20px 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; font-weight: bold; }
+            .prioridade { background-color: #fee; }
+            .prioridade-badge { color: #d00; font-weight: bold; }
+            .valor { text-align: right; font-weight: bold; }
+            .footer { margin-top: 30px; text-align: center; font-size: 10px; color: #666; }
+            .break-word { word-wrap: break-word; max-width: 200px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>🛣️ Relatório de Estradas Rurais</h1>
+            <p>Portal Municipal de Investimentos</p>
+          </div>
+          
+          <div class="info">
+            <strong>📊 Resumo do Relatório:</strong><br>
+            • Total de registros: ${filtrados.length}<br>
+            • Valor total: ${formatNumber(sumFilteredValues)}<br>
+            • Data/Hora: ${dataAtual} às ${horaAtual}<br>
+            ${apensPrioridades ? '• <span class="prioridade-badge">🚨 Apenas PRIORIDADES</span>' : ''}
+          </div>`;
+
+    if (busca || buscaEstrada || minValor || maxValor || apensPrioridades) {
+      conteudoHTML += `
+        <div class="filtros">
+          <strong>🔍 Filtros Aplicados:</strong><br>
+          ${busca ? `• Município: "${busca}"<br>` : ''}
+          ${buscaEstrada ? `• Nome da Estrada: "${buscaEstrada}"<br>` : ''}
+          ${minValor ? `• Valor Mínimo: R$ ${minValor}<br>` : ''}
+          ${maxValor ? `• Valor Máximo: R$ ${maxValor}<br>` : ''}
+          ${apensPrioridades ? '• Mostrando apenas PRIORIDADES<br>' : ''}
+        </div>`;
+    }
+
+    conteudoHTML += `
+          <table>
+            <thead>
+              <tr>
+                <th>Município</th>
+                <th>Protocolo</th>
+                <th>Prefeito</th>
+                <th>Nome da Estrada</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>`;
+
+    filtrados.forEach((registro) => {
+      conteudoHTML += `
+        <tr class="${registro.isPrioridade ? 'prioridade' : ''}">
+          <td>
+            ${registro.municipio}
+            ${registro.isPrioridade ? '<br><span class="prioridade-badge">🚨 PRIORIDADE</span>' : ''}
+          </td>
+          <td>${registro.protocolo || '-'}</td>
+          <td>${registro.prefeito || '-'}</td>
+          <td class="break-word">${registro.nomeEstrada || '-'}</td>
+          <td class="break-word">${registro.descricao || '-'}</td>
+          <td class="valor">${registro.valor}</td>
+        </tr>`;
+    });
+
+    conteudoHTML += `
+            </tbody>
+          </table>
+          
+          <div class="footer">
+            <p>Relatório gerado pelo Portal Municipal - Sistema de Estradas Rurais</p>
+            <p>Total de ${filtrados.length} registro(s) | Valor Total: ${formatNumber(sumFilteredValues)}</p>
+          </div>
+        </body>
+      </html>`;
+
+    const janelaImpressao = window.open('', '_blank');
+    janelaImpressao.document.write(conteudoHTML);
+    janelaImpressao.document.close();
+    janelaImpressao.focus();
+    janelaImpressao.print();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
