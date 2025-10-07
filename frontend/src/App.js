@@ -7,17 +7,19 @@ import AdminPanel from "./components/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
-// Componente que força redirecionamento
+// Componente que força redirecionamento imediato
 function ForceRedirect() {
-  const navigate = useNavigate();
-  
   useEffect(() => {
-    navigate('/estradas-rurais', { replace: true });
-  }, [navigate]);
+    // Redirecionamento imediato via window.location
+    window.location.replace('/estradas-rurais');
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p>Redirecionando...</p>
+      </div>
     </div>
   );
 }
