@@ -28,6 +28,9 @@ db = client[os.environ['DB_NAME']]
 # Create the main app without a prefix
 app = FastAPI()
 
+# Store database in app state for dependency injection
+app.state.db = db
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
