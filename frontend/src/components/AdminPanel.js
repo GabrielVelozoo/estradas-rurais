@@ -195,19 +195,10 @@ const AdminPanel = () => {
               <div className="mt-6 border-t border-gray-200 pt-6">
                 <form onSubmit={handleCreateUser} className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
-                    <input
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
-                  </div>
-                  <div>
                     <label className="block text-sm font-medium text-gray-700">Nome de usuário</label>
                     <input
                       type="text"
+                      required
                       value={formData.username}
                       onChange={(e) => setFormData({...formData, username: e.target.value})}
                       className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
