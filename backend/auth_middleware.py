@@ -11,7 +11,7 @@ security = HTTPBearer(auto_error=False)
 async def get_current_user(
     request: Request,
     token: Optional[str] = Cookie(None, alias="access_token"),
-    db: AsyncIOMotorDatabase = None
+    db = None
 ) -> User:
     """Get the current authenticated user from cookie token"""
     
