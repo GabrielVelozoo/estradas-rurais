@@ -124,7 +124,7 @@ async def create_user(
 @router.get("/admin/users", response_model=List[UserResponse])
 async def list_users(
     current_admin: User = Depends(get_current_admin_user),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """List all users (admin only)"""
     
