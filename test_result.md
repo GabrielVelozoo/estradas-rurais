@@ -237,6 +237,9 @@ frontend:
         -working: true
         -agent: "main"
         -comment: "ProtectedRoute criado com suporte a adminOnly, loading states, e redirect para login"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ TESTED - ProtectedRoute working perfectly: blocks unauthenticated access (redirects to login), allows authenticated access to protected routes, adminOnly restriction working (shows 'Acesso Negado' for non-admin users), proper loading states."
 
   - task: "Criar tela de login estilo Portal de Consultas"
     implemented: true
