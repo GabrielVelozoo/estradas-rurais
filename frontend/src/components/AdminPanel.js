@@ -65,7 +65,6 @@ const AdminPanel = () => {
         setSuccess('Usuário criado com sucesso');
         setShowCreateForm(false);
         setFormData({
-          email: '',
           username: '',
           password: '',
           role: 'user',
