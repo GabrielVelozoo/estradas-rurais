@@ -36,6 +36,16 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+
+            {/* Página de Pedidos de Maquinários */}
+            <Route 
+              path="/pedidos-maquinarios" 
+              element={
+                <ProtectedRoute>
+                  <PedidosMaquinarios />
+                </ProtectedRoute>
+              } 
+            />
             
             {/* Painel Admin */}
             <Route 
