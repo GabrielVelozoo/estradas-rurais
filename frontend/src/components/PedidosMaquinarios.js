@@ -78,12 +78,18 @@ const PedidosMaquinarios = () => {
   const [busca, setBusca] = useState('');
   const [buscaGlobal, setBuscaGlobal] = useState('');
   
-  // Estados para UI
+  // Estados para UI melhorada do seletor
   const [showDropdown, setShowDropdown] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const [novoEquipamento, setNovoEquipamento] = useState('');
   const [quantidade, setQuantidade] = useState(1);
   const [observacoes, setObservacoes] = useState('');
   const [editandoPedido, setEditandoPedido] = useState(null);
+
+  // Refs para controle do dropdown
+  const dropdownRef = useRef(null);
+  const inputRef = useRef(null);
+  const liderancaRef = useRef(null);
 
   // Calcular valor total geral (todos os municípios)
   const valorTotalGeral = Object.values(municipios).reduce((total, municipio) => {
