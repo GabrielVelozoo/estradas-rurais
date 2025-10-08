@@ -256,19 +256,34 @@ const PedidosMaquinarios = () => {
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         
-        {/* Header com Valor Total */}
-        <div className="bg-gradient-to-r from-emerald-600 to-green-700 rounded-xl shadow-xl p-6 mb-8 text-white">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        {/* Header com Estatísticas Gerais */}
+        <div className="bg-gradient-to-r from-slate-700 to-gray-800 rounded-xl shadow-xl p-6 mb-8 text-white">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-3">
                 🚜 Pedidos de Maquinários
               </h1>
-              <p className="text-emerald-100 mt-2 text-lg">Sistema de Gestão de Equipamentos Municipais</p>
+              <p className="text-gray-200 mt-2 text-lg">Sistema de Gestão de Equipamentos por Município</p>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
-              <div className="text-sm text-emerald-100 mb-1">Valor Total dos Pedidos</div>
-              <div className="text-2xl md:text-3xl font-bold">{formatCurrency(valorTotal)}</div>
-              <div className="text-xs text-emerald-100 mt-1">{pedidos.length} equipamento(s)</div>
+            
+            {/* Estatísticas em Grade */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+                <div className="text-2xl font-bold">{municipiosComPedidos}</div>
+                <div className="text-xs text-gray-200">Municípios</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+                <div className="text-2xl font-bold">{totalPedidos}</div>
+                <div className="text-xs text-gray-200">Pedidos</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+                <div className="text-2xl font-bold">{totalEquipamentos}</div>
+                <div className="text-xs text-gray-200">Equipamentos</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 md:col-span-1 col-span-2">
+                <div className="text-lg md:text-xl font-bold">{formatCurrency(valorTotalGeral)}</div>
+                <div className="text-xs text-gray-200">Valor Total Geral</div>
+              </div>
             </div>
           </div>
         </div>
