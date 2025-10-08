@@ -407,48 +407,136 @@ const PedidosMaquinarios = () => {
           </h2>
           
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Seletor de Município */}
-            <div className="relative">
+            {/* Seletor de Município Melhorado */}
+            <div className="relative" ref={dropdownRef}>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Selecionar Município *
               </label>
               <div className="relative">
                 <input
+                  ref={inputRef}
                   type="text"
                   value={municipioAtual || busca}
                   onChange={(e) => {
                     setBusca(e.target.value);
-                    setShowDropdown(true);
+                    if (!showDropdown) setShowDropdown(true);
+                    setFocusedIndex(-1);
                     if (!e.target.value) {
                       setMunicipioAtual('');
                       setLiderancaAtual('');
                     }
                   }}
-                  onFocus={() => setShowDropdown(true)}
-                  placeholder="Digite ou selecione um município..."
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  onFocus={() => {
+                    setShowDropdown(true);
+                    setFocusedIndex(-1);
+                  }}
+                  onBlur={(e) => {
+                    // Não fechar imediatamente se estiver clicando na lista
+                    const relatedTarget = e.relatedTarget;
+                    if (!dropdownRef.current?.contains(relatedTarget)) {
+                      setTimeout(() => closeDropdown(), 150);
+                    }
+                  }}
+                  placeholder={municipioAtual ? municipioAtual : "Clique para selecionar um município..."}
+                  className="w-full p-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+                  role="combobox"
+                  aria-expanded={showDropdown}
+                  aria-haspopup="listbox"
+                  aria-controls="municipios-listbox"
+                  aria-activedescendant={focusedIndex >= 0 ? `municipio-${focusedIndex}` : undefined}
+                  autoComplete="off"
                 />
                 
-                {showDropdown && municipiosFiltrados.length > 0 && !municipioAtual && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                    {municipiosFiltrados.slice(0, 10).map((municipio) => (
-                      <div
-                        key={municipio}
-                        onClick={() => selecionarMunicipio(municipio)}
-                        className="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
-                      >
-                        {municipio}
-                        {municipios[municipio] && (
-                          <span className="ml-2 text-xs text-blue-600">
-                            (já possui {municipios[municipio].pedidos.length} pedido(s))
-                          </span>
-                        )}
+                {/* Ícone de dropdown */}
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg 
+                    className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+                
+                {/* Dropdown List */}
+                {showDropdown && (
+                  <div 
+                    id="municipios-listbox"
+                    role="listbox"
+                    className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+                  >
+                    {municipiosFiltrados.length > 0 ? (
+                      <>
+                        {/* Header com contador */}
+                        <div className="sticky top-0 bg-gray-50 border-b border-gray-200 px-3 py-2 text-sm text-gray-600 font-medium">
+                          {municipiosFiltrados.length} de {MUNICIPIOS_PR.length} municípios
+                          {busca && ` • Busca: "${busca}"`}
+                        </div>
+                        
+                        {/* Lista de municípios */}
+                        {municipiosFiltrados.map((municipio, index) => {
+                          const isSelected = municipio === municipioAtual;
+                          const isFocused = index === focusedIndex;
+                          
+                          return (
+                            <div
+                              key={municipio}
+                              id={`municipio-${index}`}
+                              role="option"
+                              aria-selected={isSelected}
+                              onClick={() => selecionarMunicipio(municipio)}
+                              onMouseEnter={() => setFocusedIndex(index)}
+                              className={`
+                                relative px-3 py-3 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors
+                                ${isFocused ? 'bg-blue-100 text-blue-900' : 'hover:bg-blue-50'}
+                                ${isSelected ? 'bg-blue-500 text-white font-medium' : 'text-gray-900'}
+                              `}
+                            >
+                              <div className="flex justify-between items-center">
+                                <span>{municipio}</span>
+                                {municipios[municipio] && (
+                                  <span className={`text-xs ${isSelected ? 'text-blue-100' : 'text-blue-600'}`}>
+                                    {municipios[municipio].pedidos.length} pedido(s)
+                                  </span>
+                                )}
+                              </div>
+                              
+                              {isSelected && (
+                                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </>
+                    ) : (
+                      <div className="px-3 py-4 text-center text-gray-500">
+                        <svg className="w-8 h-8 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <p className="text-sm">Nenhum município encontrado para "{busca}"</p>
+                        <p className="text-xs text-gray-400 mt-1">Tente outro termo de busca</p>
                       </div>
-                    ))}
+                    )}
                   </div>
                 )}
               </div>
-              <p className="text-xs text-gray-500 mt-1">{MUNICIPIOS_PR.length} municípios disponíveis</p>
+              
+              {/* Contador e dicas */}
+              <div className="flex justify-between items-center mt-2">
+                <p className="text-xs text-gray-500">
+                  {MUNICIPIOS_PR.length} municípios disponíveis do Paraná
+                </p>
+                {showDropdown && (
+                  <p className="text-xs text-gray-400">
+                    Use ↑↓ para navegar, Enter para selecionar, Esc para fechar
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Campo Liderança */}
