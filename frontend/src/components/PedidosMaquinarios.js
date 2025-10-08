@@ -108,34 +108,90 @@ const PedidosMaquinarios = () => {
     municipio.toLowerCase().includes(busca.toLowerCase())
   );
 
-  // Adicionar pedido
+  // Selecionar município
+  const selecionarMunicipio = (municipio) => {
+    setMunicipioAtual(municipio);
+    setShowDropdown(false);
+    setBusca('');
+    
+    // Carregar dados do município se já existe
+    if (municipios[municipio]) {
+      setLiderancaAtual(municipios[municipio].lideranca);
+    } else {
+      setLiderancaAtual('');
+    }
+  };
+
+  // Salvar informações do município atual
+  const salvarMunicipio = () => {
+    if (municipioAtual && liderancaAtual) {
+      setMunicipios(prev => ({
+        ...prev,
+        [municipioAtual]: {
+          lideranca: liderancaAtual,
+          pedidos: prev[municipioAtual]?.pedidos || []
+        }
+      }));
+    }
+  };
+
+  // Adicionar pedido ao município atual
   const adicionarPedido = () => {
-    if (novoEquipamento && quantidade > 0) {
+    if (municipioAtual && liderancaAtual && novoEquipamento && quantidade > 0) {
       const novoPedido = {
         id: Date.now(),
         equipamento: novoEquipamento,
         quantidade: parseInt(quantidade),
         observacoes: observacoes || ''
       };
-      setPedidos([...pedidos, novoPedido]);
+
+      setMunicipios(prev => ({
+        ...prev,
+        [municipioAtual]: {
+          lideranca: liderancaAtual,
+          pedidos: [...(prev[municipioAtual]?.pedidos || []), novoPedido]
+        }
+      }));
+
       setNovoEquipamento('');
       setQuantidade(1);
       setObservacoes('');
     }
   };
 
-  // Remover pedido
-  const removerPedido = (id) => {
-    setPedidos(pedidos.filter(pedido => pedido.id !== id));
+  // Remover pedido de um município
+  const removerPedido = (municipio, pedidoId) => {
+    setMunicipios(prev => ({
+      ...prev,
+      [municipio]: {
+        ...prev[municipio],
+        pedidos: prev[municipio].pedidos.filter(pedido => pedido.id !== pedidoId)
+      }
+    }));
   };
 
-  // Editar quantidade
-  const editarQuantidade = (id, novaQuantidade) => {
+  // Editar quantidade de um pedido
+  const editarQuantidade = (municipio, pedidoId, novaQuantidade) => {
     if (novaQuantidade > 0) {
-      setPedidos(pedidos.map(pedido => 
-        pedido.id === id ? { ...pedido, quantidade: parseInt(novaQuantidade) } : pedido
-      ));
+      setMunicipios(prev => ({
+        ...prev,
+        [municipio]: {
+          ...prev[municipio],
+          pedidos: prev[municipio].pedidos.map(pedido => 
+            pedido.id === pedidoId ? { ...pedido, quantidade: parseInt(novaQuantidade) } : pedido
+          )
+        }
+      }));
     }
+  };
+
+  // Calcular subtotal de um município
+  const calcularSubtotalMunicipio = (municipio) => {
+    if (!municipios[municipio]) return 0;
+    return municipios[municipio].pedidos.reduce((subtotal, pedido) => {
+      const equipamento = EQUIPAMENTOS.find(eq => eq.nome === pedido.equipamento);
+      return subtotal + (equipamento ? equipamento.valor * pedido.quantidade : 0);
+    }, 0);
   };
 
   // Formatação de moeda
