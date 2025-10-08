@@ -37,14 +37,10 @@ function App() {
               } 
             />
 
-            {/* Página de Pedidos de Maquinários */}
+            {/* Página de Pedidos de Maquinários - Temporariamente sem proteção para demonstração */}
             <Route 
               path="/pedidos-maquinarios" 
-              element={
-                <ProtectedRoute>
-                  <PedidosMaquinarios />
-                </ProtectedRoute>
-              } 
+              element={<PedidosMaquinarios />} 
             />
             
             {/* Painel Admin */}
