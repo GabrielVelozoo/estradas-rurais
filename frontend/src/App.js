@@ -49,40 +49,35 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <AuthProvider>
+          <Navbar />
           <Routes>
-            {/* ÚNICA ROTA VÁLIDA - Estradas Rurais */}
+            {/* Página inicial - Home com cartões */}
+            <Route 
+              path="/" 
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* Dashboard de Estradas Rurais */}
             <Route 
               path="/estradas-rurais" 
               element={
-                <>
-                  <Navbar />
-                  <ProtectedRoute>
-                    <EstradasRurais />
-                  </ProtectedRoute>
-                </>
+                <ProtectedRoute>
+                  <EstradasRurais />
+                </ProtectedRoute>
               } 
             />
             
-            {/* Admin route - acessível após login */}
+            {/* Painel Admin */}
             <Route 
               path="/admin" 
               element={
-                <>
-                  <Navbar />
-                  <RedirectIfNotAuth>
-                    <ProtectedRoute adminOnly={true}>
-                      <AdminPanel />
-                    </ProtectedRoute>
-                  </RedirectIfNotAuth>
-                </>
-              } 
-            />
-            
-            {/* QUALQUER OUTRA ROTA - redireciona imediatamente */}
-            <Route 
-              path="*" 
-              element={
-                <ForceRedirect />
+                <ProtectedRoute adminOnly={true}>
+                  <AdminPanel />
+                </ProtectedRoute>
               } 
             />
           </Routes>
