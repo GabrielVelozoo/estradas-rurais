@@ -288,14 +288,17 @@ const PedidosMaquinarios = () => {
     };
   }, [showDropdown, handleClickOutside, focusedIndex, municipiosFiltrados]);
 
-  // Auto-salvar dados no localStorage
+  // Carregar dados quando o componente montar
   useEffect(() => {
-    try {
-      localStorage.setItem('pedidos-maquinarios', JSON.stringify(municipios));
-    } catch (error) {
-      console.error('Erro ao salvar dados:', error);
+    carregarPedidos();
+  }, []);
+
+  // Auto-salvar dados no backend e localStorage
+  useEffect(() => {
+    if (dadosCarregados && Object.keys(municipios).length >= 0) {
+      salvarPedidos(municipios);
     }
-  }, [municipios]);
+  }, [municipios, dadosCarregados]);
 
   // Salvar informações do município atual
   const salvarMunicipio = () => {
