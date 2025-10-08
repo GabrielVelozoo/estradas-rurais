@@ -109,10 +109,21 @@ const PedidosMaquinarios = () => {
   const municipiosComPedidos = Object.keys(municipios).filter(municipio => 
     municipios[municipio].pedidos.length > 0).length;
 
-  // Filtrar municípios
-  const municipiosFiltrados = MUNICIPIOS_PR.filter(municipio =>
-    municipio.toLowerCase().includes(busca.toLowerCase())
-  );
+  // Função para normalizar texto (remover acentos)
+  const normalize = (str) => {
+    return str.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
+  };
+
+  // Função para verificar se um item contém a busca (acento-insensível)
+  const matches = (item, query) => {
+    if (!query) return true;
+    return normalize(item).includes(normalize(query));
+  };
+
+  // Filtrar municípios com busca acento-insensível
+  const municipiosFiltrados = MUNICIPIOS_PR
+    .filter(municipio => matches(municipio, busca))
+    .sort((a, b) => normalize(a).localeCompare(normalize(b)));
 
   // Selecionar município
   const selecionarMunicipio = (municipio) => {
