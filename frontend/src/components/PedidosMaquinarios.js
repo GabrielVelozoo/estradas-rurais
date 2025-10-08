@@ -578,36 +578,81 @@ const PedidosMaquinarios = () => {
           )}
         </section>
 
-        {/* Estatísticas resumidas */}
-        {pedidos.length > 0 && (
-          <section className="bg-white rounded-xl shadow-lg p-6">
+        {/* Estatísticas Detalhadas por Equipamento */}
+        {totalPedidos > 0 && (
+          <section className="bg-white rounded-xl shadow-lg p-6 mt-8">
             <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-              📊 Resumo dos Pedidos
+              📊 Estatísticas por Tipo de Equipamento
             </h2>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-emerald-50 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-emerald-600">{pedidos.length}</div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+              <div className="bg-blue-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-blue-600">{municipiosComPedidos}</div>
+                <div className="text-sm text-gray-600">Municípios Ativos</div>
+              </div>
+              
+              <div className="bg-green-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-green-600">{totalPedidos}</div>
                 <div className="text-sm text-gray-600">Total de Pedidos</div>
               </div>
               
-              <div className="bg-blue-50 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-blue-600">
-                  {pedidos.reduce((sum, p) => sum + p.quantidade, 0)}
-                </div>
-                <div className="text-sm text-gray-600">Equipamentos</div>
+              <div className="bg-purple-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-purple-600">{totalEquipamentos}</div>
+                <div className="text-sm text-gray-600">Total de Equipamentos</div>
               </div>
               
-              <div className="bg-purple-50 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-purple-600">
-                  {new Set(pedidos.map(p => p.equipamento)).size}
+              <div className="bg-yellow-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-yellow-600">
+                  {Object.values(municipios).reduce((tipos, municipio) => {
+                    municipio.pedidos.forEach(pedido => tipos.add(pedido.equipamento));
+                    return tipos;
+                  }, new Set()).size}
                 </div>
                 <div className="text-sm text-gray-600">Tipos Diferentes</div>
               </div>
               
-              <div className="bg-orange-50 rounded-lg p-4 text-center">
-                <div className="text-lg font-bold text-orange-600">{formatCurrency(valorTotal)}</div>
-                <div className="text-sm text-gray-600">Valor Total</div>
+              <div className="bg-red-50 rounded-lg p-4 text-center">
+                <div className="text-lg font-bold text-red-600">{formatCurrency(valorTotalGeral)}</div>
+                <div className="text-sm text-gray-600">Valor Total Geral</div>
+              </div>
+            </div>
+
+            {/* Gráfico de Equipamentos mais Solicitados */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h3 className="font-semibold text-gray-800 mb-4">🚜 Equipamentos Mais Solicitados</h3>
+              <div className="space-y-2">
+                {EQUIPAMENTOS.map(equipamento => {
+                  const quantidade = Object.values(municipios).reduce((total, municipio) => {
+                    return total + municipio.pedidos
+                      .filter(pedido => pedido.equipamento === equipamento.nome)
+                      .reduce((sum, pedido) => sum + pedido.quantidade, 0);
+                  }, 0);
+                  
+                  const percentual = totalEquipamentos > 0 ? (quantidade / totalEquipamentos) * 100 : 0;
+                  
+                  if (quantidade > 0) {
+                    return (
+                      <div key={equipamento.nome} className="flex items-center gap-3">
+                        <div className="w-40 text-sm font-medium text-gray-700 truncate">
+                          {equipamento.nome}
+                        </div>
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${Math.max(percentual, 5)}%` }}
+                          ></div>
+                        </div>
+                        <div className="w-16 text-right text-sm font-medium text-gray-600">
+                          {quantidade} un.
+                        </div>
+                        <div className="w-20 text-right text-sm text-gray-500">
+                          {percentual.toFixed(1)}%
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
               </div>
             </div>
           </section>
