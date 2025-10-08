@@ -130,6 +130,7 @@ const PedidosMaquinarios = () => {
     setMunicipioAtual(municipio);
     setShowDropdown(false);
     setBusca('');
+    setFocusedIndex(-1);
     
     // Carregar dados do município se já existe
     if (municipios[municipio]) {
@@ -137,7 +138,75 @@ const PedidosMaquinarios = () => {
     } else {
       setLiderancaAtual('');
     }
+
+    // Focar no próximo campo (Liderança)
+    setTimeout(() => {
+      if (liderancaRef.current) {
+        liderancaRef.current.focus();
+      }
+    }, 100);
   };
+
+  // Função para fechar o dropdown
+  const closeDropdown = () => {
+    setShowDropdown(false);
+    setFocusedIndex(-1);
+  };
+
+  // Click outside listener
+  const handleClickOutside = useCallback((event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      closeDropdown();
+    }
+  }, []);
+
+  // Keyboard navigation
+  const handleKeyDown = (e) => {
+    if (!showDropdown) return;
+
+    switch (e.key) {
+      case 'Escape':
+        e.preventDefault();
+        closeDropdown();
+        inputRef.current?.blur();
+        break;
+      
+      case 'ArrowDown':
+        e.preventDefault();
+        setFocusedIndex(prev => 
+          prev < municipiosFiltrados.length - 1 ? prev + 1 : prev
+        );
+        break;
+      
+      case 'ArrowUp':
+        e.preventDefault();
+        setFocusedIndex(prev => prev > 0 ? prev - 1 : -1);
+        break;
+      
+      case 'Enter':
+        e.preventDefault();
+        if (focusedIndex >= 0 && focusedIndex < municipiosFiltrados.length) {
+          selecionarMunicipio(municipiosFiltrados[focusedIndex]);
+        }
+        break;
+    }
+  };
+
+  // Effect para adicionar/remover event listeners
+  useEffect(() => {
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showDropdown, handleClickOutside, focusedIndex, municipiosFiltrados]);
 
   // Salvar informações do município atual
   const salvarMunicipio = () => {
