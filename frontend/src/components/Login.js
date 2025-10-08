@@ -18,7 +18,13 @@ const Login = () => {
 
     const result = await login(username, password);
     
-    if (!result.success) {
+    if (result.success) {
+      // Redirecionar para a página inicial após login bem-sucedido
+      // Se o usuário tentou acessar uma página protegida, redireciona de volta para lá
+      // Caso contrário, vai para a página inicial
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
+    } else {
       setError(result.message);
     }
     
