@@ -65,7 +65,7 @@ const Home = () => {
           {/* Card Pedidos de Maquinários */}
           <Link 
             to="/pedidos-maquinarios" 
-            className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg p-6 border-l-4 border-green-400 hover:shadow-xl transition-all duration-300 text-white group"
+            className="bg-gradient-to-br from-gray-600 to-slate-700 rounded-xl shadow-lg p-6 border-l-4 border-gray-500 hover:shadow-xl transition-all duration-300 text-white group"
           >
             <div className="text-center">
               <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
