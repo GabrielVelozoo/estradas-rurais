@@ -110,7 +110,27 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAuthenticated = () => {
-    return user !== null;
+    // Verificar tanto o estado quanto o localStorage
+    if (user !== null) {
+      return true;
+    }
+    
+    // Verificação adicional no localStorage para casos onde o estado pode estar desatualizado
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        if (userData && userData.username) {
+          // Atualizar o estado se encontrar usuário válido no localStorage
+          setUser(userData);
+          return true;
+        }
+      } catch (error) {
+        console.error('Erro ao verificar localStorage:', error);
+      }
+    }
+    
+    return false;
   };
 
   const value = {
