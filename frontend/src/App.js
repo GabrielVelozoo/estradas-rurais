@@ -47,6 +47,12 @@ function App() {
               } 
             />
             
+            {/* Página de Login */}
+            <Route 
+              path="/login" 
+              element={<Login />} 
+            />
+
             {/* Painel Admin */}
             <Route 
               path="/admin" 
