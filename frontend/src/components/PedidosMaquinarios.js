@@ -545,6 +545,7 @@ const PedidosMaquinarios = () => {
                 Liderança Responsável *
               </label>
               <input
+                ref={liderancaRef}
                 type="text"
                 value={liderancaAtual}
                 onChange={(e) => setLiderancaAtual(e.target.value)}
