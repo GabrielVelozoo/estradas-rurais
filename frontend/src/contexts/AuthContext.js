@@ -23,6 +23,14 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
+      // Temporary: Check localStorage first for development
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch(`${backendUrl}/api/auth/me`, {
         method: 'GET',
         credentials: 'include',
@@ -34,12 +42,20 @@ export const AuthProvider = ({ children }) => {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
       } else {
         setUser(null);
+        localStorage.removeItem('user');
       }
     } catch (error) {
       console.error('Auth check failed:', error);
-      setUser(null);
+      // Fallback to localStorage for development
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      } else {
+        setUser(null);
+      }
     } finally {
       setLoading(false);
     }
