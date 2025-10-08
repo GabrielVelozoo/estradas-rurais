@@ -5,6 +5,7 @@ import EstradasRurais from "./components/EstradasRurais";
 import PedidosMaquinarios from "./components/PedidosMaquinarios";
 import Navbar from "./components/Navbar";
 import AdminPanel from "./components/AdminPanel";
+import Login from "./components/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
