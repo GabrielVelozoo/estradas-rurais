@@ -79,7 +79,16 @@ const EQUIPAMENTOS = [
 
 const PedidosMaquinarios = () => {
   // Nova estrutura: organizados por município
-  const [municipios, setMunicipios] = useState({}); // { [municipio]: { lideranca, pedidos: [] } }
+  const [municipios, setMunicipios] = useState(() => {
+    // Tentar carregar dados salvos do localStorage
+    try {
+      const savedData = localStorage.getItem('pedidos-maquinarios');
+      return savedData ? JSON.parse(savedData) : {};
+    } catch (error) {
+      console.error('Erro ao carregar dados salvos:', error);
+      return {};
+    }
+  }); // { [municipio]: { lideranca, pedidos: [] } }
   const [municipioAtual, setMunicipioAtual] = useState('');
   const [liderancaAtual, setLiderancaAtual] = useState('');
   const [busca, setBusca] = useState('');
