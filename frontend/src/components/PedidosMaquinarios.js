@@ -224,6 +224,15 @@ const PedidosMaquinarios = () => {
     };
   }, [showDropdown, handleClickOutside, focusedIndex, municipiosFiltrados]);
 
+  // Auto-salvar dados no localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('pedidos-maquinarios', JSON.stringify(municipios));
+    } catch (error) {
+      console.error('Erro ao salvar dados:', error);
+    }
+  }, [municipios]);
+
   // Salvar informações do município atual
   const salvarMunicipio = () => {
     if (municipioAtual && liderancaAtual) {
