@@ -1,0 +1,427 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
+// Lista de municípios do Paraná (399 municípios)
+const MUNICIPIOS_PR = [
+  "Abatiá", "Adrianópolis", "Agudos do Sul", "Almirante Tamandaré", "Altamira do Paraná", "Altônia", "Alto Paraíso", "Alto Piquiri", 
+  "Amaporã", "Ampère", "Anahy", "Andirá", "Ângulo", "Antonina", "Antônio Olinto", "Apucarana", "Arapongas", "Arapoti", "Arapuã", 
+  "Araruna", "Araucária", "Ariranha do Ivaí", "Assaí", "Assis Chateaubriand", "Astorga", "Atalaia", "Balsa Nova", "Bandeirantes", 
+  "Barbosa Ferraz", "Barra do Jacaré", "Barracão", "Bela Vista da Caroba", "Bela Vista do Paraíso", "Bituruna", "Boa Esperança", 
+  "Boa Esperança do Iguaçu", "Boa Ventura de São Roque", "Boa Vista da Aparecida", "Bocaiúva do Sul", "Bom Jesus do Sul", 
+  "Bom Sucesso", "Bom Sucesso do Sul", "Borrazópolis", "Braganey", "Brasilândia do Sul", "Cafeara", "Cafelândia", "Cafezal do Sul", 
+  "Califórnia", "Cambará", "Cambé", "Cambira", "Campina da Lagoa", "Campina do Simão", "Campina Grande do Sul", "Campo Bonito", 
+  "Campo do Tenente", "Campo Largo", "Campo Magro", "Campo Mourão", "Cândido de Abreu", "Candói", "Cantagalo", "Capanema", 
+  "Capitão Leônidas Marques", "Carambeí", "Carlópolis", "Cascavel", "Castro", "Catanduvas", "Centenário do Sul", "Cerro Azul", 
+  "Céu Azul", "Chopinzinho", "Cianorte", "Cidade Gaúcha", "Clevelândia", "Colombo", "Colorado", "Congonhinhas", "Conselheiro Mairinck", 
+  "Contenda", "Corbélia", "Cornélio Procópio", "Coronel Domingos Soares", "Coronel Vivida", "Corumbataí do Sul", "Cruz Machado", 
+  "Cruzeiro do Iguaçu", "Cruzeiro do Oeste", "Cruzeiro do Sul", "Cruzmaltina", "Curitiba", "Curiúva", "Diamante do Norte", 
+  "Diamante do Sul", "Diamante D'Oeste", "Dois Vizinhos", "Douradina", "Doutor Camargo", "Enéas Marques", "Engenheiro Beltrão", 
+  "Esperança Nova", "Entre Rios do Oeste", "Espigão Alto do Iguaçu", "Farol", "Faxinal", "Fazenda Rio Grande", "Fênix", 
+  "Fernandes Pinheiro", "Figueira", "Floraí", "Flor da Serra do Sul", "Floresta", "Florestópolis", "Flórida", "Formosa do Oeste", 
+  "Foz do Iguaçu", "Foz do Jordão", "Francisco Alves", "Francisco Beltrão", "General Carneiro", "Godoy Moreira", "Goioerê", 
+  "Goioxim", "Grandes Rios", "Guaíra", "Guairaçá", "Guamiranga", "Guaraci", "Guaraniaçu", "Guarapuava", "Guaraqueçaba", 
+  "Guaratuba", "Honório Serpa", "Ibaiti", "Ibema", "Ibiporã", "Icém", "Iguaraçu", "Iguatu", "Imbaú", "Imbituva", "Inácio Martins", 
+  "Inajá", "Indianópolis", "Ipiranga", "Iporã", "Iracema do Oeste", "Irati", "Iretama", "Itaguajé", "Itaipulândia", "Itambaracá", 
+  "Itambé", "Itapejara d'Oeste", "Itaperuçu", "Itaúna do Sul", "Ivaí", "Ivaiporã", "Ivaté", "Ivatuba", "Jaboti", "Jacarezinho", 
+  "Jaguapitã", "Jaguariaíva", "Jandaia do Sul", "Janiópolis", "Japira", "Japurá", "Jardim Alegre", "Jardim Olinda", "Jataizinho", 
+  "Jesuítas", "Joaquim Távora", "Jundiaí do Sul", "Juranda", "Jussara", "Kaloré", "Lapa", "Laranjal", "Laranjeiras do Sul", 
+  "Leópolis", "Lidianópolis", "Lindoeste", "Loanda", "Lobato", "Londrina", "Luiziana", "Lunardelli", "Lupionópolis", "Mallet", 
+  "Mamborê", "Mandaguaçu", "Mandaguari", "Mandirituba", "Manfrinópolis", "Mangueirinha", "Manoel Ribas", "Marechal Cândido Rondon", 
+  "Maria Helena", "Marialva", "Marilândia do Sul", "Marilena", "Mariluz", "Maringá", "Mariópolis", "Maripá", "Marmeleiro", 
+  "Marquinho", "Marumbi", "Matelândia", "Matinhos", "Mato Rico", "Mauá da Serra", "Medianeira", "Mercedes", "Mirador", 
+  "Miraselva", "Missal", "Moreira Sales", "Morretes", "Munhoz de Melo", "Nossa Senhora das Graças", "Nova Aliança do Ivaí", 
+  "Nova América da Colina", "Nova Aurora", "Nova Cantu", "Nova Esperança", "Nova Esperança do Sudoeste", "Nova Fátima", 
+  "Nova Laranjeiras", "Nova Londrina", "Nova Olímpia", "Nova Prata do Iguaçu", "Nova Santa Bárbara", "Nova Santa Rosa", 
+  "Nova Tebas", "Novo Itacolomi", "Ortigueira", "Ourizona", "Ouro Verde do Oeste", "Paiçandu", "Palmas", "Palmeira", 
+  "Palmital", "Palotina", "Paraíso do Norte", "Paranacity", "Paranaguá", "Paranapoema", "Paranavaí", "Pato Bragado", 
+  "Pato Branco", "Paula Freitas", "Paulo Frontin", "Peabiru", "Perobal", "Pérola", "Pérola d'Oeste", "Piên", "Pinhais", 
+  "Pinhal de São Bento", "Pinhalão", "Pinhão", "Piraí do Sul", "Piraquara", "Pitanga", "Pitangueiras", "Planaltina do Paraná", 
+  "Planalto", "Ponta Grossa", "Pontal do Paraná", "Porecatu", "Porto Amazonas", "Porto Barreiro", "Porto Rico", "Porto Vitória", 
+  "Prado Ferreira", "Pranchita", "Presidente Castelo Branco", "Primeiro de Maio", "Prudentópolis", "Quarto Centenário", 
+  "Quatiguá", "Quatro Barras", "Quatro Pontes", "Quedas do Iguaçu", "Querência do Norte", "Quinta do Sol", "Quitandinha", 
+  "Ramilândia", "Rancho Alegre", "Rancho Alegre d'Oeste", "Realeza", "Rebouças", "Renascença", "Reserva", "Reserva do Iguaçu", 
+  "Ribeirão Claro", "Ribeirão do Pinhal", "Rio Azul", "Rio Bom", "Rio Bonito do Iguaçu", "Rio Branco do Ivaí", "Rio Branco do Sul", 
+  "Rio Negro", "Rolândia", "Roncador", "Rondon", "Rosário do Ivaí", "Sabáudia", "Salgado Filho", "Salto do Itararé", 
+  "Salto do Lontra", "Santa Amélia", "Santa Cecília do Pavão", "Santa Cruz de Monte Castelo", "Santa Fé", "Santa Helena", 
+  "Santa Inês", "Santa Isabel do Ivaí", "Santa Izabel do Oeste", "Santa Lúcia", "Santa Maria do Oeste", "Santa Mariana", 
+  "Santa Mônica", "Santa Tereza do Oeste", "Santa Terezinha de Itaipu", "Santana do Itararé", "Santo Antônio da Platina", 
+  "Santo Antônio do Caiuá", "Santo Antônio do Paraíso", "Santo Antônio do Sudoeste", "Santo Inácio", "São Carlos do Ivaí", 
+  "São Jerônimo da Serra", "São João", "São João do Caiuá", "São João do Ivaí", "São João do Triunfo", "São Jorge d'Oeste", 
+  "São Jorge do Ivaí", "São Jorge do Patrocínio", "São José da Boa Vista", "São José das Palmeiras", "São José dos Pinhais", 
+  "São Manoel do Paraná", "São Mateus do Sul", "São Miguel do Iguaçu", "São Pedro do Iguaçu", "São Pedro do Ivaí", 
+  "São Pedro do Paraná", "São Sebastião da Amoreira", "São Tomé", "Sapopema", "Sarandi", "Sengés", "Serranópolis do Iguaçu", 
+  "Sertaneja", "Sertanópolis", "Siqueira Campos", "Sulina", "Tamarana", "Tamboara", "Tapejara", "Tapira", "Teixeira Soares", 
+  "Telêmaco Borba", "Terra Boa", "Terra Rica", "Terra Roxa", "Tibagi", "Tijucas do Sul", "Toledo", "Tomazina", "Três Barras do Paraná", 
+  "Tunas do Paraná", "Tuneiras do Oeste", "Tupãssi", "Turvo", "Ubiratã", "Umuarama", "União da Vitória", "Uniflor", "Uraí", 
+  "Wenceslau Braz", "Xambrê"
+];
+
+// Lista de equipamentos com valores
+const EQUIPAMENTOS = [
+  { nome: "Trator de Esteiras", valor: 1222500.00 },
+  { nome: "Motoniveladora", valor: 1217352.22 },
+  { nome: "Caminhão Caçamba 6x4", valor: 905300.00 },
+  { nome: "Caminhão Prancha", valor: 900000.00 },
+  { nome: "Escavadeira", valor: 830665.00 },
+  { nome: "Pá Carregadeira", valor: 778250.00 },
+  { nome: "Rolocompactador", valor: 716180.91 },
+  { nome: "Retroescavadeira", valor: 484111.11 },
+  { nome: "Bob Cat", valor: 430000.00 },
+  { nome: "Trator 100–110CV", valor: 410000.00 }
+];
+
+const PedidosMaquinarios = () => {
+  // Estados principais
+  const [municipioSelecionado, setMunicipioSelecionado] = useState('');
+  const [lideranca, setLideranca] = useState('');
+  const [pedidos, setPedidos] = useState([]);
+  const [busca, setBusca] = useState('');
+  
+  // Estados para UI
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [novoEquipamento, setNovoEquipamento] = useState('');
+  const [quantidade, setQuantidade] = useState(1);
+  const [observacoes, setObservacoes] = useState('');
+
+  // Calcular valor total
+  const valorTotal = pedidos.reduce((total, pedido) => {
+    const equipamento = EQUIPAMENTOS.find(eq => eq.nome === pedido.equipamento);
+    return total + (equipamento ? equipamento.valor * pedido.quantidade : 0);
+  }, 0);
+
+  // Filtrar municípios
+  const municipiosFiltrados = MUNICIPIOS_PR.filter(municipio =>
+    municipio.toLowerCase().includes(busca.toLowerCase())
+  );
+
+  // Adicionar pedido
+  const adicionarPedido = () => {
+    if (novoEquipamento && quantidade > 0) {
+      const novoPedido = {
+        id: Date.now(),
+        equipamento: novoEquipamento,
+        quantidade: parseInt(quantidade),
+        observacoes: observacoes || ''
+      };
+      setPedidos([...pedidos, novoPedido]);
+      setNovoEquipamento('');
+      setQuantidade(1);
+      setObservacoes('');
+    }
+  };
+
+  // Remover pedido
+  const removerPedido = (id) => {
+    setPedidos(pedidos.filter(pedido => pedido.id !== id));
+  };
+
+  // Editar quantidade
+  const editarQuantidade = (id, novaQuantidade) => {
+    if (novaQuantidade > 0) {
+      setPedidos(pedidos.map(pedido => 
+        pedido.id === id ? { ...pedido, quantidade: parseInt(novaQuantidade) } : pedido
+      ));
+    }
+  };
+
+  // Formatação de moeda
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
+  };
+
+  // Exportar para CSV (simulação)
+  const exportarDados = () => {
+    const dados = {
+      municipio: municipioSelecionado,
+      lideranca: lideranca,
+      pedidos: pedidos,
+      valorTotal: valorTotal
+    };
+    
+    console.log('Dados para exportação:', dados);
+    alert(`Dados exportados!\nMunicípio: ${municipioSelecionado}\nLiderança: ${lideranca}\nTotal de pedidos: ${pedidos.length}\nValor total: ${formatCurrency(valorTotal)}`);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
+        
+        {/* Header com Valor Total */}
+        <div className="bg-gradient-to-r from-emerald-600 to-green-700 rounded-xl shadow-xl p-6 mb-8 text-white">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-3">
+                🚜 Pedidos de Maquinários
+              </h1>
+              <p className="text-emerald-100 mt-2 text-lg">Sistema de Gestão de Equipamentos Municipais</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
+              <div className="text-sm text-emerald-100 mb-1">Valor Total dos Pedidos</div>
+              <div className="text-2xl md:text-3xl font-bold">{formatCurrency(valorTotal)}</div>
+              <div className="text-xs text-emerald-100 mt-1">{pedidos.length} equipamento(s)</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Seleção de Município e Liderança */}
+        <section className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            🏙️ Informações Municipais
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Seletor de Município */}
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Município do Paraná *
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={municipioSelecionado}
+                  onChange={(e) => {
+                    setMunicipioSelecionado(e.target.value);
+                    setBusca(e.target.value);
+                    setShowDropdown(true);
+                  }}
+                  onFocus={() => setShowDropdown(true)}
+                  placeholder="Digite ou selecione um município..."
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+                
+                {showDropdown && municipiosFiltrados.length > 0 && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    {municipiosFiltrados.slice(0, 10).map((municipio) => (
+                      <div
+                        key={municipio}
+                        onClick={() => {
+                          setMunicipioSelecionado(municipio);
+                          setShowDropdown(false);
+                          setBusca('');
+                        }}
+                        className="p-3 hover:bg-emerald-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                      >
+                        {municipio}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">{MUNICIPIOS_PR.length} municípios disponíveis</p>
+            </div>
+
+            {/* Campo Liderança */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Liderança Responsável *
+              </label>
+              <input
+                type="text"
+                value={lideranca}
+                onChange={(e) => setLideranca(e.target.value)}
+                placeholder="Nome da liderança ou responsável..."
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              />
+            </div>
+          </div>
+
+          {/* Display das informações selecionadas */}
+          {(municipioSelecionado || lideranca) && (
+            <div className="mt-6 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+              <h3 className="font-semibold text-emerald-800 mb-2">📋 Resumo das Informações</h3>
+              <div className="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-gray-700">Município:</span>
+                  <span className="ml-2 text-emerald-700">{municipioSelecionado || 'Não selecionado'}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">Liderança:</span>
+                  <span className="ml-2 text-emerald-700">{lideranca || 'Não informado'}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Seção de Pedidos */}
+        <section className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+              📋 Lista de Pedidos
+            </h2>
+            {pedidos.length > 0 && (
+              <button
+                onClick={exportarDados}
+                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+              >
+                📄 Exportar
+              </button>
+            )}
+          </div>
+
+          {/* Formulário para adicionar pedido */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <h3 className="font-semibold text-gray-800 mb-4">➕ Adicionar Equipamento</h3>
+            
+            <div className="grid md:grid-cols-4 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Equipamento</label>
+                <select
+                  value={novoEquipamento}
+                  onChange={(e) => setNovoEquipamento(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                >
+                  <option value="">Selecione um equipamento...</option>
+                  {EQUIPAMENTOS.map((eq) => (
+                    <option key={eq.nome} value={eq.nome}>
+                      {eq.nome} - {formatCurrency(eq.valor)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={quantidade}
+                  onChange={(e) => setQuantidade(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+              
+              <div className="flex items-end">
+                <button
+                  onClick={adicionarPedido}
+                  disabled={!novoEquipamento}
+                  className="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Adicionar
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Observações (opcional)</label>
+              <textarea
+                value={observacoes}
+                onChange={(e) => setObservacoes(e.target.value)}
+                placeholder="Observações sobre este pedido..."
+                rows={2}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+          </div>
+
+          {/* Lista de pedidos */}
+          {pedidos.length > 0 ? (
+            <div className="space-y-4">
+              {pedidos.map((pedido, index) => {
+                const equipamento = EQUIPAMENTOS.find(eq => eq.nome === pedido.equipamento);
+                const valorItem = equipamento ? equipamento.valor * pedido.quantidade : 0;
+                
+                return (
+                  <div key={pedido.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="bg-emerald-100 text-emerald-800 text-xs font-medium px-2 py-1 rounded-full">
+                            #{index + 1}
+                          </span>
+                          <h4 className="font-semibold text-gray-800">{pedido.equipamento}</h4>
+                        </div>
+                        
+                        <div className="grid md:grid-cols-3 gap-4 text-sm text-gray-600">
+                          <div>
+                            <span className="font-medium">Quantidade:</span>
+                            <input
+                              type="number"
+                              min="1"
+                              value={pedido.quantidade}
+                              onChange={(e) => editarQuantidade(pedido.id, e.target.value)}
+                              className="ml-2 w-20 p-1 border border-gray-300 rounded text-center"
+                            />
+                          </div>
+                          <div>
+                            <span className="font-medium">Valor unitário:</span>
+                            <span className="ml-2 text-emerald-600">{formatCurrency(equipamento?.valor || 0)}</span>
+                          </div>
+                          <div>
+                            <span className="font-medium">Valor total:</span>
+                            <span className="ml-2 font-bold text-emerald-700">{formatCurrency(valorItem)}</span>
+                          </div>
+                        </div>
+                        
+                        {pedido.observacoes && (
+                          <div className="mt-2 text-sm text-gray-600">
+                            <span className="font-medium">Observações:</span>
+                            <span className="ml-2">{pedido.observacoes}</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <button
+                        onClick={() => removerPedido(pedido.id)}
+                        className="ml-4 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Remover pedido"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-gray-500">
+              <div className="text-6xl mb-4">📋</div>
+              <h3 className="text-lg font-medium mb-2">Nenhum pedido adicionado</h3>
+              <p>Selecione um equipamento acima para começar</p>
+            </div>
+          )}
+        </section>
+
+        {/* Estatísticas resumidas */}
+        {pedidos.length > 0 && (
+          <section className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              📊 Resumo dos Pedidos
+            </h2>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-emerald-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-emerald-600">{pedidos.length}</div>
+                <div className="text-sm text-gray-600">Total de Pedidos</div>
+              </div>
+              
+              <div className="bg-blue-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {pedidos.reduce((sum, p) => sum + p.quantidade, 0)}
+                </div>
+                <div className="text-sm text-gray-600">Equipamentos</div>
+              </div>
+              
+              <div className="bg-purple-50 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-purple-600">
+                  {new Set(pedidos.map(p => p.equipamento)).size}
+                </div>
+                <div className="text-sm text-gray-600">Tipos Diferentes</div>
+              </div>
+              
+              <div className="bg-orange-50 rounded-lg p-4 text-center">
+                <div className="text-lg font-bold text-orange-600">{formatCurrency(valorTotal)}</div>
+                <div className="text-sm text-gray-600">Valor Total</div>
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default PedidosMaquinarios;
