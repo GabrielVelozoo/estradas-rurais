@@ -63,7 +63,7 @@ async def login(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=True,
+        secure=False,  # Changed to False for development/preview environment
         samesite="lax",
         max_age=7 * 24 * 60 * 60  # 7 days in seconds
     )
