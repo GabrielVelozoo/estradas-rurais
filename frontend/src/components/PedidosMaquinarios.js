@@ -288,45 +288,75 @@ const PedidosMaquinarios = () => {
           </div>
         </div>
 
+        {/* Barra de Busca Global e Controles */}
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <div className="bg-white rounded-xl shadow-lg p-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              🔍 Busca Global (município, liderança ou equipamento)
+            </label>
+            <input
+              type="text"
+              value={buscaGlobal}
+              onChange={(e) => setBuscaGlobal(e.target.value)}
+              placeholder="Pesquisar em todos os registros..."
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          
+          <div className="bg-white rounded-xl shadow-lg p-4 flex items-end">
+            <button
+              onClick={exportarDados}
+              disabled={municipiosComPedidos === 0}
+              className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            >
+              📄 Exportar Relatório Completo
+            </button>
+          </div>
+        </div>
+
         {/* Seleção de Município e Liderança */}
         <section className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            🏙️ Informações Municipais
+            ➕ Adicionar Pedidos por Município
           </h2>
           
           <div className="grid md:grid-cols-2 gap-6">
             {/* Seletor de Município */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Município do Paraná *
+                Selecionar Município *
               </label>
               <div className="relative">
                 <input
                   type="text"
-                  value={municipioSelecionado}
+                  value={municipioAtual || busca}
                   onChange={(e) => {
-                    setMunicipioSelecionado(e.target.value);
                     setBusca(e.target.value);
                     setShowDropdown(true);
+                    if (!e.target.value) {
+                      setMunicipioAtual('');
+                      setLiderancaAtual('');
+                    }
                   }}
                   onFocus={() => setShowDropdown(true)}
                   placeholder="Digite ou selecione um município..."
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
                 
-                {showDropdown && municipiosFiltrados.length > 0 && (
+                {showDropdown && municipiosFiltrados.length > 0 && !municipioAtual && (
                   <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                     {municipiosFiltrados.slice(0, 10).map((municipio) => (
                       <div
                         key={municipio}
-                        onClick={() => {
-                          setMunicipioSelecionado(municipio);
-                          setShowDropdown(false);
-                          setBusca('');
-                        }}
-                        className="p-3 hover:bg-emerald-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                        onClick={() => selecionarMunicipio(municipio)}
+                        className="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
                       >
                         {municipio}
+                        {municipios[municipio] && (
+                          <span className="ml-2 text-xs text-blue-600">
+                            (já possui {municipios[municipio].pedidos.length} pedido(s))
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -342,27 +372,35 @@ const PedidosMaquinarios = () => {
               </label>
               <input
                 type="text"
-                value={lideranca}
-                onChange={(e) => setLideranca(e.target.value)}
+                value={liderancaAtual}
+                onChange={(e) => setLiderancaAtual(e.target.value)}
                 placeholder="Nome da liderança ou responsável..."
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                disabled={!municipioAtual}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50"
               />
             </div>
           </div>
 
-          {/* Display das informações selecionadas */}
-          {(municipioSelecionado || lideranca) && (
-            <div className="mt-6 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
-              <h3 className="font-semibold text-emerald-800 mb-2">📋 Resumo das Informações</h3>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
+          {/* Município Selecionado */}
+          {municipioAtual && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="flex justify-between items-center">
                 <div>
-                  <span className="font-medium text-gray-700">Município:</span>
-                  <span className="ml-2 text-emerald-700">{municipioSelecionado || 'Não selecionado'}</span>
+                  <h3 className="font-semibold text-blue-800 mb-1">📍 Município Selecionado</h3>
+                  <div className="text-sm text-blue-700">
+                    <span className="font-medium">{municipioAtual}</span>
+                    {liderancaAtual && <span className="ml-2">• {liderancaAtual}</span>}
+                  </div>
                 </div>
-                <div>
-                  <span className="font-medium text-gray-700">Liderança:</span>
-                  <span className="ml-2 text-emerald-700">{lideranca || 'Não informado'}</span>
-                </div>
+                <button
+                  onClick={() => {
+                    setMunicipioAtual('');
+                    setLiderancaAtual('');
+                  }}
+                  className="text-blue-600 hover:text-blue-800 text-sm"
+                >
+                  Limpar Seleção
+                </button>
               </div>
             </div>
           )}
