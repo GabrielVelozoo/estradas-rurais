@@ -5,13 +5,6 @@ const API_KEY = process.env.REACT_APP_SHEETS_API_KEY || "AIzaSyBdd6E9Dz5W68XdhLC
 
 // Componente para linha da tabela com descrição expansível
 const TabelaLinha = ({ r, i }) => {
-  const [expandedDescricao, setExpandedDescricao] = useState(false);
-
-  const toggleDescricao = () => {
-    setExpandedDescricao(!expandedDescricao);
-  };
-
-  const shouldTruncate = r.descricao && r.descricao.length > 150;
   
   return (
     <tr className={`transition-colors border-b border-gray-100 ${
