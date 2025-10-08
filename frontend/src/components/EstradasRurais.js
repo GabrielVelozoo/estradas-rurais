@@ -50,20 +50,10 @@ const TabelaLinha = ({ r, i }) => {
               🛣️ {r.nomeEstrada}
             </div>
           )}
-          {shouldTruncate ? (
-            <div>
-              <div className="text-gray-600 text-sm">
-                {expandedDescricao ? r.descricao : `${r.descricao.substring(0, 150)}...`}
-              </div>
-              <button
-                onClick={toggleDescricao}
-                className="text-blue-600 hover:text-blue-800 text-xs font-medium mt-1 inline-flex items-center gap-1"
-              >
-                {expandedDescricao ? "🔼 Menos" : "🔽 Mais"}
-              </button>
+          {r.estado && (
+            <div className="text-gray-600 text-sm">
+              📍 {r.estado}
             </div>
-          ) : (
-            <div className="text-gray-600 text-sm">{r.descricao}</div>
           )}
         </div>
       </td>
