@@ -71,23 +71,37 @@ const EQUIPAMENTOS = [
 ];
 
 const PedidosMaquinarios = () => {
-  // Estados principais
-  const [municipioSelecionado, setMunicipioSelecionado] = useState('');
-  const [lideranca, setLideranca] = useState('');
-  const [pedidos, setPedidos] = useState([]);
+  // Nova estrutura: organizados por município
+  const [municipios, setMunicipios] = useState({}); // { [municipio]: { lideranca, pedidos: [] } }
+  const [municipioAtual, setMunicipioAtual] = useState('');
+  const [liderancaAtual, setLiderancaAtual] = useState('');
   const [busca, setBusca] = useState('');
+  const [buscaGlobal, setBuscaGlobal] = useState('');
   
   // Estados para UI
   const [showDropdown, setShowDropdown] = useState(false);
   const [novoEquipamento, setNovoEquipamento] = useState('');
   const [quantidade, setQuantidade] = useState(1);
   const [observacoes, setObservacoes] = useState('');
+  const [editandoPedido, setEditandoPedido] = useState(null);
 
-  // Calcular valor total
-  const valorTotal = pedidos.reduce((total, pedido) => {
-    const equipamento = EQUIPAMENTOS.find(eq => eq.nome === pedido.equipamento);
-    return total + (equipamento ? equipamento.valor * pedido.quantidade : 0);
+  // Calcular valor total geral (todos os municípios)
+  const valorTotalGeral = Object.values(municipios).reduce((total, municipio) => {
+    return total + municipio.pedidos.reduce((subtotal, pedido) => {
+      const equipamento = EQUIPAMENTOS.find(eq => eq.nome === pedido.equipamento);
+      return subtotal + (equipamento ? equipamento.valor * pedido.quantidade : 0);
+    }, 0);
   }, 0);
+
+  // Calcular estatísticas gerais
+  const totalPedidos = Object.values(municipios).reduce((total, municipio) => 
+    total + municipio.pedidos.length, 0);
+  
+  const totalEquipamentos = Object.values(municipios).reduce((total, municipio) => 
+    total + municipio.pedidos.reduce((subtotal, pedido) => subtotal + pedido.quantidade, 0), 0);
+
+  const municipiosComPedidos = Object.keys(municipios).filter(municipio => 
+    municipios[municipio].pedidos.length > 0).length;
 
   // Filtrar municípios
   const municipiosFiltrados = MUNICIPIOS_PR.filter(municipio =>
