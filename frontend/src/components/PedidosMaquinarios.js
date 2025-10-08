@@ -79,16 +79,80 @@ const EQUIPAMENTOS = [
 
 const PedidosMaquinarios = () => {
   // Nova estrutura: organizados por município
-  const [municipios, setMunicipios] = useState(() => {
-    // Tentar carregar dados salvos do localStorage
+  const [municipios, setMunicipios] = useState({}); // { [municipio]: { lideranca, pedidos: [] } }
+  const [dadosCarregados, setDadosCarregados] = useState(false);
+  
+  // Carregar dados do backend
+  const carregarPedidos = async () => {
     try {
-      const savedData = localStorage.getItem('pedidos-maquinarios');
-      return savedData ? JSON.parse(savedData) : {};
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/api/pedidos/load`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const dados = await response.json();
+        setMunicipios(dados);
+        console.log('✅ Pedidos carregados do backend:', Object.keys(dados).length, 'municípios');
+      } else {
+        console.log('ℹ️ Nenhum pedido salvo encontrado no backend');
+        // Tentar carregar do localStorage como fallback
+        const savedData = localStorage.getItem('pedidos-maquinarios');
+        if (savedData) {
+          const dados = JSON.parse(savedData);
+          setMunicipios(dados);
+          console.log('🔄 Dados carregados do localStorage como fallback');
+        }
+      }
     } catch (error) {
-      console.error('Erro ao carregar dados salvos:', error);
-      return {};
+      console.error('Erro ao carregar pedidos do backend:', error);
+      // Fallback para localStorage
+      try {
+        const savedData = localStorage.getItem('pedidos-maquinarios');
+        if (savedData) {
+          const dados = JSON.parse(savedData);
+          setMunicipios(dados);
+          console.log('🔄 Dados carregados do localStorage (fallback)');
+        }
+      } catch (localError) {
+        console.error('Erro ao carregar dados do localStorage:', localError);
+      }
+    } finally {
+      setDadosCarregados(true);
     }
-  }); // { [municipio]: { lideranca, pedidos: [] } }
+  };
+
+  // Salvar dados no backend
+  const salvarPedidos = async (dadosParaSalvar) => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/api/pedidos/save`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dadosParaSalvar),
+      });
+
+      if (response.ok) {
+        console.log('✅ Pedidos salvos no backend com sucesso');
+        // Salvar também no localStorage como backup
+        localStorage.setItem('pedidos-maquinarios', JSON.stringify(dadosParaSalvar));
+      } else {
+        console.error('❌ Erro ao salvar no backend, usando localStorage');
+        localStorage.setItem('pedidos-maquinarios', JSON.stringify(dadosParaSalvar));
+      }
+    } catch (error) {
+      console.error('Erro ao salvar pedidos no backend:', error);
+      // Fallback para localStorage
+      localStorage.setItem('pedidos-maquinarios', JSON.stringify(dadosParaSalvar));
+    }
+  };
   const [municipioAtual, setMunicipioAtual] = useState('');
   const [liderancaAtual, setLiderancaAtual] = useState('');
   const [busca, setBusca] = useState('');
