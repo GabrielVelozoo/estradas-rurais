@@ -467,70 +467,113 @@ const PedidosMaquinarios = () => {
           </section>
         )}
 
-          {/* Lista de pedidos */}
-          {pedidos.length > 0 ? (
-            <div className="space-y-4">
-              {pedidos.map((pedido, index) => {
-                const equipamento = EQUIPAMENTOS.find(eq => eq.nome === pedido.equipamento);
-                const valorItem = equipamento ? equipamento.valor * pedido.quantidade : 0;
+        {/* Lista de Municípios com Pedidos */}
+        <section className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2 mb-6">
+            🏙️ Municípios com Pedidos Registrados
+          </h2>
+
+          {Object.keys(municipios).length > 0 ? (
+            <div className="space-y-6">
+              {(buscaGlobal ? municipiosFiltradosGlobal : Object.keys(municipios))
+                .filter(municipio => municipios[municipio].pedidos.length > 0)
+                .map((municipio) => {
+                const dadosMunicipio = municipios[municipio];
+                const subtotal = calcularSubtotalMunicipio(municipio);
                 
                 return (
-                  <div key={pedido.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="bg-emerald-100 text-emerald-800 text-xs font-medium px-2 py-1 rounded-full">
-                            #{index + 1}
-                          </span>
-                          <h4 className="font-semibold text-gray-800">{pedido.equipamento}</h4>
+                  <div key={municipio} className="bg-white rounded-xl shadow-lg border border-gray-200">
+                    {/* Cabeçalho do Município */}
+                    <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-t-xl">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h3 className="text-xl font-bold">{municipio}</h3>
+                          <p className="text-blue-100">Liderança: {dadosMunicipio.lideranca}</p>
                         </div>
-                        
-                        <div className="grid md:grid-cols-3 gap-4 text-sm text-gray-600">
-                          <div>
-                            <span className="font-medium">Quantidade:</span>
-                            <input
-                              type="number"
-                              min="1"
-                              value={pedido.quantidade}
-                              onChange={(e) => editarQuantidade(pedido.id, e.target.value)}
-                              className="ml-2 w-20 p-1 border border-gray-300 rounded text-center"
-                            />
-                          </div>
-                          <div>
-                            <span className="font-medium">Valor unitário:</span>
-                            <span className="ml-2 text-emerald-600">{formatCurrency(equipamento?.valor || 0)}</span>
-                          </div>
-                          <div>
-                            <span className="font-medium">Valor total:</span>
-                            <span className="ml-2 font-bold text-emerald-700">{formatCurrency(valorItem)}</span>
-                          </div>
+                        <div className="text-right">
+                          <div className="text-sm text-blue-100">Subtotal do Município</div>
+                          <div className="text-xl font-bold">{formatCurrency(subtotal)}</div>
+                          <div className="text-xs text-blue-100">{dadosMunicipio.pedidos.length} pedido(s)</div>
                         </div>
-                        
-                        {pedido.observacoes && (
-                          <div className="mt-2 text-sm text-gray-600">
-                            <span className="font-medium">Observações:</span>
-                            <span className="ml-2">{pedido.observacoes}</span>
-                          </div>
-                        )}
                       </div>
-                      
-                      <button
-                        onClick={() => removerPedido(pedido.id)}
-                        className="ml-4 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Remover pedido"
-                      >
-                        🗑️
-                      </button>
+                    </div>
+
+                    {/* Lista de Pedidos do Município */}
+                    <div className="p-4 space-y-3">
+                      {dadosMunicipio.pedidos.map((pedido, index) => {
+                        const equipamento = EQUIPAMENTOS.find(eq => eq.nome === pedido.equipamento);
+                        const valorItem = equipamento ? equipamento.valor * pedido.quantidade : 0;
+                        
+                        return (
+                          <div key={pedido.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-2">
+                                  <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full">
+                                    #{index + 1}
+                                  </span>
+                                  <h4 className="font-semibold text-gray-800">{pedido.equipamento}</h4>
+                                </div>
+                                
+                                <div className="grid md:grid-cols-3 gap-4 text-sm text-gray-600">
+                                  <div>
+                                    <span className="font-medium">Quantidade:</span>
+                                    <input
+                                      type="number"
+                                      min="1"
+                                      value={pedido.quantidade}
+                                      onChange={(e) => editarQuantidade(municipio, pedido.id, e.target.value)}
+                                      className="ml-2 w-20 p-1 border border-gray-300 rounded text-center focus:ring-2 focus:ring-blue-500"
+                                    />
+                                  </div>
+                                  <div>
+                                    <span className="font-medium">Valor unitário:</span>
+                                    <span className="ml-2 text-blue-600">{formatCurrency(equipamento?.valor || 0)}</span>
+                                  </div>
+                                  <div>
+                                    <span className="font-medium">Valor total:</span>
+                                    <span className="ml-2 font-bold text-blue-700">{formatCurrency(valorItem)}</span>
+                                  </div>
+                                </div>
+                                
+                                {pedido.observacoes && (
+                                  <div className="mt-2 text-sm text-gray-600">
+                                    <span className="font-medium">Observações:</span>
+                                    <span className="ml-2">{pedido.observacoes}</span>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              <button
+                                onClick={() => removerPedido(municipio, pedido.id)}
+                                className="ml-4 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Remover pedido"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <div className="text-center py-12 text-gray-500">
-              <div className="text-6xl mb-4">📋</div>
-              <h3 className="text-lg font-medium mb-2">Nenhum pedido adicionado</h3>
-              <p>Selecione um equipamento acima para começar</p>
+            <div className="text-center py-20 text-gray-500">
+              <div className="text-8xl mb-6">🏗️</div>
+              <h3 className="text-2xl font-bold mb-4">Nenhum município com pedidos ainda</h3>
+              <p className="text-lg mb-6">Selecione um município acima e comece a adicionar equipamentos</p>
+              <div className="max-w-md mx-auto text-left bg-gray-100 rounded-lg p-4">
+                <h4 className="font-semibold mb-2">Como usar:</h4>
+                <ol className="text-sm space-y-1 list-decimal list-inside">
+                  <li>Selecione um município do Paraná</li>
+                  <li>Informe a liderança responsável</li>
+                  <li>Adicione os equipamentos solicitados</li>
+                  <li>Repita para outros municípios</li>
+                </ol>
+              </div>
             </div>
           )}
         </section>
