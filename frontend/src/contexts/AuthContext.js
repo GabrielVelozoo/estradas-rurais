@@ -58,6 +58,8 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
+        // Temporary: Store user in localStorage for development
+        localStorage.setItem('user', JSON.stringify(data.user));
         setUser(data.user);
         return { success: true, message: data.message };
       } else {
