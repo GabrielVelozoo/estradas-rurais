@@ -202,18 +202,55 @@ const PedidosMaquinarios = () => {
     }).format(value);
   };
 
-  // Exportar para CSV (simulação)
+  // Exportar todos os dados
   const exportarDados = () => {
     const dados = {
-      municipio: municipioSelecionado,
-      lideranca: lideranca,
-      pedidos: pedidos,
-      valorTotal: valorTotal
+      municipios: municipios,
+      resumo: {
+        totalMunicipios: municipiosComPedidos,
+        totalPedidos: totalPedidos,
+        totalEquipamentos: totalEquipamentos,
+        valorTotalGeral: valorTotalGeral
+      },
+      geradoEm: new Date().toLocaleString('pt-BR')
     };
     
-    console.log('Dados para exportação:', dados);
-    alert(`Dados exportados!\nMunicípio: ${municipioSelecionado}\nLiderança: ${lideranca}\nTotal de pedidos: ${pedidos.length}\nValor total: ${formatCurrency(valorTotal)}`);
+    console.log('Dados completos para exportação:', dados);
+    
+    // Criar resumo para exibição
+    let resumoExportacao = `📊 RELATÓRIO DE PEDIDOS DE MAQUINÁRIOS\n\n`;
+    resumoExportacao += `🏙️ Municípios com pedidos: ${municipiosComPedidos}\n`;
+    resumoExportacao += `📋 Total de pedidos: ${totalPedidos}\n`;
+    resumoExportacao += `🚜 Total de equipamentos: ${totalEquipamentos}\n`;
+    resumoExportacao += `💰 Valor total geral: ${formatCurrency(valorTotalGeral)}\n\n`;
+    
+    Object.keys(municipios).forEach(municipio => {
+      if (municipios[municipio].pedidos.length > 0) {
+        resumoExportacao += `${municipio} - ${municipios[municipio].lideranca}\n`;
+        resumoExportacao += `Subtotal: ${formatCurrency(calcularSubtotalMunicipio(municipio))}\n\n`;
+      }
+    });
+    
+    alert(resumoExportacao);
   };
+
+  // Filtros de busca global
+  const municipiosFiltradosGlobal = Object.keys(municipios).filter(municipio => {
+    const busca = buscaGlobal.toLowerCase();
+    const municipioMatch = municipio.toLowerCase().includes(busca);
+    const liderancaMatch = municipios[municipio].lideranca.toLowerCase().includes(busca);
+    const equipamentoMatch = municipios[municipio].pedidos.some(pedido => 
+      pedido.equipamento.toLowerCase().includes(busca)
+    );
+    return municipioMatch || liderancaMatch || equipamentoMatch;
+  });
+
+  // Auto-salvar quando mudar município ou liderança
+  useEffect(() => {
+    if (municipioAtual && liderancaAtual) {
+      salvarMunicipio();
+    }
+  }, [liderancaAtual]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 p-4 md:p-6">
