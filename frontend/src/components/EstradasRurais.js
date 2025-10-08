@@ -45,7 +45,7 @@ const TabelaLinha = ({ r, i }) => {
           )}
           {r.estado && (
             <div className="text-gray-600 text-sm">
-              📍 {r.estado}
+              {r.estado}
             </div>
           )}
         </div>
