@@ -5,6 +5,7 @@ import Login from './Login';
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { isAuthenticated, isAdmin, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -15,7 +16,8 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
   }
 
   if (!isAuthenticated()) {
-    return <Login />;
+    // Redireciona para /login e preserva a localização atual para retornar após login
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (adminOnly && !isAdmin()) {
