@@ -62,23 +62,26 @@ const Home = () => {
             </div>
           </Link>
 
-          {/* Card Placeholder 1 */}
-          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 opacity-75">
+          {/* Card Pedidos de Maquinários */}
+          <Link 
+            to="/pedidos-maquinarios" 
+            className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg p-6 border-l-4 border-green-400 hover:shadow-xl transition-all duration-300 text-white group"
+          >
             <div className="text-center">
-              <div className="text-5xl mb-4 opacity-50">
-                🏛️
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                🚜
               </div>
-              <h2 className="text-2xl font-bold text-gray-500 mb-3">
-                Dados do Gov
+              <h2 className="text-2xl font-bold mb-3">
+                Pedidos de Maquinários
               </h2>
-              <p className="text-gray-400 mb-4">
-                Em breve: Sistema de acompanhamento em tempo real dos protocolos do gov, com maior velocidade e acertividade na busca
+              <p className="mb-4 opacity-90">
+                Sistema completo de gestão de pedidos de equipamentos por município
               </p>
-              <div className="text-gray-400">
-                Em desenvolvimento
+              <div className="inline-flex items-center px-4 py-2 bg-white/20 rounded-lg backdrop-blur-sm font-medium group-hover:bg-white/30 transition-colors">
+                Acessar Sistema →
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Card Relatórios */}
           <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 opacity-75">
@@ -98,17 +101,17 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Card Pedidos de Maquinários */}
+          {/* Card Dados do Gov */}
           <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 opacity-75">
             <div className="text-center">
               <div className="text-5xl mb-4 opacity-50">
-                🚜
+                🏛️
               </div>
               <h2 className="text-2xl font-bold text-gray-500 mb-3">
-                Pedidos de Maquinários
+                Dados do Gov
               </h2>
               <p className="text-gray-400 mb-4">
-                Em breve: Lista de maquinários pedidos por municípios e lideranças
+                Em breve: Sistema de acompanhamento em tempo real dos protocolos do gov
               </p>
               <div className="text-gray-400">
                 Em desenvolvimento
