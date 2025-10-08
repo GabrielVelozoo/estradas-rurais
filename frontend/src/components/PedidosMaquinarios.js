@@ -406,76 +406,66 @@ const PedidosMaquinarios = () => {
           )}
         </section>
 
-        {/* Seção de Pedidos */}
-        <section className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-              📋 Lista de Pedidos
+        {/* Formulário para Adicionar Equipamento */}
+        {municipioAtual && liderancaAtual && (
+          <section className="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              🚜 Adicionar Equipamento para {municipioAtual}
             </h2>
-            {pedidos.length > 0 && (
-              <button
-                onClick={exportarDados}
-                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
-              >
-                📄 Exportar
-              </button>
-            )}
-          </div>
-
-          {/* Formulário para adicionar pedido */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <h3 className="font-semibold text-gray-800 mb-4">➕ Adicionar Equipamento</h3>
             
-            <div className="grid md:grid-cols-4 gap-4">
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Equipamento</label>
-                <select
-                  value={novoEquipamento}
-                  onChange={(e) => setNovoEquipamento(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="">Selecione um equipamento...</option>
-                  {EQUIPAMENTOS.map((eq) => (
-                    <option key={eq.nome} value={eq.nome}>
-                      {eq.nome} - {formatCurrency(eq.valor)}
-                    </option>
-                  ))}
-                </select>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="grid md:grid-cols-4 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Equipamento</label>
+                  <select
+                    value={novoEquipamento}
+                    onChange={(e) => setNovoEquipamento(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Selecione um equipamento...</option>
+                    {EQUIPAMENTOS.map((eq) => (
+                      <option key={eq.nome} value={eq.nome}>
+                        {eq.nome} - {formatCurrency(eq.valor)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={quantidade}
+                    onChange={(e) => setQuantidade(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                
+                <div className="flex items-end">
+                  <button
+                    onClick={adicionarPedido}
+                    disabled={!novoEquipamento || !municipioAtual || !liderancaAtual}
+                    className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Adicionar
+                  </button>
+                </div>
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={quantidade}
-                  onChange={(e) => setQuantidade(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Observações (opcional)</label>
+                <textarea
+                  value={observacoes}
+                  onChange={(e) => setObservacoes(e.target.value)}
+                  placeholder="Observações sobre este pedido..."
+                  rows={2}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              
-              <div className="flex items-end">
-                <button
-                  onClick={adicionarPedido}
-                  disabled={!novoEquipamento}
-                  className="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Adicionar
-                </button>
-              </div>
             </div>
-
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Observações (opcional)</label>
-              <textarea
-                value={observacoes}
-                onChange={(e) => setObservacoes(e.target.value)}
-                placeholder="Observações sobre este pedido..."
-                rows={2}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-              />
-            </div>
-          </div>
+          </section>
+        )}
 
           {/* Lista de pedidos */}
           {pedidos.length > 0 ? (
