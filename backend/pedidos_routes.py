@@ -5,7 +5,8 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 import uuid
 from datetime import datetime, timezone
 
-from auth_middleware import get_current_user, get_db
+from auth_middleware import get_current_user
+from auth_routes import get_db
 from auth_models import UserResponse
 
 router = APIRouter()
