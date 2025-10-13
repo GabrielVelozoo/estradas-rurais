@@ -21,7 +21,7 @@ const TabelaLinha = ({ r, i }) => {
           bg: 'bg-blue-100',
           text: 'text-blue-800',
           border: 'border-blue-300', 
-          icon: '🏭',
+          icon: '🏙️',
           label: 'SECID'
         };
       default:
