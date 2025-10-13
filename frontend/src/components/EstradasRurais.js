@@ -590,6 +590,48 @@ export default function EstradasRurais() {
             🔍 Filtros de Busca
           </h2>
           
+          {/* Filtros por Secretaria - Destaque */}
+          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-gray-200">
+            <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+              🏢 Filtrar por Secretaria
+            </h3>
+            <div className="flex gap-3 flex-wrap">
+              <button 
+                onClick={() => setFiltroSecretaria("")}
+                className={`px-4 py-2 rounded-lg shadow transition-colors flex items-center gap-2 text-sm font-bold ${
+                  filtroSecretaria === ""
+                    ? 'bg-gray-600 text-white' 
+                    : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
+                }`}
+              >
+                📊 TODAS
+                {filtroSecretaria === "" && <span className="text-xs">✓</span>}
+              </button>
+              <button 
+                onClick={() => setFiltroSecretaria(filtroSecretaria === "SEAB" ? "" : "SEAB")}
+                className={`px-4 py-2 rounded-lg shadow transition-colors flex items-center gap-2 text-sm font-bold ${
+                  filtroSecretaria === "SEAB"
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-green-100 text-green-800 border border-green-300 hover:bg-green-200'
+                }`}
+              >
+                🌱 SEAB (Agricultura)
+                {filtroSecretaria === "SEAB" && <span className="text-xs">✓</span>}
+              </button>
+              <button 
+                onClick={() => setFiltroSecretaria(filtroSecretaria === "SECID" ? "" : "SECID")}
+                className={`px-4 py-2 rounded-lg shadow transition-colors flex items-center gap-2 text-sm font-bold ${
+                  filtroSecretaria === "SECID"
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-blue-100 text-blue-800 border border-blue-300 hover:bg-blue-200'
+                }`}
+              >
+                🏭 SECID (Indústria)
+                {filtroSecretaria === "SECID" && <span className="text-xs">✓</span>}
+              </button>
+            </div>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
