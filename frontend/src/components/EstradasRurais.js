@@ -694,12 +694,11 @@ export default function EstradasRurais() {
             <div className="overflow-x-auto">
               <table className="w-full table-auto">
                 <colgroup>
-                  <col style={{width: '180px'}} />  {/* Município */}
-                  <col style={{width: '100px'}} />  {/* Protocolo */}
-                  <col style={{width: '120px'}} />  {/* Prefeito */}
-                  <col style={{width: '100px'}} />  {/* Secretaria */}
-                  <col style={{minWidth: '300px'}} /> {/* Descrição */}
-                  <col style={{width: '120px'}} />  {/* Valor */}
+                  <col style={{width: '200px'}} />  {/* Município */}
+                  <col style={{width: '120px'}} />  {/* Protocolo */}
+                  <col style={{width: '140px'}} />  {/* Secretaria */}
+                  <col style={{minWidth: '350px'}} /> {/* Descrição */}
+                  <col style={{width: '140px'}} />  {/* Valor */}
                 </colgroup>
                 <thead className="bg-gradient-to-r from-blue-50 to-blue-100 sticky top-0">
                   <tr>
