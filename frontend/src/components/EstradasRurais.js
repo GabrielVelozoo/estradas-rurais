@@ -571,6 +571,16 @@ export default function EstradasRurais() {
               <div className="text-3xl">🏙️</div>
             </div>
           </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-lg border-l-4 border-purple-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Setores Únicos</p>
+                <p className="text-2xl font-bold text-purple-600">{new Set(dados.filter(d => d.setor && d.setor.trim()).map(d => d.setor.trim())).size}</p>
+              </div>
+              <div className="text-3xl">📋</div>
+            </div>
+          </div>
         </div>
 
         {/* Filtros */}
