@@ -487,6 +487,32 @@ export default function EstradasRurais() {
               >
                 {apensPrioridades ? 'Mostrando Prioridades' : 'Ver Prioridades'}
               </button>
+              
+              {/* Filtros por Secretaria */}
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setFiltroSecretaria(filtroSecretaria === "SEAB" ? "" : "SEAB")}
+                  className={`px-3 py-2 rounded-lg shadow-lg transition-colors flex items-center gap-2 text-sm font-bold ${
+                    filtroSecretaria === "SEAB"
+                      ? 'bg-green-600 text-white hover:bg-green-700' 
+                      : 'bg-green-100 text-green-800 border border-green-300 hover:bg-green-200'
+                  }`}
+                >
+                  🌱 SEAB
+                  {filtroSecretaria === "SEAB" && <span className="text-xs">✓</span>}
+                </button>
+                <button 
+                  onClick={() => setFiltroSecretaria(filtroSecretaria === "SECID" ? "" : "SECID")}
+                  className={`px-3 py-2 rounded-lg shadow-lg transition-colors flex items-center gap-2 text-sm font-bold ${
+                    filtroSecretaria === "SECID"
+                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                      : 'bg-blue-100 text-blue-800 border border-blue-300 hover:bg-blue-200'
+                  }`}
+                >
+                  🏭 SECID
+                  {filtroSecretaria === "SECID" && <span className="text-xs">✓</span>}
+                </button>
+              </div>
               <button 
                 onClick={imprimirRegistros} 
                 className="px-4 py-2 rounded-lg bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
