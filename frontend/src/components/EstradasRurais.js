@@ -703,7 +703,7 @@ export default function EstradasRurais() {
                 <thead className="bg-gradient-to-r from-blue-50 to-blue-100 sticky top-0">
                   <tr>
                     <th 
-                      className="px-3 py-3 text-left text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
+                      className="px-4 py-3 text-left text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
                       onClick={() => toggleSort("municipio")}
                     >
                       <div className="flex items-center gap-1">
@@ -713,14 +713,11 @@ export default function EstradasRurais() {
                         )}
                       </div>
                     </th>
-                    <th className="px-2 py-3 text-left text-xs font-bold text-gray-700">
+                    <th className="px-3 py-3 text-left text-xs font-bold text-gray-700">
                       📄 Protocolo
                     </th>
-                    <th className="px-2 py-3 text-left text-xs font-bold text-gray-700">
-                      👤 Prefeito
-                    </th>
                     <th 
-                      className="px-2 py-3 text-center text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
+                      className="px-3 py-3 text-center text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
                       onClick={() => toggleSort("secretaria")}
                     >
                       <div className="flex items-center justify-center gap-1">
@@ -730,11 +727,11 @@ export default function EstradasRurais() {
                         )}
                       </div>
                     </th>
-                    <th className="px-3 py-3 text-left text-xs font-bold text-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">
                       📝 Estrada & Descrição
                     </th>
                     <th 
-                      className="px-3 py-3 text-right text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
+                      className="px-4 py-3 text-right text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-200 transition-colors" 
                       onClick={() => toggleSort("valor")}
                     >
                       <div className="flex items-center justify-end gap-1">
