@@ -5,6 +5,37 @@ const API_KEY = process.env.REACT_APP_SHEETS_API_KEY || "AIzaSyBdd6E9Dz5W68XdhLC
 
 // Componente para linha da tabela com descrição expansível
 const TabelaLinha = ({ r, i }) => {
+  // Função para determinar a cor e ícone da secretaria
+  const getSecretariaStyle = (secretaria) => {
+    switch(secretaria) {
+      case 'SEAB':
+        return {
+          bg: 'bg-green-100',
+          text: 'text-green-800', 
+          border: 'border-green-300',
+          icon: '🌱',
+          label: 'SEAB'
+        };
+      case 'SECID':
+        return {
+          bg: 'bg-blue-100',
+          text: 'text-blue-800',
+          border: 'border-blue-300', 
+          icon: '🏭',
+          label: 'SECID'
+        };
+      default:
+        return {
+          bg: 'bg-gray-100',
+          text: 'text-gray-600',
+          border: 'border-gray-300',
+          icon: '❓',
+          label: secretaria || 'N/A'
+        };
+    }
+  };
+
+  const secretariaStyle = getSecretariaStyle(r.secretaria);
   
   return (
     <tr className={`transition-colors border-b border-gray-100 ${
@@ -12,7 +43,7 @@ const TabelaLinha = ({ r, i }) => {
         ? 'bg-red-50 hover:bg-red-100 border-l-4 border-l-red-500' 
         : 'hover:bg-blue-50'
     }`}>
-      <td className="px-4 py-3 align-top">
+      <td className="px-3 py-3 align-top">
         <div className="flex items-center gap-2">
           <div className="font-semibold text-gray-900 text-sm break-words">
             {r.municipio}
@@ -24,17 +55,25 @@ const TabelaLinha = ({ r, i }) => {
           )}
         </div>
       </td>
-      <td className="px-4 py-3 align-top">
+      <td className="px-2 py-3 align-top">
         <div className="text-gray-700 font-mono text-xs break-all">
           {r.protocolo}
         </div>
       </td>
-      <td className="px-4 py-3 align-top">
+      <td className="px-2 py-3 align-top">
         <div className="text-gray-700 text-sm break-words">
           {r.prefeito}
         </div>
       </td>
-      <td className="px-4 py-3 align-top">
+      <td className="px-2 py-3 align-top">
+        <div className="flex justify-center">
+          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold border ${secretariaStyle.bg} ${secretariaStyle.text} ${secretariaStyle.border}`}>
+            <span className="text-sm">{secretariaStyle.icon}</span>
+            {secretariaStyle.label}
+          </span>
+        </div>
+      </td>
+      <td className="px-3 py-3 align-top">
         <div className="space-y-2">
           {r.nomeEstrada && (
             <div className={`font-medium text-sm ${
@@ -50,7 +89,7 @@ const TabelaLinha = ({ r, i }) => {
           )}
         </div>
       </td>
-      <td className="px-4 py-3 text-right align-top">
+      <td className="px-3 py-3 text-right align-top">
         <div className={`font-bold text-sm whitespace-nowrap ${
           r.isPrioridade ? 'text-red-600' : 'text-green-600'
         }`}>
