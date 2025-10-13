@@ -600,7 +600,7 @@ export default function EstradasRurais() {
                     : 'bg-blue-100 text-blue-800 border border-blue-300 hover:bg-blue-200'
                 }`}
               >
-                🏭 SECID (Indústria)
+                🏙️ SECID (Cidades)
                 {filtroSecretaria === "SECID" && <span className="text-xs">✓</span>}
               </button>
             </div>
