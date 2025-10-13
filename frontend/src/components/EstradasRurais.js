@@ -156,24 +156,26 @@ export default function EstradasRurais() {
         .map((c) => {
           const municipio = (c[0] || "").toString().trim();
           const protocolo = (c[1] || "").toString().trim();
-          const secretaria = (c[2] || "").toString().trim().toUpperCase(); // Nova coluna SECRETARIA no lugar do prefeito
-          const estado = (c[3] || "").toString().trim();
-          const descricao = (c[4] || "").toString().trim();
-          const valor = (c[5] || "").toString().trim();
+          const secretaria = (c[2] || "").toString().trim().toUpperCase(); // SECRETARIA 
+          const setor = (c[3] || "").toString().trim(); // Nova coluna SETOR
+          const estado = (c[4] || "").toString().trim();
+          const descricao = (c[5] || "").toString().trim();
+          const valor = (c[6] || "").toString().trim(); // Valor agora na coluna 6
           const prioridadeCell = (c[priIndex] || "").toString().trim().toLowerCase();
           
           return {
             municipio: municipio || "Não informado",
             protocolo: protocolo,
-            secretaria: secretaria, // SECRETARIA substituiu prefeito
+            secretaria: secretaria,
+            setor: setor, // Nova coluna SETOR
             estado: estado,
             descricao: descricao,
-            nomeEstrada: descricao, // Usando descrição como nome da estrada
+            nomeEstrada: descricao,
             valor: formatCurrency(valor),
             _valorNum: parseCurrencyToNumber(valor),
             prioridadeRaw: prioridadeCell,
             prioridade: prioridadeCell.includes('priorid') || prioridadeCell.includes('priorit'),
-            isPrioridade: false // Será definido abaixo
+            isPrioridade: false
           };
         });
 
