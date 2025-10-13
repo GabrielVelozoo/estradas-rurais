@@ -761,7 +761,7 @@ export default function EstradasRurais() {
                       onClick={() => toggleSort("secretaria")}
                     >
                       <div className="flex items-center justify-center gap-1">
-                        🏢 Secretaria & Setor
+                        🏢 Secretaria
                         {sortBy === "secretaria" && (
                           <span className="text-blue-600">{sortDir === "asc" ? "▲" : "▼"}</span>
                         )}
