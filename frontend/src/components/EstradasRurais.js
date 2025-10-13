@@ -332,8 +332,8 @@ export default function EstradasRurais() {
   }, [filtrados, page, pageSize]);
 
   const exportCSV = () => {
-    const headers = ["Município", "Protocolo", "Secretaria", "Estado", "Descrição", "Valor"];
-    const rows = filtrados.map((r) => [r.municipio, r.protocolo, r.secretaria, r.estado, r.descricao, r.valor]);
+    const headers = ["Município", "Protocolo", "Secretaria", "Setor", "Estado", "Descrição", "Valor"];
+    const rows = filtrados.map((r) => [r.municipio, r.protocolo, r.secretaria, r.setor, r.estado, r.descricao, r.valor]);
     const csvContent = [headers, ...rows].map((e) => e.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
