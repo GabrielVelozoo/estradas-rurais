@@ -289,6 +289,9 @@ export default function EstradasRurais() {
       // Filtro por prioridades
       if (apensPrioridades && !d.isPrioridade) return false;
       
+      // Filtro por secretaria
+      if (filtroSecretaria && d.secretaria !== filtroSecretaria) return false;
+      
       const minN = parseFloat(String(minValor).replace(/[^0-9.-]/g, ""));
       const maxN = parseFloat(String(maxValor).replace(/[^0-9.-]/g, ""));
       if (!isNaN(minN) && d._valorNum < minN) return false;
