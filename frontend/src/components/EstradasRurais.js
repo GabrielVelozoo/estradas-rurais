@@ -125,6 +125,8 @@ export default function EstradasRurais() {
           const estado = (c[3] || "").toString().trim();
           const descricao = (c[4] || "").toString().trim();
           const valor = (c[5] || "").toString().trim();
+          // Nova coluna SECRETARIA (assumindo que está na coluna 6, índice 6)
+          const secretaria = (c[6] || "").toString().trim().toUpperCase();
           const prioridadeCell = (c[priIndex] || "").toString().trim().toLowerCase();
           
           return {
@@ -136,6 +138,7 @@ export default function EstradasRurais() {
             nomeEstrada: descricao, // Usando descrição como nome da estrada
             valor: formatCurrency(valor),
             _valorNum: parseCurrencyToNumber(valor),
+            secretaria: secretaria, // Nova coluna
             prioridadeRaw: prioridadeCell,
             prioridade: prioridadeCell.includes('priorid') || prioridadeCell.includes('priorit'),
             isPrioridade: false // Será definido abaixo
