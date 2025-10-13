@@ -61,19 +61,11 @@ const TabelaLinha = ({ r, i }) => {
         </div>
       </td>
       <td className="px-3 py-3 align-top">
-        <div className="flex flex-col items-center gap-2">
-          {/* Secretaria */}
+        <div className="flex justify-center">
           <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border ${secretariaStyle.bg} ${secretariaStyle.text} ${secretariaStyle.border}`}>
             <span className="text-sm">{secretariaStyle.icon}</span>
             {secretariaStyle.label}
           </span>
-          
-          {/* Setor (embaixo da secretaria) */}
-          {r.setor && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700 border border-gray-300">
-              📋 {r.setor}
-            </span>
-          )}
         </div>
       </td>
       <td className="px-4 py-3 align-top">
