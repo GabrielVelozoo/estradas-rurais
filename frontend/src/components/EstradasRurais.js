@@ -43,7 +43,7 @@ const TabelaLinha = ({ r, i }) => {
         ? 'bg-red-50 hover:bg-red-100 border-l-4 border-l-red-500' 
         : 'hover:bg-blue-50'
     }`}>
-      <td className="px-3 py-3 align-top">
+      <td className="px-4 py-3 align-top">
         <div className="flex items-center gap-2">
           <div className="font-semibold text-gray-900 text-sm break-words">
             {r.municipio}
@@ -55,25 +55,20 @@ const TabelaLinha = ({ r, i }) => {
           )}
         </div>
       </td>
-      <td className="px-2 py-3 align-top">
+      <td className="px-3 py-3 align-top">
         <div className="text-gray-700 font-mono text-xs break-all">
           {r.protocolo}
         </div>
       </td>
-      <td className="px-2 py-3 align-top">
-        <div className="text-gray-700 text-sm break-words">
-          {r.prefeito}
-        </div>
-      </td>
-      <td className="px-2 py-3 align-top">
+      <td className="px-3 py-3 align-top">
         <div className="flex justify-center">
-          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold border ${secretariaStyle.bg} ${secretariaStyle.text} ${secretariaStyle.border}`}>
+          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border ${secretariaStyle.bg} ${secretariaStyle.text} ${secretariaStyle.border}`}>
             <span className="text-sm">{secretariaStyle.icon}</span>
             {secretariaStyle.label}
           </span>
         </div>
       </td>
-      <td className="px-3 py-3 align-top">
+      <td className="px-4 py-3 align-top">
         <div className="space-y-2">
           {r.nomeEstrada && (
             <div className={`font-medium text-sm ${
@@ -89,7 +84,7 @@ const TabelaLinha = ({ r, i }) => {
           )}
         </div>
       </td>
-      <td className="px-3 py-3 text-right align-top">
+      <td className="px-4 py-3 text-right align-top">
         <div className={`font-bold text-sm whitespace-nowrap ${
           r.isPrioridade ? 'text-red-600' : 'text-green-600'
         }`}>
