@@ -621,6 +621,20 @@ export default function EstradasRurais() {
             </div>
           </div>
           
+          {/* Campo de busca por setor */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              📋 Filtrar por Setor
+            </label>
+            <input
+              type="text"
+              value={filtroSetor}
+              onChange={(e) => setFiltroSetor(e.target.value)}
+              placeholder="Digite o setor que deseja filtrar..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            />
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
