@@ -362,8 +362,7 @@ export default function EstradasRurais() {
   const clearFilters = () => {
     setBusca("");
     setBuscaEstrada("");
-    setMinValor("");
-    setMaxValor("");
+    setFiltroProtocolo("");
     setApenasPrioridades(false);
     setFiltroSecretaria("");
   };
