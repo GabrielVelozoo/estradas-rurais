@@ -74,7 +74,7 @@ const TabelaLinha = ({ r, i }) => {
         </div>
       </td>
       <td className="px-3 py-3 align-top">
-        <div className="font-mono text-xs break-all">
+        <div className="font-mono text-xs whitespace-nowrap">
           {linkEProtocolo ? (
             <a
               href={linkEProtocolo}
