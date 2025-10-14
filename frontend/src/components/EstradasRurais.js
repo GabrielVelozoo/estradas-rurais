@@ -314,10 +314,9 @@ export default function EstradasRurais() {
       // Filtro por secretaria
       if (filtroSecretaria && d.secretaria !== filtroSecretaria) return false;
       
-      const minN = parseFloat(String(minValor).replace(/[^0-9.-]/g, ""));
-      const maxN = parseFloat(String(maxValor).replace(/[^0-9.-]/g, ""));
-      if (!isNaN(minN) && d._valorNum < minN) return false;
-      if (!isNaN(maxN) && d._valorNum > maxN) return false;
+      // Filtro por protocolo
+      if (filtroProtocolo && d.protocolo && !d.protocolo.toLowerCase().includes(filtroProtocolo.toLowerCase())) return false;
+      
       return true;
     });
     out.sort((a, b) => {
