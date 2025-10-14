@@ -35,7 +35,25 @@ const TabelaLinha = ({ r, i }) => {
     }
   };
 
+  // Função para gerar link do eProtocolo
+  const gerarLinkEProtocolo = (protocolo) => {
+    if (!protocolo) return null;
+    
+    // Remover todos os caracteres não-numéricos
+    const protocoloLimpo = protocolo.replace(/\D/g, '');
+    
+    // Se não tem dígitos suficientes, não criar link
+    if (protocoloLimpo.length < 6) return null;
+    
+    // URL do eProtocolo
+    const baseUrl = "https://www.eprotocolo.pr.gov.br/spiweb/consultarProtocoloDigital.do";
+    const url = `${baseUrl}?action=pesquisar&numeroProtocolo=${protocoloLimpo}`;
+    
+    return url;
+  };
+
   const secretariaStyle = getSecretariaStyle(r.secretaria);
+  const linkEProtocolo = gerarLinkEProtocolo(r.protocolo);
   
   return (
     <tr className={`transition-colors border-b border-gray-100 ${
