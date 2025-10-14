@@ -165,6 +165,16 @@ export default function EstradasRurais() {
     return { valid: true, error: "" };
   };
 
+  const handleProtocoloChange = (e) => {
+    const inputValue = e.target.value;
+    const formatted = formatProtocolo(inputValue);
+    const validation = validateProtocolo(formatted);
+    
+    setFiltroProtocolo(formatted);
+    setProtocoloError(validation.error);
+    setPage(1); // Resetar página quando filtro muda
+  };
+
   // Estados principais
   const [dados, setDados] = useState([]);
   const [carregando, setCarregando] = useState(true);
