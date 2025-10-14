@@ -334,7 +334,7 @@ export default function EstradasRurais() {
       return 0;
     });
     return out;
-  }, [dados, busca, buscaEstrada, minValor, maxValor, apensPrioridades, filtroSecretaria, sortBy, sortDir]);
+  }, [dados, busca, buscaEstrada, filtroProtocolo, apensPrioridades, filtroSecretaria, sortBy, sortDir]);
 
   const total = filtrados.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
