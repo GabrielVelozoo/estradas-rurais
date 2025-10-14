@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Protocolos Clicáveis</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .protocol-link {
+            color: #2563eb;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .protocol-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>🔗 Teste: Protocolos Clicáveis para eProtocolo</h1>
+    
+    <p><strong>Exemplo de como os protocolos aparecerão na aplicação:</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Município</th>
+                <th>📄 Protocolo</th>
+                <th>🏢 Secretaria</th>
+                <th>💰 Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Curitiba</td>
+                <td>
+                    <a href="https://www.eprotocolo.pr.gov.br/spiweb/consultarProtocoloDigital.do?action=pesquisar&numeroProtocolo=241302056" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="protocol-link"
+                       title="Abrir protocolo 24.130.205-6 no eProtocolo">
+                        <span>🔗</span>24.130.205-6
+                    </a>
+                </td>
+                <td>🌱 SEAB</td>
+                <td>R$ 1.500.000,00</td>
+            </tr>
+            <tr>
+                <td>Londrina</td>
+                <td>
+                    <a href="https://www.eprotocolo.pr.gov.br/spiweb/consultarProtocoloDigital.do?action=pesquisar&numeroProtocolo=241234567" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="protocol-link"
+                       title="Abrir protocolo 24.123.456-7 no eProtocolo">
+                        <span>🔗</span>24.123.456-7
+                    </a>
+                </td>
+                <td>🏙️ SECID</td>
+                <td>R$ 2.800.000,00</td>
+            </tr>
+            <tr>
+                <td>Maringá</td>
+                <td>
+                    <a href="https://www.eprotocolo.pr.gov.br/spiweb/consultarProtocoloDigital.do?action=pesquisar&numeroProtocolo=241987654" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="protocol-link"
+                       title="Abrir protocolo 24.198.765-4 no eProtocolo">
+                        <span>🔗</span>24.198.765-4
+                    </a>
+                </td>
+                <td>🌱 SEAB</td>
+                <td>R$ 950.000,00</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>📋 Como Funciona:</h2>
+    <ul>
+        <li><strong>Protocolo original:</strong> "24.130.205-6"</li>
+        <li><strong>Número limpo:</strong> "241302056" (remove pontos e hífen)</li>
+        <li><strong>URL gerada:</strong> https://www.eprotocolo.pr.gov.br/spiweb/consultarProtocoloDigital.do?action=pesquisar&numeroProtocolo=241302056</li>
+        <li><strong>Comportamento:</strong> Abre em nova aba com segurança</li>
+        <li><strong>Visual:</strong> Ícone 🔗 + cor azul + hover effect</li>
+    </ul>
+    
+    <h2>✅ Implementado:</h2>
+    <ul>
+        <li>Remoção automática de caracteres não-numéricos</li>
+        <li>Links com target="_blank" e rel="noopener noreferrer"</li>
+        <li>Tooltip informativo</li>
+        <li>Styling visual apropriado</li>
+        <li>Ícone indicativo de link externo</li>
+    </ul>
+    
+    <p><em>Clique nos protocolos acima para testar!</em></p>
+    
+    <script>
+        // Log para demonstrar a lógica de limpeza do protocolo
+        function demonstrarLimpezaProtocolo() {
+            const exemplos = ["24.130.205-6", "24.123.456-7", "24.198.765-4"];
+            
+            console.log("=== DEMONSTRAÇÃO DE LIMPEZA DE PROTOCOLO ===");
+            
+            exemplos.forEach(protocolo => {
+                const protocoloLimpo = protocolo.replace(/\D/g, '');
+                const url = `https://www.eprotocolo.pr.gov.br/spiweb/consultarProtocoloDigital.do?action=pesquisar&numeroProtocolo=${protocoloLimpo}`;
+                
+                console.log(`Original: ${protocolo}`);
+                console.log(`Limpo: ${protocoloLimpo}`);
+                console.log(`URL: ${url}`);
+                console.log("---");
+            });
+        }
+        
+        demonstrarLimpezaProtocolo();
+    </script>
+</body>
+</html>
