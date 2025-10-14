@@ -74,8 +74,21 @@ const TabelaLinha = ({ r, i }) => {
         </div>
       </td>
       <td className="px-3 py-3 align-top">
-        <div className="text-gray-700 font-mono text-xs break-all">
-          {r.protocolo}
+        <div className="font-mono text-xs break-all">
+          {linkEProtocolo ? (
+            <a
+              href={linkEProtocolo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer flex items-center gap-1"
+              title={`Abrir protocolo ${r.protocolo} no eProtocolo`}
+            >
+              <span className="text-xs">🔗</span>
+              {r.protocolo}
+            </a>
+          ) : (
+            <span className="text-gray-700">{r.protocolo}</span>
+          )}
         </div>
       </td>
       <td className="px-3 py-3 align-top">
