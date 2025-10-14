@@ -403,6 +403,7 @@ export default function EstradasRurais() {
     setBusca("");
     setBuscaEstrada("");
     setFiltroProtocolo("");
+    setProtocoloError("");
     setApenasPrioridades(false);
     setFiltroSecretaria("");
   };
