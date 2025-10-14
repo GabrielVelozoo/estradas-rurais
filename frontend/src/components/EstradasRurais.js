@@ -419,7 +419,7 @@ export default function EstradasRurais() {
             ${apensPrioridades ? '• <span class="prioridade-badge">Apenas PRIORIDADES</span>' : ''}
           </div>`;
 
-    if (busca || buscaEstrada || minValor || maxValor || apensPrioridades) {
+    if (busca || buscaEstrada || filtroProtocolo || apensPrioridades) {
       conteudoHTML += `
         <div class="filtros">
           <strong>🔍 Filtros Aplicados:</strong><br>
