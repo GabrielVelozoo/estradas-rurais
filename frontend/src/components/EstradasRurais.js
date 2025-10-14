@@ -661,15 +661,19 @@ export default function EstradasRurais() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                📄 Protocolo
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                📄 Filtro por Protocolo
               </label>
               <input 
+                type="text"
                 value={filtroProtocolo} 
                 onChange={(e) => { setFiltroProtocolo(e.target.value); setPage(1); }} 
-                placeholder="Digite o número do protocolo..." 
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                placeholder="Ex: 24.130.205 ou 130205 (busca parcial)" 
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
               />
+              <p className="text-xs text-gray-500 mt-1">
+                💡 Busca em qualquer parte do protocolo (com ou sem formatação)
+              </p>
             </div>
             
             <div>
