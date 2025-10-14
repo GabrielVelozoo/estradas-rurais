@@ -673,15 +673,7 @@ export default function EstradasRurais() {
             </div>
             
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                💰 Valor Máximo
-              </label>
-              <input 
-                value={maxValor} 
-                onChange={(e) => { setMaxValor(e.target.value); setPage(1); }} 
-                placeholder="Ex: 50000000" 
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
-              />
+              {/* Espaço reservado para futuros filtros */}
             </div>
           </div>
 
