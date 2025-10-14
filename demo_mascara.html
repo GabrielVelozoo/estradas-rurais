@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - Máscara de Protocolo XX.XXX.XXX-X</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .field { margin: 20px 0; }
+        .label { display: block; font-weight: bold; margin-bottom: 8px; color: #374151; }
+        .input-container { position: relative; }
+        .input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #d1d5db; 
+            border-radius: 8px; 
+            font-family: monospace; 
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .input:focus { 
+            outline: none; 
+            border-color: #3b82f6; 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .input.error { border-color: #ef4444; }
+        .input.success { border-color: #10b981; }
+        .icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
+        .help-text { font-size: 12px; margin-top: 6px; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #6b7280; }
+        .demo { background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .result { background: #e0f2fe; padding: 15px; border-radius: 6px; margin: 10px 0; }
+        .test-buttons { display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; }
+        .btn { 
+            padding: 8px 16px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 12px;
+            background: #3b82f6;
+            color: white;
+        }
+        .btn:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <h1>🎭 Demo: Máscara de Protocolo XX.XXX.XXX-X</h1>
+    
+    <div class="demo">
+        <h2>📄 Campo de Filtro por Protocolo</h2>
+        
+        <div class="field">
+            <label class="label">📄 Filtro por Protocolo</label>
+            <div class="input-container">
+                <input 
+                    type="text" 
+                    id="protocolo" 
+                    class="input" 
+                    placeholder="Ex: 241302056 ou 24.130.205-6"
+                    maxlength="12"
+                />
+                <span id="icon" class="icon"></span>
+            </div>
+            <div id="help" class="help-text info">
+                💡 Digite apenas números - formatação automática XX.XXX.XXX-X
+            </div>
+        </div>
+
+        <div class="test-buttons">
+            <button class="btn" onclick="testar('241302056')">Teste: 241302056</button>
+            <button class="btn" onclick="testar('24.130.205-6')">Teste: 24.130.205-6</button>
+            <button class="btn" onclick="testar('2413')">Teste: Incompleto (2413)</button>
+            <button class="btn" onclick="testar('2413020567890')">Teste: Muito longo</button>
+            <button class="btn" onclick="limpar()">Limpar</button>
+        </div>
+
+        <div id="resultado" class="result" style="display: none;">
+            <strong>Resultado da Busca:</strong><br>
+            <span id="urlGerada"></span>
+        </div>
+    </div>
+
+    <h2>✅ Funcionalidades Implementadas</h2>
+    <ul>
+        <li><strong>Formatação automática:</strong> XX.XXX.XXX-X enquanto digita</li>
+        <li><strong>Aceita qualquer entrada:</strong> Números puros ou já formatados</li>
+        <li><strong>Validação em tempo real:</strong> Protocolo deve ter exatamente 9 dígitos</li>
+        <li><strong>Feedback visual:</strong> Cores e ícones para sucesso/erro</li>
+        <li><strong>Busca inteligente:</strong> Compara apenas números, ignora formatação</li>
+        <li><strong>URL do eProtocolo:</strong> Gera automaticamente para protocolos válidos</li>
+    </ul>
+
+    <h2>🧪 Como Testar</h2>
+    <ol>
+        <li>Digite números sequenciais (ex: 241302056) - veja a formatação automática</li>
+        <li>Cole um protocolo já formatado (ex: 24.130.205-6) - funciona normalmente</li>
+        <li>Digite um protocolo incompleto - veja a mensagem de erro</li>
+        <li>Complete um protocolo válido - veja o ícone de sucesso</li>
+    </ol>
+
+    <script>
+        // Funções da máscara (idênticas ao React)
+        function formatProtocolo(value) {
+            const numbers = value.replace(/\D/g, '');
+            const limitedNumbers = numbers.slice(0, 9);
+            
+            if (limitedNumbers.length <= 2) {
+                return limitedNumbers;
+            } else if (limitedNumbers.length <= 5) {
+                return `${limitedNumbers.slice(0, 2)}.${limitedNumbers.slice(2)}`;
+            } else if (limitedNumbers.length <= 8) {
+                return `${limitedNumbers.slice(0, 2)}.${limitedNumbers.slice(2, 5)}.${limitedNumbers.slice(5)}`;
+            } else {
+                return `${limitedNumbers.slice(0, 2)}.${limitedNumbers.slice(2, 5)}.${limitedNumbers.slice(5, 8)}-${limitedNumbers.slice(8)}`;
+            }
+        }
+
+        function extractNumbers(protocolo) {
+            return protocolo.replace(/\D/g, '');
+        }
+
+        function validateProtocolo(protocolo) {
+            const numbers = extractNumbers(protocolo);
+            if (numbers.length === 0) {
+                return { valid: true, error: "" };
+            }
+            if (numbers.length < 9) {
+                return { valid: false, error: `Protocolo incompleto (${numbers.length}/9 dígitos)` };
+            }
+            if (numbers.length > 9) {
+                return { valid: false, error: `Protocolo muito longo (${numbers.length}/9 dígitos)` };
+            }
+            return { valid: true, error: "" };
+        }
+
+        // Lógica do input
+        const input = document.getElementById('protocolo');
+        const icon = document.getElementById('icon');
+        const help = document.getElementById('help');
+        const resultado = document.getElementById('resultado');
+        const urlGerada = document.getElementById('urlGerada');
+
+        input.addEventListener('input', function(e) {
+            const formatted = formatProtocolo(e.target.value);
+            const validation = validateProtocolo(formatted);
+            
+            e.target.value = formatted;
+            updateUI(validation, formatted);
+        });
+
+        function updateUI(validation, formatted) {
+            const numbers = extractNumbers(formatted);
+            
+            // Reset classes
+            input.classList.remove('success', 'error');
+            
+            if (validation.error) {
+                input.classList.add('error');
+                icon.innerHTML = '⚠️';
+                help.className = 'help-text error';
+                help.innerHTML = `⚠️ ${validation.error}`;
+                resultado.style.display = 'none';
+            } else if (numbers.length === 9) {
+                input.classList.add('success');
+                icon.innerHTML = '✓';
+                help.className = 'help-text success';
+                help.innerHTML = '✅ Protocolo válido - 9 dígitos';
+                
+                // Mostrar URL do eProtocolo
+                const url = `https://www.eprotocolo.pr.gov.br/spiweb/consultarProtocoloDigital.do?action=pesquisar&numeroProtocolo=${numbers}`;
+                urlGerada.innerHTML = `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+                resultado.style.display = 'block';
+            } else {
+                icon.innerHTML = '';
+                help.className = 'help-text info';
+                help.innerHTML = '💡 Digite apenas números - formatação automática XX.XXX.XXX-X';
+                resultado.style.display = 'none';
+            }
+        }
+
+        // Funções de teste
+        function testar(valor) {
+            input.value = '';
+            input.focus();
+            
+            // Simular digitação
+            for (let i = 0; i < valor.length; i++) {
+                setTimeout(() => {
+                    input.value = formatProtocolo(valor.slice(0, i + 1));
+                    const validation = validateProtocolo(input.value);
+                    updateUI(validation, input.value);
+                }, i * 100);
+            }
+        }
+
+        function limpar() {
+            input.value = '';
+            input.classList.remove('success', 'error');
+            icon.innerHTML = '';
+            help.className = 'help-text info';
+            help.innerHTML = '💡 Digite apenas números - formatação automática XX.XXX.XXX-X';
+            resultado.style.display = 'none';
+        }
+
+        console.log("🎭 Demonstração da Máscara de Protocolo carregada!");
+        console.log("Teste as funções usando os botões ou digitando no campo.");
+    </script>
+</body>
+</html>
