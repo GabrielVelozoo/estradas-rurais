@@ -127,6 +127,45 @@ const TabelaLinha = ({ r, i }) => {
 };
 
 export default function EstradasRurais() {
+  // Funções para máscara de protocolo
+  const formatProtocolo = (value) => {
+    // Remove todos os caracteres não numéricos
+    const numbers = value.replace(/\D/g, '');
+    
+    // Limita a 9 dígitos
+    const limitedNumbers = numbers.slice(0, 9);
+    
+    // Aplica a máscara XX.XXX.XXX-X
+    if (limitedNumbers.length <= 2) {
+      return limitedNumbers;
+    } else if (limitedNumbers.length <= 5) {
+      return `${limitedNumbers.slice(0, 2)}.${limitedNumbers.slice(2)}`;
+    } else if (limitedNumbers.length <= 8) {
+      return `${limitedNumbers.slice(0, 2)}.${limitedNumbers.slice(2, 5)}.${limitedNumbers.slice(5)}`;
+    } else {
+      return `${limitedNumbers.slice(0, 2)}.${limitedNumbers.slice(2, 5)}.${limitedNumbers.slice(5, 8)}-${limitedNumbers.slice(8)}`;
+    }
+  };
+
+  const extractNumbers = (protocolo) => {
+    return protocolo.replace(/\D/g, '');
+  };
+
+  const validateProtocolo = (protocolo) => {
+    const numbers = extractNumbers(protocolo);
+    if (numbers.length === 0) {
+      return { valid: true, error: "" }; // Campo vazio é válido
+    }
+    if (numbers.length < 9) {
+      return { valid: false, error: `Protocolo incompleto (${numbers.length}/9 dígitos)` };
+    }
+    if (numbers.length > 9) {
+      return { valid: false, error: `Protocolo muito longo (${numbers.length}/9 dígitos)` };
+    }
+    return { valid: true, error: "" };
+  };
+
+  // Estados principais
   const [dados, setDados] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
