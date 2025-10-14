@@ -662,12 +662,12 @@ export default function EstradasRurais() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                💰 Valor Mínimo
+                📄 Protocolo
               </label>
               <input 
-                value={minValor} 
-                onChange={(e) => { setMinValor(e.target.value); setPage(1); }} 
-                placeholder="Ex: 1000000" 
+                value={filtroProtocolo} 
+                onChange={(e) => { setFiltroProtocolo(e.target.value); setPage(1); }} 
+                placeholder="Digite o número do protocolo..." 
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
               />
             </div>
