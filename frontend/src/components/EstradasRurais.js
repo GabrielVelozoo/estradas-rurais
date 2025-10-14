@@ -742,7 +742,7 @@ export default function EstradasRurais() {
               <table className="w-full table-auto">
                 <colgroup>
                   <col style={{width: '200px'}} />  {/* Município */}
-                  <col style={{width: '120px'}} />  {/* Protocolo */}
+                  <col style={{width: '150px'}} />  {/* Protocolo - aumentado para evitar quebra */}
                   <col style={{width: '140px'}} />  {/* Secretaria */}
                   <col style={{minWidth: '350px'}} /> {/* Descrição */}
                   <col style={{width: '140px'}} />  {/* Valor */}
