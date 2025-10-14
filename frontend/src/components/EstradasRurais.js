@@ -354,8 +354,12 @@ export default function EstradasRurais() {
       // Filtro por secretaria
       if (filtroSecretaria && d.secretaria !== filtroSecretaria) return false;
       
-      // Filtro por protocolo
-      if (filtroProtocolo && d.protocolo && !d.protocolo.toLowerCase().includes(filtroProtocolo.toLowerCase())) return false;
+      // Filtro por protocolo (compara apenas números)
+      if (filtroProtocolo) {
+        const numBusca = extractNumbers(filtroProtocolo);
+        const numProtocolo = extractNumbers(d.protocolo || '');
+        if (!numProtocolo.includes(numBusca)) return false;
+      }
       
       return true;
     });
