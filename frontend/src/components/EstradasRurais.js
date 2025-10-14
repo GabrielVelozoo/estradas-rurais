@@ -425,8 +425,7 @@ export default function EstradasRurais() {
           <strong>🔍 Filtros Aplicados:</strong><br>
           ${busca ? `• Município: "${busca}"<br>` : ''}
           ${buscaEstrada ? `• Nome da Estrada: "${buscaEstrada}"<br>` : ''}
-          ${minValor ? `• Valor Mínimo: R$ ${minValor}<br>` : ''}
-          ${maxValor ? `• Valor Máximo: R$ ${maxValor}<br>` : ''}
+          ${filtroProtocolo ? `• Protocolo: "${filtroProtocolo}"<br>` : ''}
           ${apensPrioridades ? '• Mostrando apenas PRIORIDADES<br>' : ''}
         </div>`;
     }
