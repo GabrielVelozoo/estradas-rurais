@@ -127,6 +127,16 @@ const TabelaLinha = ({ r, i }) => {
 };
 
 export default function EstradasRurais() {
+  // Função para normalizar texto (remover acentos)
+  const normalizeText = (text) => {
+    if (!text) return '';
+    return text
+      .normalize('NFD') // Decomposição Unicode
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacríticos
+      .toLowerCase()
+      .trim();
+  };
+
   // Funções para máscara de protocolo
   const formatProtocolo = (value) => {
     // Remove todos os caracteres não numéricos
