@@ -7,10 +7,29 @@ class PedidoLiderancaBase(BaseModel):
     municipio_id: int = Field(..., description="ID do município")
     municipio_nome: str = Field(..., min_length=1, max_length=200, description="Nome do município")
     pedido: str = Field(..., min_length=1, max_length=200, description="O que é o pedido")
-    protocolo: str = Field(..., description="Protocolo no formato 00.000.000-0")
+    protocolo: Optional[str] = Field(None, description="Protocolo no formato 00.000.000-0 (opcional)")
     lideranca: str = Field(..., min_length=1, max_length=200, description="Nome da liderança")
     numero_lideranca: str = Field(..., min_length=1, max_length=50, description="Número da liderança")
     descricao: Optional[str] = Field(None, max_length=2000, description="Descrição detalhada do pedido")
+    
+    @validator('protocolo')
+    def validate_protocolo_format(cls, v):
+        """Validar formato do protocolo apenas se fornecido"""
+        if not v or v.strip() == '':
+            return None  # Aceitar vazio/null
+            
+        v = v.strip()
+        
+        # Padrão: XX.XXX.XXX-X (2 dígitos, ponto, 3 dígitos, ponto, 3 dígitos, hífen, 1 dígito)
+        pattern = r'^\d{2}\.\d{3}\.\d{3}-\d{1}$'
+        
+        if not re.match(pattern, v):
+            raise ValueError(
+                'Protocolo deve estar no formato 00.000.000-0 '
+                '(exemplo: 24.298.238-6)'
+            )
+        
+        return v
     
     @validator('numero_lideranca')
     def validate_numero_lideranca(cls, v):
