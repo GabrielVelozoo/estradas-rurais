@@ -44,7 +44,18 @@ class PedidoLiderancaUpdate(BaseModel):
     pedido: Optional[str] = Field(None, min_length=1, max_length=200)
     protocolo: Optional[str] = Field(None, description="Protocolo no formato 00.000.000-0")
     lideranca: Optional[str] = Field(None, min_length=1, max_length=200)
+    numero_lideranca: Optional[str] = Field(None, min_length=1, max_length=50)
     descricao: Optional[str] = Field(None, max_length=2000)
+    
+    @validator('numero_lideranca')
+    def validate_numero_lideranca(cls, v):
+        """Validar que número da liderança contém apenas números se fornecido"""
+        if v is None:
+            return v
+        v = v.strip()
+        if not v.replace(' ', '').replace('-', '').replace('(', '').replace(')', '').isdigit():
+            raise ValueError('Número da liderança deve conter apenas números')
+        return v
 
     @validator('protocolo')
     def validate_protocolo_format(cls, v):
