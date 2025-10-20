@@ -484,6 +484,26 @@ export default function PedidosLiderancas() {
                 />
               </div>
 
+              {/* Número da Liderança */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Número da Liderança <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="numero_lideranca"
+                  value={formData.numero_lideranca}
+                  onChange={handleInputChange}
+                  required
+                  maxLength={50}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+                  placeholder="Ex: 41999887766 ou (41) 99988-7766"
+                />
+                <p className="text-gray-500 text-xs mt-1">
+                  Somente números (pode incluir espaços e hífens para formatação)
+                </p>
+              </div>
+
               {/* Descrição */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
