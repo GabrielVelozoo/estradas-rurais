@@ -102,6 +102,7 @@ export default function PedidosLiderancas() {
         pedido: pedido.pedido,
         protocolo: pedido.protocolo,
         lideranca: pedido.lideranca,
+        numero_lideranca: pedido.numero_lideranca || '',
         descricao: pedido.descricao || ''
       });
     } else {
@@ -110,6 +111,7 @@ export default function PedidosLiderancas() {
         pedido: '',
         protocolo: '',
         lideranca: '',
+        numero_lideranca: '',
         descricao: ''
       });
     }
