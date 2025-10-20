@@ -533,6 +533,53 @@ export default function PedidosLiderancas() {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              {/* Município */}
+              <div className="relative">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Município <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={buscaMunicipio}
+                  onChange={(e) => {
+                    setBuscaMunicipio(e.target.value);
+                    setShowMunicipiosDropdown(true);
+                    if (!e.target.value) {
+                      setMunicipioSelecionado(null);
+                      setFormData({ ...formData, municipio_id: '', municipio_nome: '' });
+                    }
+                  }}
+                  onFocus={() => setShowMunicipiosDropdown(true)}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Digite para buscar... (ex: Curitiba, Londrina)"
+                  autoComplete="off"
+                />
+                
+                {/* Dropdown de municípios */}
+                {showMunicipiosDropdown && municipiosFiltrados.length > 0 && (
+                  <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    {municipiosCarregando ? (
+                      <div className="p-4 text-center text-gray-500">Carregando...</div>
+                    ) : (
+                      municipiosFiltrados.slice(0, 50).map((municipio) => (
+                        <div
+                          key={municipio.id}
+                          onClick={() => handleSelectMunicipio(municipio)}
+                          className="px-4 py-2 hover:bg-blue-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
+                        >
+                          <span className="text-gray-900">{municipio.nome}</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+                
+                <p className="text-gray-500 text-xs mt-1">
+                  Busca acento-insensível - {municipiosFiltrados.length} municípios encontrados
+                </p>
+              </div>
+
               {/* Pedido */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
