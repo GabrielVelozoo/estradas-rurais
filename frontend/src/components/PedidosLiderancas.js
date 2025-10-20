@@ -429,7 +429,7 @@ export default function PedidosLiderancas() {
               {/* Pedido */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  O que é o pedido <span className="text-red-500">*</span>
+                  Pedido <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
