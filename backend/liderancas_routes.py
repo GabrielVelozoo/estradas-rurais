@@ -164,7 +164,7 @@ async def update_pedido(
             detail=f"Erro ao atualizar pedido: {str(e)}"
         )
 
-@router.delete("/api/liderancas/{pedido_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/liderancas/{pedido_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_pedido(
     pedido_id: str,
     current_user: UserResponse = Depends(get_current_user),
