@@ -330,10 +330,10 @@ export default function PedidosLiderancas() {
     return matchBusca && matchMunicipio;
   });
 
-  // Filtrar municípios para o autocomplete
+  // Filtrar municípios para o autocomplete (usando versão debounced)
   const municipiosFiltrados = municipios.filter(municipio => {
-    if (!buscaMunicipio) return true;
-    return normalizeText(municipio.nome).includes(normalizeText(buscaMunicipio));
+    if (!buscaMunicipioDebounced) return true;
+    return normalizeText(municipio.nome).includes(normalizeText(buscaMunicipioDebounced));
   });
 
   // Selecionar município
