@@ -106,6 +106,15 @@ export default function PedidosLiderancas() {
     fetchMunicipios();
   }, []);
 
+  // Debounce para busca de municípios
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setBuscaMunicipioDebounced(buscaMunicipio);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [buscaMunicipio]);
+
   // Carregar municípios
   const fetchMunicipios = async () => {
     setMunicipiosCarregando(true);
