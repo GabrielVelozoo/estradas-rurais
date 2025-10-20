@@ -108,7 +108,7 @@ async def get_pedido(
             detail=f"Erro ao buscar pedido: {str(e)}"
         )
 
-@router.put("/api/liderancas/{pedido_id}", response_model=PedidoLiderancaResponse)
+@router.put("/liderancas/{pedido_id}", response_model=PedidoLiderancaResponse)
 async def update_pedido(
     pedido_id: str,
     pedido_data: PedidoLiderancaUpdate,
