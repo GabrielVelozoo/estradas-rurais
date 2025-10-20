@@ -23,16 +23,17 @@ async def create_pedido(
 ):
     """Criar um novo pedido de liderança"""
     try:
-        # Verificar se o protocolo já existe
-        existing_pedido = await db.pedidos_liderancas.find_one({
-            "protocolo": pedido_data.protocolo
-        })
-        
-        if existing_pedido:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Protocolo {pedido_data.protocolo} já existe no sistema"
-            )
+        # Verificar se o protocolo já existe (apenas se protocolo foi fornecido)
+        if pedido_data.protocolo:
+            existing_pedido = await db.pedidos_liderancas.find_one({
+                "protocolo": pedido_data.protocolo
+            })
+            
+            if existing_pedido:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Protocolo {pedido_data.protocolo} já existe no sistema"
+                )
         
         # Criar documento
         now = datetime.now(timezone.utc).isoformat()
@@ -42,7 +43,7 @@ async def create_pedido(
             "municipio_id": pedido_data.municipio_id,
             "municipio_nome": pedido_data.municipio_nome,
             "pedido": pedido_data.pedido,
-            "protocolo": pedido_data.protocolo,
+            "protocolo": pedido_data.protocolo or "",
             "lideranca": pedido_data.lideranca,
             "numero_lideranca": pedido_data.numero_lideranca,
             "descricao": pedido_data.descricao or "",
