@@ -4,6 +4,8 @@ from datetime import datetime
 import re
 
 class PedidoLiderancaBase(BaseModel):
+    municipio_id: int = Field(..., description="ID do município")
+    municipio_nome: str = Field(..., min_length=1, max_length=200, description="Nome do município")
     pedido: str = Field(..., min_length=1, max_length=200, description="O que é o pedido")
     protocolo: str = Field(..., description="Protocolo no formato 00.000.000-0")
     lideranca: str = Field(..., min_length=1, max_length=200, description="Nome da liderança")
