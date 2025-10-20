@@ -572,7 +572,7 @@ export default function PedidosLiderancas() {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               {/* Município */}
-              <div className="relative">
+              <div className="relative municipio-dropdown-container">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Município <span className="text-red-500">*</span>
                 </label>
