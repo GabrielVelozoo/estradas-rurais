@@ -357,32 +357,57 @@ export default function PedidosLiderancas() {
 
         {/* Barra de ações */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-            {/* Campo de busca */}
-            <div className="flex-1 max-w-md">
-              <input
-                type="text"
-                placeholder="🔍 Buscar por protocolo, pedido, liderança..."
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+          <div className="flex flex-col gap-4">
+            {/* Linha 1: Busca e Botão */}
+            <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+              {/* Campo de busca geral */}
+              <div className="flex-1 max-w-md">
+                <input
+                  type="text"
+                  placeholder="🔍 Buscar por protocolo, pedido, liderança, município..."
+                  value={busca}
+                  onChange={(e) => setBusca(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Botão adicionar */}
+              <button
+                onClick={() => openModal()}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md hover:shadow-lg flex items-center gap-2 whitespace-nowrap"
+              >
+                <span className="text-xl">+</span>
+                Adicionar Pedido
+              </button>
             </div>
 
-            {/* Botão adicionar */}
-            <button
-              onClick={() => openModal()}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md hover:shadow-lg flex items-center gap-2"
-            >
-              <span className="text-xl">+</span>
-              Adicionar Pedido
-            </button>
+            {/* Linha 2: Filtro por município */}
+            <div className="flex gap-4 items-center">
+              <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                Filtrar por município:
+              </label>
+              <input
+                type="text"
+                placeholder="Digite o nome do município..."
+                value={filtroMunicipio}
+                onChange={(e) => setFiltroMunicipio(e.target.value)}
+                className="flex-1 max-w-sm px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              />
+              {filtroMunicipio && (
+                <button
+                  onClick={() => setFiltroMunicipio('')}
+                  className="text-sm text-gray-600 hover:text-gray-800 underline"
+                >
+                  Limpar
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Contador */}
           <div className="mt-4 text-sm text-gray-600">
             {pedidosFiltrados.length} {pedidosFiltrados.length === 1 ? 'pedido encontrado' : 'pedidos encontrados'}
-            {busca && ` (de ${pedidos.length} total)`}
+            {(busca || filtroMunicipio) && pedidosFiltrados.length < pedidos.length && ` (de ${pedidos.length} total)`}
           </div>
         </div>
 
