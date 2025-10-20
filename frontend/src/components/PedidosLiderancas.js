@@ -102,7 +102,32 @@ export default function PedidosLiderancas() {
 
   useEffect(() => {
     fetchPedidos();
+    fetchMunicipios();
   }, []);
+
+  // Carregar municípios
+  const fetchMunicipios = async () => {
+    setMunicipiosCarregando(true);
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/municipios`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao carregar municípios: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setMunicipios(data);
+    } catch (error) {
+      console.error('Erro ao carregar municípios:', error);
+    } finally {
+      setMunicipiosCarregando(false);
+    }
+  };
 
   // Abrir modal para criar ou editar
   const openModal = (pedido = null) => {
