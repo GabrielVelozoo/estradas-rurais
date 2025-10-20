@@ -54,7 +54,7 @@ class PedidoLiderancaUpdate(BaseModel):
     pedido_titulo: Optional[str] = Field(None, min_length=1, max_length=200)
     protocolo: Optional[str] = Field(None, description="Protocolo no formato 00.000.000-0")
     nome_lideranca: Optional[str] = Field(None, min_length=1, max_length=200)
-    numero_lideranca: Optional[str] = Field(None, min_length=1, max_length=50)
+    numero_lideranca: Optional[str] = Field(None, min_length=1, max_length=100)
     descricao: Optional[str] = Field(None, max_length=2000)
     
     @validator('protocolo')
