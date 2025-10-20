@@ -167,6 +167,8 @@ export default function PedidosLiderancas() {
     setShowModal(false);
     setEditingId(null);
     setFormData({
+      municipio_id: '',
+      municipio_nome: '',
       pedido: '',
       protocolo: '',
       lideranca: '',
@@ -174,6 +176,9 @@ export default function PedidosLiderancas() {
       descricao: ''
     });
     setProtocoloError('');
+    setMunicipioSelecionado(null);
+    setBuscaMunicipio('');
+    setShowMunicipiosDropdown(false);
   };
 
   // Handle input change
