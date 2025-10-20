@@ -634,24 +634,40 @@ export default function PedidosLiderancas() {
               {/* Protocolo */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Protocolo <span className="text-red-500">*</span>
+                  Protocolo <span className="text-gray-500 text-xs font-normal">(opcional)</span>
                 </label>
-                <input
-                  type="text"
-                  name="protocolo"
-                  value={formData.protocolo}
-                  onChange={handleInputChange}
-                  required
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono ${
-                    protocoloError ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="00.000.000-0"
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    name="protocolo"
+                    value={formData.protocolo}
+                    onChange={handleInputChange}
+                    className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono ${
+                      protocoloError ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    style={{ whiteSpace: 'nowrap', minWidth: '200px' }}
+                    placeholder="00.000.000-0"
+                  />
+                  
+                  {/* Link para e-Protocolo */}
+                  {formData.protocolo && gerarLinkEProtocolo(formData.protocolo) && (
+                    <a
+                      href={gerarLinkEProtocolo(formData.protocolo)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium whitespace-nowrap"
+                      title="Consultar no e-Protocolo"
+                    >
+                      🔗 e-Protocolo
+                    </a>
+                  )}
+                </div>
+                
                 {protocoloError && (
                   <p className="text-red-500 text-sm mt-1">⚠️ {protocoloError}</p>
                 )}
                 <p className="text-gray-500 text-xs mt-1">
-                  Formato: 00.000.000-0 (exemplo: 24.298.238-6)
+                  Formato: 00.000.000-0 (exemplo: 24.298.238-6) - Campo opcional
                 </p>
               </div>
 
