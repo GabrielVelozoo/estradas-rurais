@@ -635,7 +635,639 @@ class AuthTester:
         
         return failed == 0
 
+class LiderancasTester:
+    def __init__(self):
+        self.session = requests.Session()
+        self.session.headers.update({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        })
+        self.test_results = []
+        self.auth_cookies = None
+        self.created_pedido_id = None
+        
+    def log_test(self, test_name, success, details="", response_data=None):
+        """Log test results"""
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status} {test_name}")
+        if details:
+            print(f"   Details: {details}")
+        if response_data and not success:
+            print(f"   Response: {response_data}")
+        print()
+        
+        self.test_results.append({
+            'test': test_name,
+            'success': success,
+            'details': details,
+            'response': response_data
+        })
+    
+    def authenticate(self):
+        """Authenticate with gabriel/gggr181330 credentials"""
+        try:
+            response = self.session.post(
+                f"{BACKEND_URL}/auth/login",
+                json={
+                    "username": "gabriel",
+                    "password": "gggr181330"
+                }
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("message") == "Login successful":
+                    self.auth_cookies = response.cookies
+                    self.log_test(
+                        "Authentication (gabriel/gggr181330)",
+                        True,
+                        f"Successfully authenticated user: {data.get('user', {}).get('username', 'N/A')}"
+                    )
+                    return True
+                else:
+                    self.log_test(
+                        "Authentication (gabriel/gggr181330)",
+                        False,
+                        "Login response format incorrect",
+                        data
+                    )
+            else:
+                self.log_test(
+                    "Authentication (gabriel/gggr181330)",
+                    False,
+                    f"HTTP {response.status_code}",
+                    response.text
+                )
+        except Exception as e:
+            self.log_test(
+                "Authentication (gabriel/gggr181330)",
+                False,
+                f"Exception: {str(e)}"
+            )
+        return False
+    
+    def test_create_pedido_valid(self):
+        """Test creating a pedido with valid protocol format"""
+        if not self.auth_cookies:
+            self.log_test(
+                "POST /api/liderancas (valid pedido)",
+                False,
+                "No authentication cookies available"
+            )
+            return False
+            
+        try:
+            pedido_data = {
+                "pedido": "Solicitação de apoio para evento comunitário",
+                "protocolo": "24.298.238-6",
+                "lideranca": "João Silva - Presidente da Associação",
+                "descricao": "Pedido de apoio logístico para evento beneficente da comunidade local"
+            }
+            
+            response = self.session.post(
+                f"{BACKEND_URL}/liderancas",
+                json=pedido_data,
+                cookies=self.auth_cookies
+            )
+            
+            if response.status_code == 201:
+                data = response.json()
+                if (data.get("pedido") == pedido_data["pedido"] and 
+                    data.get("protocolo") == pedido_data["protocolo"] and
+                    data.get("lideranca") == pedido_data["lideranca"] and
+                    data.get("id")):
+                    self.created_pedido_id = data.get("id")
+                    self.log_test(
+                        "POST /api/liderancas (valid pedido)",
+                        True,
+                        f"Successfully created pedido with protocol {data.get('protocolo')}, ID: {self.created_pedido_id}"
+                    )
+                    return True
+                else:
+                    self.log_test(
+                        "POST /api/liderancas (valid pedido)",
+                        False,
+                        "Response data mismatch",
+                        data
+                    )
+            else:
+                self.log_test(
+                    "POST /api/liderancas (valid pedido)",
+                    False,
+                    f"Expected 201, got {response.status_code}",
+                    response.text
+                )
+        except Exception as e:
+            self.log_test(
+                "POST /api/liderancas (valid pedido)",
+                False,
+                f"Exception: {str(e)}"
+            )
+        return False
+    
+    def test_create_pedido_invalid_protocol(self):
+        """Test creating pedido with invalid protocol format"""
+        if not self.auth_cookies:
+            self.log_test(
+                "POST /api/liderancas (invalid protocol)",
+                False,
+                "No authentication cookies available"
+            )
+            return False
+            
+        try:
+            pedido_data = {
+                "pedido": "Teste protocolo inválido",
+                "protocolo": "12345",  # Invalid format
+                "lideranca": "Teste Liderança",
+                "descricao": "Teste de validação"
+            }
+            
+            response = self.session.post(
+                f"{BACKEND_URL}/liderancas",
+                json=pedido_data,
+                cookies=self.auth_cookies
+            )
+            
+            if response.status_code == 422:
+                data = response.json()
+                error_detail = str(data.get("detail", ""))
+                if "formato" in error_detail.lower() or "00.000.000-0" in error_detail:
+                    self.log_test(
+                        "POST /api/liderancas (invalid protocol)",
+                        True,
+                        "Correctly rejected invalid protocol format with 422"
+                    )
+                    return True
+                else:
+                    self.log_test(
+                        "POST /api/liderancas (invalid protocol)",
+                        False,
+                        "Wrong error message for invalid protocol",
+                        data
+                    )
+            else:
+                self.log_test(
+                    "POST /api/liderancas (invalid protocol)",
+                    False,
+                    f"Expected 422, got {response.status_code}",
+                    response.text
+                )
+        except Exception as e:
+            self.log_test(
+                "POST /api/liderancas (invalid protocol)",
+                False,
+                f"Exception: {str(e)}"
+            )
+        return False
+    
+    def test_create_pedido_duplicate_protocol(self):
+        """Test creating pedido with duplicate protocol"""
+        if not self.auth_cookies:
+            self.log_test(
+                "POST /api/liderancas (duplicate protocol)",
+                False,
+                "No authentication cookies available"
+            )
+            return False
+            
+        try:
+            # Try to create another pedido with the same protocol
+            pedido_data = {
+                "pedido": "Outro pedido com mesmo protocolo",
+                "protocolo": "24.298.238-6",  # Same as first pedido
+                "lideranca": "Outra Liderança",
+                "descricao": "Teste de duplicação"
+            }
+            
+            response = self.session.post(
+                f"{BACKEND_URL}/liderancas",
+                json=pedido_data,
+                cookies=self.auth_cookies
+            )
+            
+            if response.status_code == 400:
+                data = response.json()
+                error_detail = data.get("detail", "")
+                if "já existe" in error_detail.lower():
+                    self.log_test(
+                        "POST /api/liderancas (duplicate protocol)",
+                        True,
+                        "Correctly rejected duplicate protocol with 400"
+                    )
+                    return True
+                else:
+                    self.log_test(
+                        "POST /api/liderancas (duplicate protocol)",
+                        False,
+                        "Wrong error message for duplicate protocol",
+                        data
+                    )
+            else:
+                self.log_test(
+                    "POST /api/liderancas (duplicate protocol)",
+                    False,
+                    f"Expected 400, got {response.status_code}",
+                    response.text
+                )
+        except Exception as e:
+            self.log_test(
+                "POST /api/liderancas (duplicate protocol)",
+                False,
+                f"Exception: {str(e)}"
+            )
+        return False
+    
+    def test_list_pedidos(self):
+        """Test listing pedidos"""
+        if not self.auth_cookies:
+            self.log_test(
+                "GET /api/liderancas (list)",
+                False,
+                "No authentication cookies available"
+            )
+            return False
+            
+        try:
+            response = self.session.get(
+                f"{BACKEND_URL}/liderancas",
+                cookies=self.auth_cookies
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list):
+                    # Should have at least the pedido we created
+                    found_created_pedido = False
+                    if self.created_pedido_id:
+                        found_created_pedido = any(
+                            pedido.get("id") == self.created_pedido_id 
+                            for pedido in data
+                        )
+                    
+                    if found_created_pedido or len(data) >= 1:
+                        self.log_test(
+                            "GET /api/liderancas (list)",
+                            True,
+                            f"Successfully retrieved {len(data)} pedidos"
+                        )
+                        return True
+                    else:
+                        self.log_test(
+                            "GET /api/liderancas (list)",
+                            False,
+                            "Created pedido not found in list",
+                            data
+                        )
+                else:
+                    self.log_test(
+                        "GET /api/liderancas (list)",
+                        False,
+                        "Response is not a list",
+                        data
+                    )
+            else:
+                self.log_test(
+                    "GET /api/liderancas (list)",
+                    False,
+                    f"HTTP {response.status_code}",
+                    response.text
+                )
+        except Exception as e:
+            self.log_test(
+                "GET /api/liderancas (list)",
+                False,
+                f"Exception: {str(e)}"
+            )
+        return False
+    
+    def test_get_pedido_by_id(self):
+        """Test getting specific pedido by ID"""
+        if not self.auth_cookies or not self.created_pedido_id:
+            self.log_test(
+                "GET /api/liderancas/{id}",
+                False,
+                "No authentication cookies or pedido ID available"
+            )
+            return False
+            
+        try:
+            response = self.session.get(
+                f"{BACKEND_URL}/liderancas/{self.created_pedido_id}",
+                cookies=self.auth_cookies
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if (data.get("id") == self.created_pedido_id and
+                    data.get("protocolo") == "24.298.238-6" and
+                    data.get("pedido") and
+                    data.get("lideranca")):
+                    self.log_test(
+                        "GET /api/liderancas/{id}",
+                        True,
+                        f"Successfully retrieved pedido: {data.get('protocolo')}"
+                    )
+                    return True
+                else:
+                    self.log_test(
+                        "GET /api/liderancas/{id}",
+                        False,
+                        "Pedido data incomplete or incorrect",
+                        data
+                    )
+            else:
+                self.log_test(
+                    "GET /api/liderancas/{id}",
+                    False,
+                    f"HTTP {response.status_code}",
+                    response.text
+                )
+        except Exception as e:
+            self.log_test(
+                "GET /api/liderancas/{id}",
+                False,
+                f"Exception: {str(e)}"
+            )
+        return False
+    
+    def test_update_pedido(self):
+        """Test updating pedido"""
+        if not self.auth_cookies or not self.created_pedido_id:
+            self.log_test(
+                "PUT /api/liderancas/{id} (update)",
+                False,
+                "No authentication cookies or pedido ID available"
+            )
+            return False
+            
+        try:
+            update_data = {
+                "lideranca": "Maria Santos - Nova Coordenadora",
+                "descricao": "Descrição atualizada do pedido"
+            }
+            
+            response = self.session.put(
+                f"{BACKEND_URL}/liderancas/{self.created_pedido_id}",
+                json=update_data,
+                cookies=self.auth_cookies
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if (data.get("id") == self.created_pedido_id and
+                    data.get("lideranca") == update_data["lideranca"] and
+                    data.get("descricao") == update_data["descricao"]):
+                    self.log_test(
+                        "PUT /api/liderancas/{id} (update)",
+                        True,
+                        f"Successfully updated pedido: {data.get('lideranca')}"
+                    )
+                    return True
+                else:
+                    self.log_test(
+                        "PUT /api/liderancas/{id} (update)",
+                        False,
+                        "Updated data not reflected in response",
+                        data
+                    )
+            else:
+                self.log_test(
+                    "PUT /api/liderancas/{id} (update)",
+                    False,
+                    f"HTTP {response.status_code}",
+                    response.text
+                )
+        except Exception as e:
+            self.log_test(
+                "PUT /api/liderancas/{id} (update)",
+                False,
+                f"Exception: {str(e)}"
+            )
+        return False
+    
+    def test_update_protocol(self):
+        """Test updating protocol to another valid one"""
+        if not self.auth_cookies or not self.created_pedido_id:
+            self.log_test(
+                "PUT /api/liderancas/{id} (update protocol)",
+                False,
+                "No authentication cookies or pedido ID available"
+            )
+            return False
+            
+        try:
+            update_data = {
+                "protocolo": "25.100.200-3"
+            }
+            
+            response = self.session.put(
+                f"{BACKEND_URL}/liderancas/{self.created_pedido_id}",
+                json=update_data,
+                cookies=self.auth_cookies
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if (data.get("id") == self.created_pedido_id and
+                    data.get("protocolo") == update_data["protocolo"]):
+                    self.log_test(
+                        "PUT /api/liderancas/{id} (update protocol)",
+                        True,
+                        f"Successfully updated protocol to: {data.get('protocolo')}"
+                    )
+                    return True
+                else:
+                    self.log_test(
+                        "PUT /api/liderancas/{id} (update protocol)",
+                        False,
+                        "Updated protocol not reflected in response",
+                        data
+                    )
+            else:
+                self.log_test(
+                    "PUT /api/liderancas/{id} (update protocol)",
+                    False,
+                    f"HTTP {response.status_code}",
+                    response.text
+                )
+        except Exception as e:
+            self.log_test(
+                "PUT /api/liderancas/{id} (update protocol)",
+                False,
+                f"Exception: {str(e)}"
+            )
+        return False
+    
+    def test_delete_pedido(self):
+        """Test deleting pedido"""
+        if not self.auth_cookies or not self.created_pedido_id:
+            self.log_test(
+                "DELETE /api/liderancas/{id}",
+                False,
+                "No authentication cookies or pedido ID available"
+            )
+            return False
+            
+        try:
+            response = self.session.delete(
+                f"{BACKEND_URL}/liderancas/{self.created_pedido_id}",
+                cookies=self.auth_cookies
+            )
+            
+            if response.status_code == 204:
+                self.log_test(
+                    "DELETE /api/liderancas/{id}",
+                    True,
+                    f"Successfully deleted pedido: {self.created_pedido_id}"
+                )
+                return True
+            else:
+                self.log_test(
+                    "DELETE /api/liderancas/{id}",
+                    False,
+                    f"Expected 204, got {response.status_code}",
+                    response.text
+                )
+        except Exception as e:
+            self.log_test(
+                "DELETE /api/liderancas/{id}",
+                False,
+                f"Exception: {str(e)}"
+            )
+        return False
+    
+    def test_confirm_deletion(self):
+        """Test that deleted pedido returns 404"""
+        if not self.auth_cookies or not self.created_pedido_id:
+            self.log_test(
+                "GET /api/liderancas/{id} (after deletion)",
+                False,
+                "No authentication cookies or pedido ID available"
+            )
+            return False
+            
+        try:
+            response = self.session.get(
+                f"{BACKEND_URL}/liderancas/{self.created_pedido_id}",
+                cookies=self.auth_cookies
+            )
+            
+            if response.status_code == 404:
+                data = response.json()
+                if "não encontrado" in data.get("detail", "").lower():
+                    self.log_test(
+                        "GET /api/liderancas/{id} (after deletion)",
+                        True,
+                        "Correctly returned 404 for deleted pedido"
+                    )
+                    return True
+                else:
+                    self.log_test(
+                        "GET /api/liderancas/{id} (after deletion)",
+                        False,
+                        "Wrong error message for deleted pedido",
+                        data
+                    )
+            else:
+                self.log_test(
+                    "GET /api/liderancas/{id} (after deletion)",
+                    False,
+                    f"Expected 404, got {response.status_code}",
+                    response.text
+                )
+        except Exception as e:
+            self.log_test(
+                "GET /api/liderancas/{id} (after deletion)",
+                False,
+                f"Exception: {str(e)}"
+            )
+        return False
+    
+    def run_all_tests(self):
+        """Run all Lideranças tests"""
+        print("🚀 Starting Pedidos Lideranças Tests")
+        print(f"Backend URL: {BACKEND_URL}")
+        print("=" * 60)
+        print()
+        
+        # Test sequence - order matters for dependencies
+        tests = [
+            self.authenticate,
+            self.test_create_pedido_valid,
+            self.test_create_pedido_invalid_protocol,
+            self.test_create_pedido_duplicate_protocol,
+            self.test_list_pedidos,
+            self.test_get_pedido_by_id,
+            self.test_update_pedido,
+            self.test_update_protocol,
+            self.test_delete_pedido,
+            self.test_confirm_deletion
+        ]
+        
+        passed = 0
+        failed = 0
+        
+        for test in tests:
+            if test():
+                passed += 1
+            else:
+                failed += 1
+        
+        # Summary
+        print("=" * 60)
+        print("📊 LIDERANÇAS TEST SUMMARY")
+        print(f"✅ Passed: {passed}")
+        print(f"❌ Failed: {failed}")
+        print(f"📈 Success Rate: {(passed/(passed+failed)*100):.1f}%")
+        
+        if failed > 0:
+            print("\n❌ FAILED TESTS:")
+            for result in self.test_results:
+                if not result['success']:
+                    print(f"   • {result['test']}: {result['details']}")
+        
+        return failed == 0
+
 if __name__ == "__main__":
-    tester = AuthTester()
-    success = tester.run_all_tests()
+    print("🔧 Backend Testing Suite")
+    print("Choose test suite:")
+    print("1. Authentication Tests")
+    print("2. Pedidos Lideranças Tests")
+    print("3. Run All Tests")
+    
+    choice = input("Enter choice (1-3): ").strip()
+    
+    if choice == "1":
+        tester = AuthTester()
+        success = tester.run_all_tests()
+    elif choice == "2":
+        tester = LiderancasTester()
+        success = tester.run_all_tests()
+    elif choice == "3":
+        print("\n" + "="*60)
+        print("RUNNING AUTHENTICATION TESTS")
+        print("="*60)
+        auth_tester = AuthTester()
+        auth_success = auth_tester.run_all_tests()
+        
+        print("\n" + "="*60)
+        print("RUNNING LIDERANÇAS TESTS")
+        print("="*60)
+        liderancas_tester = LiderancasTester()
+        liderancas_success = liderancas_tester.run_all_tests()
+        
+        success = auth_success and liderancas_success
+        
+        print("\n" + "="*60)
+        print("🎯 OVERALL SUMMARY")
+        print("="*60)
+        print(f"Authentication Tests: {'✅ PASS' if auth_success else '❌ FAIL'}")
+        print(f"Lideranças Tests: {'✅ PASS' if liderancas_success else '❌ FAIL'}")
+        print(f"Overall Result: {'✅ ALL TESTS PASSED' if success else '❌ SOME TESTS FAILED'}")
+    else:
+        print("Invalid choice. Running Lideranças tests by default.")
+        tester = LiderancasTester()
+        success = tester.run_all_tests()
+    
     sys.exit(0 if success else 1)
