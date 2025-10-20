@@ -129,6 +129,18 @@ export default function PedidosLiderancas() {
     return () => clearTimeout(timer);
   }, [buscaMunicipio]);
 
+  // Fechar dropdown ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showMunicipiosDropdown && !event.target.closest('.municipio-dropdown-container')) {
+        setShowMunicipiosDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showMunicipiosDropdown]);
+
   // Carregar municípios
   const fetchMunicipios = async () => {
     setMunicipiosCarregando(true);
