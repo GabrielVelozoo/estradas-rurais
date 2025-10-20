@@ -79,7 +79,7 @@ async def list_pedidos(
             detail=f"Erro ao listar pedidos: {str(e)}"
         )
 
-@router.get("/api/liderancas/{pedido_id}", response_model=PedidoLiderancaResponse)
+@router.get("/liderancas/{pedido_id}", response_model=PedidoLiderancaResponse)
 async def get_pedido(
     pedido_id: str,
     current_user: UserResponse = Depends(get_current_user),
