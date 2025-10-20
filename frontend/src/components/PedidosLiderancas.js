@@ -127,6 +127,7 @@ export default function PedidosLiderancas() {
       pedido: '',
       protocolo: '',
       lideranca: '',
+      numero_lideranca: '',
       descricao: ''
     });
     setProtocoloError('');
