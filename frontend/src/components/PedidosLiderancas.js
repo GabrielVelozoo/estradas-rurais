@@ -243,6 +243,7 @@ export default function PedidosLiderancas() {
       normalizeText(pedido.protocolo).includes(buscaNormalizada) ||
       normalizeText(pedido.pedido).includes(buscaNormalizada) ||
       normalizeText(pedido.lideranca).includes(buscaNormalizada) ||
+      normalizeText(pedido.numero_lideranca || '').includes(buscaNormalizada) ||
       normalizeText(pedido.descricao).includes(buscaNormalizada)
     );
   });
