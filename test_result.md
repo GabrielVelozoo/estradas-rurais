@@ -348,15 +348,18 @@ frontend:
 backend:
   - task: "Implementar rotas API e models para Pedidos Lideranças"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/liderancas_routes.py, /app/backend/liderancas_models.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "main"
         -comment: "Backend criado com modelos Pydantic (PedidoLiderancaCreate, Update, Response), validação de formato de protocolo via regex (00.000.000-0), rotas CRUD completas: POST /api/liderancas (criar), GET /api/liderancas (listar), GET /api/liderancas/{id} (buscar), PUT /api/liderancas/{id} (atualizar), DELETE /api/liderancas/{id} (deletar). Validação de protocolo único implementada. Router incluído no server.py."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ COMPREHENSIVE TESTING COMPLETE - All Pedidos Lideranças endpoints working perfectly: Authentication with gabriel/gggr181330 successful, POST /api/liderancas creates pedidos with valid protocol format (24.298.238-6), protocol format validation working (rejects invalid formats like '12345' with 422), protocol uniqueness validation working (rejects duplicates with 400), GET /api/liderancas lists pedidos correctly, GET /api/liderancas/{id} retrieves specific pedidos, PUT /api/liderancas/{id} updates pedidos and protocols, DELETE /api/liderancas/{id} removes pedidos (204), deleted pedidos return 404. Additional validation tests: all invalid protocol formats correctly rejected (123.456.789-0, 12.34.567-8, 12.345.678, 12-345-678-9, AB.123.456-7, 12.345.678-AB), all valid formats accepted (00.000.000-0, 99.999.999-9, 12.345.678-0). 10/10 core tests + 9/9 validation tests passed (100% success rate). Fixed route prefix issue in liderancas_routes.py."
 
 agent_communication:
     -agent: "main"
