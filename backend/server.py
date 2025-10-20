@@ -84,6 +84,7 @@ async def get_estradas_rurais(current_user: User = Depends(get_current_active_us
 app.include_router(api_router)
 app.include_router(auth_router, prefix="/api")
 app.include_router(pedidos_router, prefix="/api")
+app.include_router(liderancas_router, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
