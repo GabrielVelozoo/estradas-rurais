@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from auth_routes import router as auth_router
 from pedidos_routes import router as pedidos_router
 from liderancas_routes import router as liderancas_router
+from municipios_routes import router as municipios_router
 from auth_middleware import get_current_active_user
 from auth_models import User
 from auth_utils import hash_password, prepare_user_for_mongo
