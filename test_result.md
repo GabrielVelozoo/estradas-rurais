@@ -331,6 +331,31 @@ frontend:
         -agent: "main"
         -comment: "✅ IMPLEMENTAÇÃO COMPLETA: Página Pedidos de Maquinários funcionando com todas as especificações: seleção de 399 municípios do Paraná, campo de liderança vinculado, 10 equipamentos com preços exatos, cálculos automáticos de subtotais e total geral, interface administrativa moderna, busca global, edição/remoção de pedidos, exportação, estatísticas por equipamento. Todos os requisitos atendidos conforme solicitado pelo usuário."
 
+  - task: "Implementar módulo completo de Pedidos Lideranças"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/PedidosLiderancas.js, /app/backend/liderancas_routes.py, /app/backend/liderancas_models.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "✅ IMPLEMENTAÇÃO COMPLETA: Nova aba 'Pedidos Lideranças' implementada com: Backend - modelos Pydantic com validação de protocolo (formato 00.000.000-0), rotas CRUD completas (criar, listar, buscar, editar, deletar), validação de protocolo único no banco. Frontend - página no estilo Estradas Rurais, formulário com máscara automática no protocolo, tabela com busca acento-insensível (normalização NFD), botão copiar protocolo com feedback visual, modal para criar/editar, loading skeleton. Integração - novo item no menu navbar, rota protegida em App.js. Pronto para testes."
+
+backend:
+  - task: "Implementar rotas API e models para Pedidos Lideranças"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/liderancas_routes.py, /app/backend/liderancas_models.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Backend criado com modelos Pydantic (PedidoLiderancaCreate, Update, Response), validação de formato de protocolo via regex (00.000.000-0), rotas CRUD completas: POST /api/liderancas (criar), GET /api/liderancas (listar), GET /api/liderancas/{id} (buscar), PUT /api/liderancas/{id} (atualizar), DELETE /api/liderancas/{id} (deletar). Validação de protocolo único implementada. Router incluído no server.py."
+
 agent_communication:
     -agent: "main"
     -message: "Sistema de autenticação implementado com sucesso. Backend com todas as rotas funcionando, usuário admin criado automaticamente. Frontend com AuthContext, login, painel admin e proteção de rotas implementados. Tela de login carregando corretamente com estilo Portal de Consultas. Pronto para testes completos de funcionalidade."
