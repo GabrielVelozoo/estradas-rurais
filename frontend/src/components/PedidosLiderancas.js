@@ -89,6 +89,11 @@ export default function PedidosLiderancas() {
     return `https://www.eprotocolo.pr.gov.br/spiweb/consultarProtocoloDigital.do?action=pesquisar&numeroProtocolo=${numbers}`;
   };
 
+  // Extrair apenas dígitos do protocolo
+  const toDigits = (protocolo) => {
+    return (protocolo || '').replace(/\D/g, '');
+  };
+
   // Carregar pedidos
   const fetchPedidos = async () => {
     setCarregando(true);
