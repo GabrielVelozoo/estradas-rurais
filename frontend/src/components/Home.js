@@ -62,6 +62,27 @@ const Home = () => {
             </div>
           </Link>
 
+          {/* Card Pedidos Lideranças */}
+          <Link 
+            to="/pedidos-liderancas" 
+            className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all duration-300 text-white group"
+          >
+            <div className="text-center">
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                📋
+              </div>
+              <h2 className="text-2xl font-bold mb-3">
+                Pedidos Lideranças
+              </h2>
+              <p className="mb-4 opacity-90">
+                Gerencie pedidos das lideranças com protocolo e acompanhamento
+              </p>
+              <div className="inline-flex items-center px-4 py-2 bg-white/20 rounded-lg backdrop-blur-sm font-medium group-hover:bg-white/30 transition-colors">
+                Acessar Sistema →
+              </div>
+            </div>
+          </Link>
+
           {/* Card Pedidos de Maquinários */}
           <Link 
             to="/pedidos-maquinarios" 
