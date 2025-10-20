@@ -62,6 +62,10 @@ export default function PedidosLiderancas() {
 
   // Validar formato do protocolo
   const validateProtocolo = (protocolo) => {
+    if (!protocolo || protocolo.trim() === '') {
+      return { valid: true, error: '' }; // Vazio é válido (opcional)
+    }
+    
     const numbers = protocolo.replace(/\D/g, '');
     if (numbers.length === 0) {
       return { valid: true, error: '' };
@@ -73,6 +77,16 @@ export default function PedidosLiderancas() {
       return { valid: false, error: `Protocolo muito longo (${numbers.length}/9 dígitos)` };
     }
     return { valid: true, error: '' };
+  };
+
+  // Gerar link do e-Protocolo
+  const gerarLinkEProtocolo = (protocolo) => {
+    if (!protocolo) return null;
+    
+    const numbers = protocolo.replace(/\D/g, '');
+    if (numbers.length !== 9) return null;
+    
+    return `https://www.eprotocolo.pr.gov.br/spiweb/consultarProtocoloDigital.do?action=pesquisar&numeroProtocolo=${numbers}`;
   };
 
   // Carregar pedidos
