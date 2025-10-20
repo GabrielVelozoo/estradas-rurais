@@ -205,9 +205,9 @@ export default function PedidosLiderancas() {
     setFormData({
       municipio_id: '',
       municipio_nome: '',
-      pedido: '',
+      pedido_titulo: '',
       protocolo: '',
-      lideranca: '',
+      nome_lideranca: '',
       numero_lideranca: '',
       descricao: ''
     });
