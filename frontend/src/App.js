@@ -48,6 +48,16 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+
+            {/* Página de Pedidos Lideranças */}
+            <Route 
+              path="/pedidos-liderancas" 
+              element={
+                <ProtectedRoute>
+                  <PedidosLiderancas />
+                </ProtectedRoute>
+              } 
+            />
             
             {/* Página de Login */}
             <Route 
