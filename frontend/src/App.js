@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import EstradasRurais from "./components/EstradasRurais";
 import PedidosMaquinarios from "./components/PedidosMaquinarios";
+import PedidosLiderancas from "./components/PedidosLiderancas";
 import Navbar from "./components/Navbar";
 import AdminPanel from "./components/AdminPanel";
 import Login from "./components/Login";
