@@ -172,9 +172,9 @@ export default function PedidosLiderancas() {
       setFormData({
         municipio_id: pedido.municipio_id || '',
         municipio_nome: pedido.municipio_nome || '',
-        pedido: pedido.pedido,
-        protocolo: pedido.protocolo,
-        lideranca: pedido.lideranca,
+        pedido_titulo: pedido.pedido_titulo || '',
+        protocolo: pedido.protocolo || '',
+        nome_lideranca: pedido.nome_lideranca || '',
         numero_lideranca: pedido.numero_lideranca || '',
         descricao: pedido.descricao || ''
       });
@@ -185,9 +185,9 @@ export default function PedidosLiderancas() {
       setFormData({
         municipio_id: '',
         municipio_nome: '',
-        pedido: '',
+        pedido_titulo: '',
         protocolo: '',
-        lideranca: '',
+        nome_lideranca: '',
         numero_lideranca: '',
         descricao: ''
       });
