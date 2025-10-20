@@ -134,21 +134,29 @@ export default function PedidosLiderancas() {
     if (pedido) {
       setEditingId(pedido.id);
       setFormData({
+        municipio_id: pedido.municipio_id || '',
+        municipio_nome: pedido.municipio_nome || '',
         pedido: pedido.pedido,
         protocolo: pedido.protocolo,
         lideranca: pedido.lideranca,
         numero_lideranca: pedido.numero_lideranca || '',
         descricao: pedido.descricao || ''
       });
+      setMunicipioSelecionado(pedido.municipio_nome ? { id: pedido.municipio_id, nome: pedido.municipio_nome } : null);
+      setBuscaMunicipio(pedido.municipio_nome || '');
     } else {
       setEditingId(null);
       setFormData({
+        municipio_id: '',
+        municipio_nome: '',
         pedido: '',
         protocolo: '',
         lideranca: '',
         numero_lideranca: '',
         descricao: ''
       });
+      setMunicipioSelecionado(null);
+      setBuscaMunicipio('');
     }
     setProtocoloError('');
     setShowModal(true);
