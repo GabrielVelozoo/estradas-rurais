@@ -6,9 +6,9 @@ import re
 class PedidoLiderancaBase(BaseModel):
     municipio_id: int = Field(..., description="ID do município")
     municipio_nome: str = Field(..., min_length=1, max_length=200, description="Nome do município")
-    pedido: str = Field(..., min_length=1, max_length=200, description="O que é o pedido")
+    pedido_titulo: str = Field(..., min_length=1, max_length=200, description="Título do pedido")
     protocolo: Optional[str] = Field(None, description="Protocolo no formato 00.000.000-0 (opcional)")
-    lideranca: str = Field(..., min_length=1, max_length=200, description="Nome da liderança")
+    nome_lideranca: str = Field(..., min_length=1, max_length=200, description="Nome da liderança")
     numero_lideranca: str = Field(..., min_length=1, max_length=50, description="Número da liderança")
     descricao: Optional[str] = Field(None, max_length=2000, description="Descrição detalhada do pedido")
     
@@ -25,8 +25,7 @@ class PedidoLiderancaBase(BaseModel):
         
         if not re.match(pattern, v):
             raise ValueError(
-                'Protocolo deve estar no formato 00.000.000-0 '
-                '(exemplo: 24.298.238-6)'
+                'Protocolo deve estar no formato 00.000.000-0 (exemplo: 24.298.238-6)'
             )
         
         return v
@@ -35,7 +34,9 @@ class PedidoLiderancaBase(BaseModel):
     def validate_numero_lideranca(cls, v):
         """Validar que número da liderança contém apenas números"""
         v = v.strip()
-        if not v.replace(' ', '').replace('-', '').replace('(', '').replace(')', '').isdigit():
+        # Remover formatação para validar
+        cleaned = v.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+        if not cleaned.isdigit():
             raise ValueError('Número da liderança deve conter apenas números')
         return v
 
