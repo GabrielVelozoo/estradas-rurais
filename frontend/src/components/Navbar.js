@@ -13,7 +13,8 @@ const Navbar = () => {
   const baseNavItems = [
     { path: '/', label: 'Início', icon: '🏠' },
     { path: '/estradas-rurais', label: 'Estradas Rurais', icon: '🛣️' },
-    { path: '/pedidos-maquinarios', label: 'Pedidos de Maquinários', icon: '🚜' }
+    { path: '/pedidos-maquinarios', label: 'Pedidos de Maquinários', icon: '🚜' },
+    { path: '/pedidos-liderancas', label: 'Pedidos Lideranças', icon: '📋' }
   ];
 
   const navItems = isAdmin() 
