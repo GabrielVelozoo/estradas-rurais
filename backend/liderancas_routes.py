@@ -39,6 +39,8 @@ async def create_pedido(
         document = {
             "id": str(uuid.uuid4()),
             "user_id": current_user.id,
+            "municipio_id": pedido_data.municipio_id,
+            "municipio_nome": pedido_data.municipio_nome,
             "pedido": pedido_data.pedido,
             "protocolo": pedido_data.protocolo,
             "lideranca": pedido_data.lideranca,
