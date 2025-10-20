@@ -227,11 +227,13 @@ export default function PedidosLiderancas() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validar protocolo
-    const validation = validateProtocolo(formData.protocolo);
-    if (!validation.valid) {
-      setProtocoloError(validation.error);
-      return;
+    // Validar protocolo (se fornecido)
+    if (formData.protocolo) {
+      const validation = validateProtocolo(formData.protocolo);
+      if (!validation.valid) {
+        setProtocoloError(validation.error);
+        return;
+      }
     }
 
     setSubmitting(true);
