@@ -23,19 +23,6 @@ async def create_pedido(
 ):
     """Criar um novo pedido de liderança"""
     try:
-        # Verificar se o protocolo já existe (apenas se protocolo foi fornecido e não vazio)
-        if pedido_data.protocolo and pedido_data.protocolo.strip():
-            existing_pedido = await db.pedidos_liderancas.find_one({
-                "protocolo": pedido_data.protocolo,
-                "protocolo": {"$ne": ""}  # Garantir que não é vazio
-            })
-            
-            if existing_pedido:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail={"error": f"Protocolo {pedido_data.protocolo} já cadastrado."}
-                )
-        
         # Criar documento
         now = datetime.now(timezone.utc).isoformat()
         document = {
@@ -57,8 +44,6 @@ async def create_pedido(
         
         return PedidoLiderancaResponse(**document)
         
-    except HTTPException:
-        raise
     except ValueError as ve:
         # Erros de validação do Pydantic
         raise HTTPException(
