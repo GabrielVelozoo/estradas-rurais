@@ -239,8 +239,29 @@ export default function PedidosLiderancas() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validações no frontend antes de enviar
+    if (!formData.municipio_id || !formData.municipio_nome) {
+      alert('Por favor, selecione um município');
+      return;
+    }
+    
+    if (!formData.pedido_titulo || formData.pedido_titulo.trim() === '') {
+      alert('Por favor, informe o título do pedido');
+      return;
+    }
+    
+    if (!formData.nome_lideranca || formData.nome_lideranca.trim() === '') {
+      alert('Por favor, informe o nome da liderança');
+      return;
+    }
+    
+    if (!formData.numero_lideranca || formData.numero_lideranca.trim() === '') {
+      alert('Por favor, informe o número da liderança');
+      return;
+    }
+    
     // Validar protocolo (se fornecido)
-    if (formData.protocolo) {
+    if (formData.protocolo && formData.protocolo.trim() !== '') {
       const validation = validateProtocolo(formData.protocolo);
       if (!validation.valid) {
         setProtocoloError(validation.error);
@@ -266,8 +287,17 @@ export default function PedidosLiderancas() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Erro ao salvar pedido');
+        const errorData = await response.json().catch(() => ({}));
+        
+        // Extrair mensagem de erro estruturada
+        const errorMessage = 
+          errorData?.error || 
+          errorData?.detail?.error || 
+          errorData?.detail || 
+          errorData?.message ||
+          'Falha ao salvar o pedido.';
+        
+        throw new Error(errorMessage);
       }
 
       // Recarregar lista e fechar modal
@@ -275,10 +305,13 @@ export default function PedidosLiderancas() {
       closeModal();
       
       // Mostrar mensagem de sucesso
-      alert(editingId ? 'Pedido atualizado com sucesso!' : 'Pedido criado com sucesso!');
+      alert(editingId ? '✓ Pedido atualizado com sucesso!' : '✓ Pedido criado com sucesso!');
     } catch (error) {
       console.error('Erro ao salvar pedido:', error);
-      alert(error.message);
+      
+      // Mensagem de erro clara (sem [Object Object])
+      const errorMsg = error.message || 'Falha ao salvar o pedido.';
+      alert(`✗ ${errorMsg}`);
     } finally {
       setSubmitting(false);
     }
