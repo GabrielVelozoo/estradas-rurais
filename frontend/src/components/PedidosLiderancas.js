@@ -283,18 +283,46 @@ export default function PedidosLiderancas() {
 
   // Filtrar pedidos pela busca
   const pedidosFiltrados = pedidos.filter(pedido => {
-    if (!busca) return true;
+    // Filtro de busca geral
+    let matchBusca = true;
+    if (busca) {
+      const buscaNormalizada = normalizeText(busca);
+      matchBusca = (
+        normalizeText(pedido.protocolo).includes(buscaNormalizada) ||
+        normalizeText(pedido.pedido).includes(buscaNormalizada) ||
+        normalizeText(pedido.lideranca).includes(buscaNormalizada) ||
+        normalizeText(pedido.numero_lideranca || '').includes(buscaNormalizada) ||
+        normalizeText(pedido.municipio_nome || '').includes(buscaNormalizada) ||
+        normalizeText(pedido.descricao).includes(buscaNormalizada)
+      );
+    }
     
-    const buscaNormalizada = normalizeText(busca);
+    // Filtro por município
+    let matchMunicipio = true;
+    if (filtroMunicipio) {
+      matchMunicipio = normalizeText(pedido.municipio_nome || '').includes(normalizeText(filtroMunicipio));
+    }
     
-    return (
-      normalizeText(pedido.protocolo).includes(buscaNormalizada) ||
-      normalizeText(pedido.pedido).includes(buscaNormalizada) ||
-      normalizeText(pedido.lideranca).includes(buscaNormalizada) ||
-      normalizeText(pedido.numero_lideranca || '').includes(buscaNormalizada) ||
-      normalizeText(pedido.descricao).includes(buscaNormalizada)
-    );
+    return matchBusca && matchMunicipio;
   });
+
+  // Filtrar municípios para o autocomplete
+  const municipiosFiltrados = municipios.filter(municipio => {
+    if (!buscaMunicipio) return true;
+    return normalizeText(municipio.nome).includes(normalizeText(buscaMunicipio));
+  });
+
+  // Selecionar município
+  const handleSelectMunicipio = (municipio) => {
+    setMunicipioSelecionado(municipio);
+    setBuscaMunicipio(municipio.nome);
+    setFormData({
+      ...formData,
+      municipio_id: municipio.id,
+      municipio_nome: municipio.nome
+    });
+    setShowMunicipiosDropdown(false);
+  };
 
   // Loading skeleton
   if (carregando) {
