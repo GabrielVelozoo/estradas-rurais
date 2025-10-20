@@ -8,12 +8,22 @@ export default function PedidosLiderancas() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
   const [busca, setBusca] = useState('');
+  const [filtroMunicipio, setFiltroMunicipio] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [copiedProtocolo, setCopiedProtocolo] = useState(null);
   
+  // Estados para municípios
+  const [municipios, setMunicipios] = useState([]);
+  const [municipiosCarregando, setMunicipiosCarregando] = useState(false);
+  const [buscaMunicipio, setBuscaMunicipio] = useState('');
+  const [showMunicipiosDropdown, setShowMunicipiosDropdown] = useState(false);
+  const [municipioSelecionado, setMunicipioSelecionado] = useState(null);
+  
   // Estados do formulário
   const [formData, setFormData] = useState({
+    municipio_id: '',
+    municipio_nome: '',
     pedido: '',
     protocolo: '',
     lideranca: '',
