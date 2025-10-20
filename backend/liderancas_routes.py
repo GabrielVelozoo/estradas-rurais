@@ -123,20 +123,8 @@ async def update_pedido(
         if not existing_pedido:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Pedido não encontrado"
+                detail={"error": "Pedido não encontrado"}
             )
-        
-        # Se o protocolo está sendo alterado, verificar se o novo protocolo já existe
-        if pedido_data.protocolo and pedido_data.protocolo != existing_pedido.get("protocolo"):
-            duplicate_check = await db.pedidos_liderancas.find_one({
-                "protocolo": pedido_data.protocolo
-            })
-            
-            if duplicate_check:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Protocolo {pedido_data.protocolo} já existe no sistema"
-                )
         
         # Preparar dados para atualização (apenas campos fornecidos)
         update_data = {k: v for k, v in pedido_data.dict(exclude_unset=True).items() if v is not None}
@@ -158,7 +146,7 @@ async def update_pedido(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Erro ao atualizar pedido: {str(e)}"
+            detail={"error": f"Erro ao atualizar pedido: {str(e)}"}
         )
 
 @router.delete("/liderancas/{pedido_id}", status_code=status.HTTP_204_NO_CONTENT)
