@@ -723,13 +723,13 @@ export default function PedidosLiderancas() {
                 </label>
                 <input
                   type="text"
-                  name="lideranca"
-                  value={formData.lideranca}
+                  name="nome_lideranca"
+                  value={formData.nome_lideranca}
                   onChange={handleInputChange}
                   required
                   maxLength={200}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Ex: João Silva"
+                  placeholder="Ex: Vereador João"
                 />
               </div>
 
