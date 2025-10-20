@@ -447,6 +447,11 @@ export default function PedidosLiderancas() {
                       }`}
                     >
                       <td className="px-6 py-4">
+                        <span className="text-gray-900 font-medium">
+                          {pedido.municipio_nome || '-'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-sm font-semibold text-blue-700">
                             {pedido.protocolo}
