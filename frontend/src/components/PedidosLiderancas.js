@@ -331,6 +331,7 @@ export default function PedidosLiderancas() {
                     <th className="px-6 py-4 text-left font-semibold">Protocolo</th>
                     <th className="px-6 py-4 text-left font-semibold">Pedido</th>
                     <th className="px-6 py-4 text-left font-semibold">Liderança</th>
+                    <th className="px-6 py-4 text-left font-semibold">Nº da Liderança</th>
                     <th className="px-6 py-4 text-left font-semibold">Descrição</th>
                     <th className="px-6 py-4 text-center font-semibold">Ações</th>
                   </tr>
