@@ -775,12 +775,12 @@ export default function PedidosLiderancas() {
                   value={formData.numero_lideranca}
                   onChange={handleInputChange}
                   required
-                  maxLength={50}
+                  maxLength={100}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
                   placeholder="Ex: 41999887766 ou (41) 99988-7766"
                 />
                 <p className="text-gray-500 text-xs mt-1">
-                  Somente números (pode incluir espaços e hífens para formatação)
+                  Somente números (aceita qualquer quantidade de dígitos)
                 </p>
               </div>
 
