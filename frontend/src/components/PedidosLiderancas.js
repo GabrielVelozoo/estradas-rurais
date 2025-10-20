@@ -575,7 +575,13 @@ export default function PedidosLiderancas() {
                       setFormData({ ...formData, municipio_id: '', municipio_nome: '' });
                     }
                   }}
-                  onFocus={() => setShowMunicipiosDropdown(true)}
+                  onFocus={() => {
+                    setShowMunicipiosDropdown(true);
+                    // Se não há busca, mostrar todos imediatamente
+                    if (!buscaMunicipio) {
+                      setBuscaMunicipio('');
+                    }
+                  }}
                   required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Digite para buscar... (ex: Curitiba, Londrina)"
@@ -583,12 +589,14 @@ export default function PedidosLiderancas() {
                 />
                 
                 {/* Dropdown de municípios */}
-                {showMunicipiosDropdown && municipiosFiltrados.length > 0 && (
+                {showMunicipiosDropdown && (
                   <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                     {municipiosCarregando ? (
                       <div className="p-4 text-center text-gray-500">Carregando...</div>
+                    ) : municipiosFiltrados.length === 0 ? (
+                      <div className="p-4 text-center text-gray-500">Nenhum município encontrado</div>
                     ) : (
-                      municipiosFiltrados.slice(0, 50).map((municipio) => (
+                      municipiosFiltrados.slice(0, 100).map((municipio) => (
                         <div
                           key={municipio.id}
                           onClick={() => handleSelectMunicipio(municipio)}
@@ -602,7 +610,7 @@ export default function PedidosLiderancas() {
                 )}
                 
                 <p className="text-gray-500 text-xs mt-1">
-                  Busca acento-insensível - {municipiosFiltrados.length} municípios encontrados
+                  {municipiosFiltrados.length} {municipiosFiltrados.length === 1 ? 'município' : 'municípios'}
                 </p>
               </div>
 
