@@ -1,0 +1,517 @@
+import React, { useState, useEffect } from 'react';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+export default function PedidosLiderancas() {
+  // Estados principais
+  const [pedidos, setPedidos] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(null);
+  const [busca, setBusca] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [copiedProtocolo, setCopiedProtocolo] = useState(null);
+  
+  // Estados do formulário
+  const [formData, setFormData] = useState({
+    pedido: '',
+    protocolo: '',
+    lideranca: '',
+    descricao: ''
+  });
+  const [protocoloError, setProtocoloError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  // Função para normalizar texto (remover acentos) para busca
+  const normalizeText = (text) => {
+    if (!text) return '';
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+  };
+
+  // Função para formatar protocolo (máscara 00.000.000-0)
+  const formatProtocolo = (value) => {
+    const numbers = value.replace(/\D/g, '');
+    const limitedNumbers = numbers.slice(0, 9);
+    
+    if (limitedNumbers.length <= 2) {
+      return limitedNumbers;
+    } else if (limitedNumbers.length <= 5) {
+      return `${limitedNumbers.slice(0, 2)}.${limitedNumbers.slice(2)}`;
+    } else if (limitedNumbers.length <= 8) {
+      return `${limitedNumbers.slice(0, 2)}.${limitedNumbers.slice(2, 5)}.${limitedNumbers.slice(5)}`;
+    } else {
+      return `${limitedNumbers.slice(0, 2)}.${limitedNumbers.slice(2, 5)}.${limitedNumbers.slice(5, 8)}-${limitedNumbers.slice(8)}`;
+    }
+  };
+
+  // Validar formato do protocolo
+  const validateProtocolo = (protocolo) => {
+    const numbers = protocolo.replace(/\D/g, '');
+    if (numbers.length === 0) {
+      return { valid: true, error: '' };
+    }
+    if (numbers.length < 9) {
+      return { valid: false, error: `Protocolo incompleto (${numbers.length}/9 dígitos)` };
+    }
+    if (numbers.length > 9) {
+      return { valid: false, error: `Protocolo muito longo (${numbers.length}/9 dígitos)` };
+    }
+    return { valid: true, error: '' };
+  };
+
+  // Carregar pedidos
+  const fetchPedidos = async () => {
+    setCarregando(true);
+    setErro(null);
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/liderancas`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao carregar pedidos: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setPedidos(data);
+    } catch (error) {
+      console.error('Erro ao carregar pedidos:', error);
+      setErro(error.message);
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPedidos();
+  }, []);
+
+  // Abrir modal para criar ou editar
+  const openModal = (pedido = null) => {
+    if (pedido) {
+      setEditingId(pedido.id);
+      setFormData({
+        pedido: pedido.pedido,
+        protocolo: pedido.protocolo,
+        lideranca: pedido.lideranca,
+        descricao: pedido.descricao || ''
+      });
+    } else {
+      setEditingId(null);
+      setFormData({
+        pedido: '',
+        protocolo: '',
+        lideranca: '',
+        descricao: ''
+      });
+    }
+    setProtocoloError('');
+    setShowModal(true);
+  };
+
+  // Fechar modal
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingId(null);
+    setFormData({
+      pedido: '',
+      protocolo: '',
+      lideranca: '',
+      descricao: ''
+    });
+    setProtocoloError('');
+  };
+
+  // Handle input change
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    
+    if (name === 'protocolo') {
+      const formatted = formatProtocolo(value);
+      const validation = validateProtocolo(formatted);
+      setFormData({ ...formData, protocolo: formatted });
+      setProtocoloError(validation.error);
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  // Submeter formulário
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validar protocolo
+    const validation = validateProtocolo(formData.protocolo);
+    if (!validation.valid) {
+      setProtocoloError(validation.error);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const url = editingId 
+        ? `${BACKEND_URL}/api/liderancas/${editingId}`
+        : `${BACKEND_URL}/api/liderancas`;
+      
+      const method = editingId ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Erro ao salvar pedido');
+      }
+
+      // Recarregar lista e fechar modal
+      await fetchPedidos();
+      closeModal();
+      
+      // Mostrar mensagem de sucesso
+      alert(editingId ? 'Pedido atualizado com sucesso!' : 'Pedido criado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao salvar pedido:', error);
+      alert(error.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Deletar pedido
+  const handleDelete = async (id, protocolo) => {
+    if (!window.confirm(`Tem certeza que deseja excluir o pedido ${protocolo}?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/liderancas/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao deletar pedido');
+      }
+
+      await fetchPedidos();
+      alert('Pedido excluído com sucesso!');
+    } catch (error) {
+      console.error('Erro ao deletar pedido:', error);
+      alert(error.message);
+    }
+  };
+
+  // Copiar protocolo para clipboard
+  const copyProtocolo = async (protocolo) => {
+    try {
+      await navigator.clipboard.writeText(protocolo);
+      setCopiedProtocolo(protocolo);
+      setTimeout(() => setCopiedProtocolo(null), 2000);
+    } catch (error) {
+      console.error('Erro ao copiar protocolo:', error);
+    }
+  };
+
+  // Filtrar pedidos pela busca
+  const pedidosFiltrados = pedidos.filter(pedido => {
+    if (!busca) return true;
+    
+    const buscaNormalizada = normalizeText(busca);
+    
+    return (
+      normalizeText(pedido.protocolo).includes(buscaNormalizada) ||
+      normalizeText(pedido.pedido).includes(buscaNormalizada) ||
+      normalizeText(pedido.lideranca).includes(buscaNormalizada) ||
+      normalizeText(pedido.descricao).includes(buscaNormalizada)
+    );
+  });
+
+  // Loading skeleton
+  if (carregando) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="h-12 bg-gray-200 rounded w-1/3 mb-8 animate-pulse"></div>
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="h-20 bg-gray-100 rounded animate-pulse"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+            📋 Pedidos Lideranças
+          </h1>
+          <p className="text-gray-600">
+            Gerencie os pedidos das lideranças com protocolo
+          </p>
+        </div>
+
+        {/* Barra de ações */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+            {/* Campo de busca */}
+            <div className="flex-1 max-w-md">
+              <input
+                type="text"
+                placeholder="🔍 Buscar por protocolo, pedido, liderança..."
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Botão adicionar */}
+            <button
+              onClick={() => openModal()}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md hover:shadow-lg flex items-center gap-2"
+            >
+              <span className="text-xl">+</span>
+              Adicionar Pedido
+            </button>
+          </div>
+
+          {/* Contador */}
+          <div className="mt-4 text-sm text-gray-600">
+            {pedidosFiltrados.length} {pedidosFiltrados.length === 1 ? 'pedido encontrado' : 'pedidos encontrados'}
+            {busca && ` (de ${pedidos.length} total)`}
+          </div>
+        </div>
+
+        {/* Mensagem de erro */}
+        {erro && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+            ⚠️ {erro}
+          </div>
+        )}
+
+        {/* Tabela de pedidos */}
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          {pedidosFiltrados.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              {busca ? '🔍 Nenhum pedido encontrado com esses critérios' : '📋 Nenhum pedido cadastrado ainda'}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                  <tr>
+                    <th className="px-6 py-4 text-left font-semibold">Protocolo</th>
+                    <th className="px-6 py-4 text-left font-semibold">Pedido</th>
+                    <th className="px-6 py-4 text-left font-semibold">Liderança</th>
+                    <th className="px-6 py-4 text-left font-semibold">Descrição</th>
+                    <th className="px-6 py-4 text-center font-semibold">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pedidosFiltrados.map((pedido, index) => (
+                    <tr
+                      key={pedido.id}
+                      className={`border-b border-gray-100 hover:bg-blue-50 transition-colors ${
+                        index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                      }`}
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-sm font-semibold text-blue-700">
+                            {pedido.protocolo}
+                          </span>
+                          <button
+                            onClick={() => copyProtocolo(pedido.protocolo)}
+                            className="text-gray-400 hover:text-blue-600 transition-colors"
+                            title="Copiar protocolo"
+                          >
+                            {copiedProtocolo === pedido.protocolo ? (
+                              <span className="text-green-600">✓</span>
+                            ) : (
+                              <span>📋</span>
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-gray-900 font-medium">{pedido.pedido}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-gray-700">{pedido.lideranca}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-gray-600 text-sm">
+                          {pedido.descricao ? (
+                            pedido.descricao.length > 50 
+                              ? `${pedido.descricao.substring(0, 50)}...` 
+                              : pedido.descricao
+                          ) : (
+                            <span className="text-gray-400 italic">Sem descrição</span>
+                          )}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => openModal(pedido)}
+                            className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors text-sm font-medium"
+                            title="Editar"
+                          >
+                            ✏️ Editar
+                          </button>
+                          <button
+                            onClick={() => handleDelete(pedido.id, pedido.protocolo)}
+                            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm font-medium"
+                            title="Excluir"
+                          >
+                            🗑️ Excluir
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Modal de criar/editar */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 flex items-center justify-between">
+              <h2 className="text-2xl font-bold">
+                {editingId ? '✏️ Editar Pedido' : '➕ Novo Pedido'}
+              </h2>
+              <button
+                onClick={closeModal}
+                className="text-white hover:text-gray-200 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              {/* Pedido */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  O que é o pedido <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="pedido"
+                  value={formData.pedido}
+                  onChange={handleInputChange}
+                  required
+                  maxLength={200}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: Solicitação de melhorias na infraestrutura"
+                />
+              </div>
+
+              {/* Protocolo */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Protocolo <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="protocolo"
+                  value={formData.protocolo}
+                  onChange={handleInputChange}
+                  required
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono ${
+                    protocoloError ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="00.000.000-0"
+                />
+                {protocoloError && (
+                  <p className="text-red-500 text-sm mt-1">⚠️ {protocoloError}</p>
+                )}
+                <p className="text-gray-500 text-xs mt-1">
+                  Formato: 00.000.000-0 (exemplo: 24.298.238-6)
+                </p>
+              </div>
+
+              {/* Nome da Liderança */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Nome da Liderança <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="lideranca"
+                  value={formData.lideranca}
+                  onChange={handleInputChange}
+                  required
+                  maxLength={200}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: João Silva"
+                />
+              </div>
+
+              {/* Descrição */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Descrição do Pedido (opcional)
+                </label>
+                <textarea
+                  name="descricao"
+                  value={formData.descricao}
+                  onChange={handleInputChange}
+                  maxLength={2000}
+                  rows={4}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  placeholder="Descreva detalhes adicionais sobre o pedido..."
+                />
+                <p className="text-gray-500 text-xs mt-1">
+                  {formData.descricao.length}/2000 caracteres
+                </p>
+              </div>
+
+              {/* Botões */}
+              <div className="flex gap-3 justify-end pt-4 border-t">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  disabled={submitting}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={submitting || !!protocoloError}
+                >
+                  {submitting ? 'Salvando...' : editingId ? 'Atualizar' : 'Criar Pedido'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
