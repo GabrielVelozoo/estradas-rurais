@@ -15,7 +15,7 @@ from liderancas_models import (
 
 router = APIRouter()
 
-@router.post("/api/liderancas", response_model=PedidoLiderancaResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/liderancas", response_model=PedidoLiderancaResponse, status_code=status.HTTP_201_CREATED)
 async def create_pedido(
     pedido_data: PedidoLiderancaCreate,
     current_user: UserResponse = Depends(get_current_user),
