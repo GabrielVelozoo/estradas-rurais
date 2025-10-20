@@ -40,23 +40,6 @@ class PedidoLiderancaBase(BaseModel):
             raise ValueError('Número da liderança deve conter apenas números')
         return v
 
-    @validator('protocolo')
-    def validate_protocolo_format(cls, v):
-        """Validar formato do protocolo: 00.000.000-0"""
-        # Remove espaços
-        v = v.strip()
-        
-        # Padrão: XX.XXX.XXX-X (2 dígitos, ponto, 3 dígitos, ponto, 3 dígitos, hífen, 1 dígito)
-        pattern = r'^\d{2}\.\d{3}\.\d{3}-\d{1}$'
-        
-        if not re.match(pattern, v):
-            raise ValueError(
-                'Protocolo deve estar no formato 00.000.000-0 '
-                '(exemplo: 24.298.238-6)'
-            )
-        
-        return v
-
 class PedidoLiderancaCreate(PedidoLiderancaBase):
     """Schema para criar um novo pedido"""
     pass
