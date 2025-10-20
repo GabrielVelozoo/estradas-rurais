@@ -666,13 +666,13 @@ export default function PedidosLiderancas() {
                 </label>
                 <input
                   type="text"
-                  name="pedido"
-                  value={formData.pedido}
+                  name="pedido_titulo"
+                  value={formData.pedido_titulo}
                   onChange={handleInputChange}
                   required
                   maxLength={200}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Ex: Solicitação de melhorias na infraestrutura"
+                  placeholder="Ex: Cascalho para estrada X"
                 />
               </div>
 
