@@ -369,6 +369,9 @@ export default function PedidosLiderancas() {
                         <span className="text-gray-700">{pedido.lideranca}</span>
                       </td>
                       <td className="px-6 py-4">
+                        <span className="text-gray-700 font-mono">{pedido.numero_lideranca || '-'}</span>
+                      </td>
+                      <td className="px-6 py-4">
                         <span className="text-gray-600 text-sm">
                           {pedido.descricao ? (
                             pedido.descricao.length > 50 
