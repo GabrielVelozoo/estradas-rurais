@@ -43,6 +43,8 @@ class PedidoLiderancaCreate(PedidoLiderancaBase):
 
 class PedidoLiderancaUpdate(BaseModel):
     """Schema para atualizar um pedido (todos os campos opcionais)"""
+    municipio_id: Optional[int] = Field(None, description="ID do município")
+    municipio_nome: Optional[str] = Field(None, min_length=1, max_length=200)
     pedido: Optional[str] = Field(None, min_length=1, max_length=200)
     protocolo: Optional[str] = Field(None, description="Protocolo no formato 00.000.000-0")
     lideranca: Optional[str] = Field(None, min_length=1, max_length=200)
