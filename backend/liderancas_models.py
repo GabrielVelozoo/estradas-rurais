@@ -80,6 +80,9 @@ class PedidoLiderancaUpdate(BaseModel):
         cleaned = v.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
         if not cleaned.isdigit():
             raise ValueError('Número da liderança deve conter apenas números')
+        if len(cleaned) < 1:
+            raise ValueError('Informe o Número da Liderança')
+        # Aceitar qualquer quantidade de dígitos (sem limite superior)
         return v
 
 class PedidoLiderancaResponse(PedidoLiderancaBase):
