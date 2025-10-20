@@ -529,20 +529,46 @@ export default function PedidosLiderancas() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-sm font-semibold text-blue-700">
-                            {pedido.protocolo}
-                          </span>
-                          <button
-                            onClick={() => copyProtocolo(pedido.protocolo)}
-                            className="text-gray-400 hover:text-blue-600 transition-colors"
-                            title="Copiar protocolo"
-                          >
-                            {copiedProtocolo === pedido.protocolo ? (
-                              <span className="text-green-600">✓</span>
-                            ) : (
-                              <span>📋</span>
-                            )}
-                          </button>
+                          {(() => {
+                            const digits = toDigits(pedido.protocolo);
+                            const isValid = digits && digits.length === 9;
+                            
+                            if (!isValid) {
+                              return <span className="text-gray-400">—</span>;
+                            }
+                            
+                            return (
+                              <a
+                                href={gerarLinkEProtocolo(pedido.protocolo)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-mono text-sm font-semibold text-blue-600 hover:text-blue-800 underline hover:no-underline cursor-pointer transition-colors flex items-center gap-1"
+                                onClick={(e) => e.stopPropagation()}
+                                aria-label="Consultar protocolo no e-Protocolo"
+                                title={`Consultar protocolo ${pedido.protocolo} no e-Protocolo`}
+                              >
+                                <span className="text-xs">🔗</span>
+                                {pedido.protocolo}
+                              </a>
+                            );
+                          })()}
+                          
+                          {pedido.protocolo && toDigits(pedido.protocolo).length === 9 && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                copyProtocolo(pedido.protocolo);
+                              }}
+                              className="text-gray-400 hover:text-blue-600 transition-colors"
+                              title="Copiar protocolo"
+                            >
+                              {copiedProtocolo === pedido.protocolo ? (
+                                <span className="text-green-600">✓</span>
+                              ) : (
+                                <span>📋</span>
+                              )}
+                            </button>
+                          )}
                         </div>
                       </td>
                       <td className="px-6 py-4">
