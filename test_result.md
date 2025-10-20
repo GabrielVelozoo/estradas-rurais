@@ -309,11 +309,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Testar login com credenciais admin"
-    - "Verificar acesso ao dashboard de estradas rurais após login"
-    - "Testar painel administrativo"
-    - "Verificar criação, edição e exclusão de usuários"
-    - "Testar logout e proteção de rotas"
+    - "Testar backend de Pedidos Lideranças (POST, GET, PUT, DELETE)"
+    - "Testar validação de formato de protocolo (00.000.000-0)"
+    - "Testar validação de protocolo único"
+    - "Testar frontend - criação, edição, exclusão de pedidos"
+    - "Testar busca acento-insensível"
+    - "Testar botão copiar protocolo"
+    - "Testar modal e formulário"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
