@@ -142,6 +142,10 @@ export default function PedidosLiderancas() {
       const validation = validateProtocolo(formatted);
       setFormData({ ...formData, protocolo: formatted });
       setProtocoloError(validation.error);
+    } else if (name === 'numero_lideranca') {
+      // Permitir apenas números e alguns caracteres de formatação
+      const cleaned = value.replace(/[^\d\s\-()]/g, '');
+      setFormData({ ...formData, numero_lideranca: cleaned });
     } else {
       setFormData({ ...formData, [name]: value });
     }
