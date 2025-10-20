@@ -65,11 +65,25 @@ class PedidoLiderancaUpdate(BaseModel):
     """Schema para atualizar um pedido (todos os campos opcionais)"""
     municipio_id: Optional[int] = Field(None, description="ID do município")
     municipio_nome: Optional[str] = Field(None, min_length=1, max_length=200)
-    pedido: Optional[str] = Field(None, min_length=1, max_length=200)
+    pedido_titulo: Optional[str] = Field(None, min_length=1, max_length=200)
     protocolo: Optional[str] = Field(None, description="Protocolo no formato 00.000.000-0")
-    lideranca: Optional[str] = Field(None, min_length=1, max_length=200)
+    nome_lideranca: Optional[str] = Field(None, min_length=1, max_length=200)
     numero_lideranca: Optional[str] = Field(None, min_length=1, max_length=50)
     descricao: Optional[str] = Field(None, max_length=2000)
+    
+    @validator('protocolo')
+    def validate_protocolo_format(cls, v):
+        """Validar formato do protocolo se fornecido"""
+        if v is None or v.strip() == '':
+            return None
+            
+        v = v.strip()
+        pattern = r'^\d{2}\.\d{3}\.\d{3}-\d{1}$'
+        
+        if not re.match(pattern, v):
+            raise ValueError('Protocolo deve estar no formato 00.000.000-0 (exemplo: 24.298.238-6)')
+        
+        return v
     
     @validator('numero_lideranca')
     def validate_numero_lideranca(cls, v):
@@ -77,25 +91,9 @@ class PedidoLiderancaUpdate(BaseModel):
         if v is None:
             return v
         v = v.strip()
-        if not v.replace(' ', '').replace('-', '').replace('(', '').replace(')', '').isdigit():
+        cleaned = v.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+        if not cleaned.isdigit():
             raise ValueError('Número da liderança deve conter apenas números')
-        return v
-
-    @validator('protocolo')
-    def validate_protocolo_format(cls, v):
-        """Validar formato do protocolo se fornecido"""
-        if v is None:
-            return v
-            
-        v = v.strip()
-        pattern = r'^\d{2}\.\d{3}\.\d{3}-\d{1}$'
-        
-        if not re.match(pattern, v):
-            raise ValueError(
-                'Protocolo deve estar no formato 00.000.000-0 '
-                '(exemplo: 24.298.238-6)'
-            )
-        
         return v
 
 class PedidoLiderancaResponse(PedidoLiderancaBase):
