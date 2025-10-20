@@ -9,7 +9,7 @@ class PedidoLiderancaBase(BaseModel):
     pedido_titulo: str = Field(..., min_length=1, max_length=200, description="Título do pedido")
     protocolo: Optional[str] = Field(None, description="Protocolo no formato 00.000.000-0 (opcional)")
     nome_lideranca: str = Field(..., min_length=1, max_length=200, description="Nome da liderança")
-    numero_lideranca: str = Field(..., min_length=1, max_length=50, description="Número da liderança")
+    numero_lideranca: str = Field(..., min_length=1, max_length=100, description="Número da liderança")
     descricao: Optional[str] = Field(None, max_length=2000, description="Descrição detalhada do pedido")
     
     @validator('protocolo')
