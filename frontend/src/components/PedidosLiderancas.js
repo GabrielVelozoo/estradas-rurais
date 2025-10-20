@@ -429,6 +429,7 @@ export default function PedidosLiderancas() {
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                   <tr>
+                    <th className="px-6 py-4 text-left font-semibold">Município</th>
                     <th className="px-6 py-4 text-left font-semibold">Protocolo</th>
                     <th className="px-6 py-4 text-left font-semibold">Pedido</th>
                     <th className="px-6 py-4 text-left font-semibold">Liderança</th>
