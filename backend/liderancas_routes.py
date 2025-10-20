@@ -23,16 +23,17 @@ async def create_pedido(
 ):
     """Criar um novo pedido de liderança"""
     try:
-        # Verificar se o protocolo já existe (apenas se protocolo foi fornecido)
-        if pedido_data.protocolo:
+        # Verificar se o protocolo já existe (apenas se protocolo foi fornecido e não vazio)
+        if pedido_data.protocolo and pedido_data.protocolo.strip():
             existing_pedido = await db.pedidos_liderancas.find_one({
-                "protocolo": pedido_data.protocolo
+                "protocolo": pedido_data.protocolo,
+                "protocolo": {"$ne": ""}  # Garantir que não é vazio
             })
             
             if existing_pedido:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Protocolo {pedido_data.protocolo} já existe no sistema"
+                    detail={"error": f"Protocolo {pedido_data.protocolo} já cadastrado."}
                 )
         
         # Criar documento
@@ -42,9 +43,9 @@ async def create_pedido(
             "user_id": current_user.id,
             "municipio_id": pedido_data.municipio_id,
             "municipio_nome": pedido_data.municipio_nome,
-            "pedido": pedido_data.pedido,
+            "pedido_titulo": pedido_data.pedido_titulo,
             "protocolo": pedido_data.protocolo or "",
-            "lideranca": pedido_data.lideranca,
+            "nome_lideranca": pedido_data.nome_lideranca,
             "numero_lideranca": pedido_data.numero_lideranca,
             "descricao": pedido_data.descricao or "",
             "created_at": now,
@@ -58,10 +59,17 @@ async def create_pedido(
         
     except HTTPException:
         raise
+    except ValueError as ve:
+        # Erros de validação do Pydantic
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"error": str(ve)}
+        )
     except Exception as e:
+        # Erro genérico
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Erro ao criar pedido: {str(e)}"
+            detail={"error": f"Falha ao salvar o pedido: {str(e)}"}
         )
 
 @router.get("/liderancas", response_model=List[PedidoLiderancaResponse])
