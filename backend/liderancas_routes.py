@@ -42,6 +42,7 @@ async def create_pedido(
             "pedido": pedido_data.pedido,
             "protocolo": pedido_data.protocolo,
             "lideranca": pedido_data.lideranca,
+            "numero_lideranca": pedido_data.numero_lideranca,
             "descricao": pedido_data.descricao or "",
             "created_at": now,
             "updated_at": now
