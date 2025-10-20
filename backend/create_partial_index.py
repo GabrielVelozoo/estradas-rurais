@@ -34,7 +34,7 @@ async def create_partial_index():
             [("protocolo", 1)],
             unique=True,
             partialFilterExpression={
-                "protocolo": {"$type": "string", "$ne": ""}
+                "protocolo": {"$exists": True, "$gt": ""}
             },
             name="protocolo_partial_unique"
         )
