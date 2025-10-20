@@ -59,6 +59,16 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+
+            {/* Página de Municípios */}
+            <Route 
+              path="/municipios" 
+              element={
+                <ProtectedRoute>
+                  <Municipios />
+                </ProtectedRoute>
+              } 
+            />
             
             {/* Página de Login */}
             <Route 
