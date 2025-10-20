@@ -541,10 +541,10 @@ export default function PedidosLiderancas() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-gray-900 font-medium">{pedido.pedido}</span>
+                        <span className="text-gray-900 font-medium">{pedido.pedido_titulo || '-'}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-gray-700">{pedido.lideranca}</span>
+                        <span className="text-gray-700">{pedido.nome_lideranca || '-'}</span>
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-gray-700 font-mono">{pedido.numero_lideranca || '-'}</span>
