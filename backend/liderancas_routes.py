@@ -134,7 +134,7 @@ async def update_pedido(
             )
         
         # Se o protocolo está sendo alterado, verificar se o novo protocolo já existe
-        if pedido_data.protocolo and pedido_data.protocolo != existing_pedido["protocolo"]:
+        if pedido_data.protocolo and pedido_data.protocolo != existing_pedido.get("protocolo"):
             duplicate_check = await db.pedidos_liderancas.find_one({
                 "protocolo": pedido_data.protocolo
             })
