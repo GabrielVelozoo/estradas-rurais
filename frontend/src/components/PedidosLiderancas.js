@@ -359,12 +359,12 @@ export default function PedidosLiderancas() {
     if (busca) {
       const buscaNormalizada = normalizeText(busca);
       matchBusca = (
-        normalizeText(pedido.protocolo).includes(buscaNormalizada) ||
-        normalizeText(pedido.pedido).includes(buscaNormalizada) ||
-        normalizeText(pedido.lideranca).includes(buscaNormalizada) ||
+        normalizeText(pedido.protocolo || '').includes(buscaNormalizada) ||
+        normalizeText(pedido.pedido_titulo || '').includes(buscaNormalizada) ||
+        normalizeText(pedido.nome_lideranca || '').includes(buscaNormalizada) ||
         normalizeText(pedido.numero_lideranca || '').includes(buscaNormalizada) ||
         normalizeText(pedido.municipio_nome || '').includes(buscaNormalizada) ||
-        normalizeText(pedido.descricao).includes(buscaNormalizada)
+        normalizeText(pedido.descricao || '').includes(buscaNormalizada)
       );
     }
     
