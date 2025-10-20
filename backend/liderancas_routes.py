@@ -60,7 +60,7 @@ async def create_pedido(
             detail=f"Erro ao criar pedido: {str(e)}"
         )
 
-@router.get("/api/liderancas", response_model=List[PedidoLiderancaResponse])
+@router.get("/liderancas", response_model=List[PedidoLiderancaResponse])
 async def list_pedidos(
     current_user: UserResponse = Depends(get_current_user),
     db: AsyncIOMotorDatabase = Depends(get_db)
