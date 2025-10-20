@@ -17,6 +17,7 @@ export default function PedidosLiderancas() {
   const [municipios, setMunicipios] = useState([]);
   const [municipiosCarregando, setMunicipiosCarregando] = useState(false);
   const [buscaMunicipio, setBuscaMunicipio] = useState('');
+  const [buscaMunicipioDebounced, setBuscaMunicipioDebounced] = useState('');
   const [showMunicipiosDropdown, setShowMunicipiosDropdown] = useState(false);
   const [municipioSelecionado, setMunicipioSelecionado] = useState(null);
   
