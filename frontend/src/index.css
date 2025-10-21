@@ -107,3 +107,124 @@ code {
     @apply bg-background text-foreground;
     }
 }
+
+/* ==========================================
+   ESTILOS DE IMPRESSÃO
+   ========================================== */
+@media print {
+  /* Ocultar elementos que não devem aparecer na impressão */
+  nav, header, .navbar, .sidebar, .btn, .filters, .no-print,
+  footer, button, input, select, textarea,
+  a[href*="emergent"], 
+  footer:has(a[href*="emergent"]),
+  .emergent-badge,
+  [class*="print-hide"],
+  [data-print="hide"] {
+    display: none !important;
+  }
+
+  /* Mostrar header de impressão */
+  .print-header {
+    display: block !important;
+  }
+
+  /* Container de impressão */
+  .print-container {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Estilos de tabela para impressão */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 10px !important;
+    page-break-inside: auto !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tr, td, th {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  th {
+    background-color: #2563eb !important;
+    color: white !important;
+    padding: 8px !important;
+    text-align: left !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    border: 1px solid #1e40af !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  td {
+    padding: 6px 8px !important;
+    font-size: 10px !important;
+    border: 1px solid #d1d5db !important;
+  }
+
+  /* Zebra striping para impressão */
+  tbody tr:nth-child(even) {
+    background-color: #f9fafb !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Margens da página */
+  @page {
+    margin: 12mm;
+    size: auto;
+  }
+
+  /* Para tabelas muito largas, usar paisagem */
+  @page landscape {
+    size: landscape;
+  }
+
+  .print-landscape {
+    page: landscape;
+  }
+
+  /* Totalizadores e resumos */
+  .print-summary {
+    margin-top: 20px !important;
+    padding: 10px !important;
+    background-color: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+    page-break-inside: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Títulos e cabeçalhos */
+  h1, h2, h3 {
+    page-break-after: avoid !important;
+    color: #1f2937 !important;
+  }
+
+  /* Links */
+  a {
+    text-decoration: none !important;
+    color: #1f2937 !important;
+  }
+
+  /* Remover sombras e efeitos */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Garantir que cores sejam impressas */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
