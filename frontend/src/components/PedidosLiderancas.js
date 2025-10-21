@@ -443,9 +443,9 @@ export default function PedidosLiderancas() {
         </div>
 
         {/* Barra de ações */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6 no-print">
           <div className="flex flex-col gap-4">
-            {/* Linha 1: Busca e Botão */}
+            {/* Linha 1: Busca e Botões */}
             <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
               {/* Campo de busca geral */}
               <div className="flex-1 max-w-md">
@@ -458,14 +458,24 @@ export default function PedidosLiderancas() {
                 />
               </div>
 
-              {/* Botão adicionar */}
-              <button
-                onClick={() => openModal()}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md hover:shadow-lg flex items-center gap-2 whitespace-nowrap"
-              >
-                <span className="text-xl">+</span>
-                Adicionar Pedido
-              </button>
+              {/* Botões de ação */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => window.print()}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium shadow-md hover:shadow-lg flex items-center gap-2"
+                  title="Imprimir (Ctrl+P)"
+                >
+                  🖨️ Imprimir
+                </button>
+                
+                <button
+                  onClick={() => openModal()}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md hover:shadow-lg flex items-center gap-2 whitespace-nowrap"
+                >
+                  <span className="text-xl">+</span>
+                  Adicionar Pedido
+                </button>
+              </div>
             </div>
 
             {/* Linha 2: Filtro por município */}
