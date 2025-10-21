@@ -420,10 +420,20 @@ export default function PedidosLiderancas() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 p-8 print-container">
       <div className="max-w-7xl mx-auto">
+        {/* Print Header (só aparece na impressão) */}
+        <PrintHeader 
+          titulo="Pedidos Lideranças"
+          resumoFiltros={{
+            'Busca': busca || 'Todos',
+            'Município': filtroMunicipio || 'Todos',
+            'Total de registros': pedidosFiltrados.length
+          }}
+        />
+
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 no-print">
           <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
             📋 Pedidos Lideranças
           </h1>
