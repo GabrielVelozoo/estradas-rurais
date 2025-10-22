@@ -20,26 +20,23 @@ from auth_middleware import get_current_active_user
 from auth_models import User
 from auth_utils import hash_password, prepare_user_for_mongo
 
-
+# Configurações iniciais
 ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+load_dotenv(ROOT_DIR / ".env")
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+# Conexão com MongoDB
+mongo_url = os.environ["MONGO_URL"]
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db = client[os.environ["DB_NAME"]]
 
-# Create the main app without a prefix
+# Criação do app principal
 app = FastAPI()
-
-# Store database in app state for dependency injection
 app.state.db = db
 
-# Create a router with the /api prefix
+# Criação do router /api
 api_router = APIRouter(prefix="/api")
 
-
-# Define Models
+# ---------- MODELOS AUXILIARES ----------
 class StatusCheck(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     client_name: str
@@ -48,7 +45,7 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
-# Add your routes to the router instead of directly to app
+# ---------- ROTAS AUXILIARES ----------
 @api_router.get("/")
 async def root():
     return {"message": "Hello World"}
@@ -82,7 +79,7 @@ async def get_estradas_rurais(current_user: User = Depends(get_current_active_us
         logger.error(f"Error fetching Google Sheets data: {e}")
         raise HTTPException(status_code=500, detail="Error fetching data from Google Sheets")
 
-# Include routers in the main app
+# ---------- INCLUSÃO DE ROTAS ----------
 app.include_router(api_router)
 app.include_router(auth_router, prefix="/api")
 app.include_router(pedidos_router, prefix="/api")
@@ -90,56 +87,62 @@ app.include_router(liderancas_router, prefix="/api")
 app.include_router(maquinarios_router, prefix="/api")
 app.include_router(municipios_router, prefix="/api")
 
+# ---------- CORS CONFIGURADO ----------
+raw_origins = os.environ.get("CORS_ORIGINS", "*")
+origins = [o.strip() for o in raw_origins.split(",") if o.strip()]
+allow_credentials = not (len(origins) == 1 and origins[0] == "*")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=origins if allow_credentials else ["*"],
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Configure logging
+# ---------- LOGGING ----------
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
+# ---------- EVENTOS DE INICIALIZAÇÃO ----------
 @app.on_event("startup")
 async def startup_event():
-    """Create default admin user if it doesn't exist"""
+    """Cria índices e usuário admin padrão se não existir"""
     try:
-        # Check if admin user exists
+        # Índices únicos (evita duplicatas)
+        await db.pedidos_liderancas.create_index("id", unique=True)
+        await db.pedidos_maquinarios_v2.create_index("id", unique=True)
+        await db.users.create_index("username", unique=True)
+
+        # Criação do usuário admin padrão
         admin_user = await db.users.find_one({"username": "gabriel"})
-        
         if not admin_user:
-            # Create default admin user
             from auth_models import UserCreate, UserInDB
-            
+            from auth_utils import hash_password, prepare_user_for_mongo
+
             admin_data = UserCreate(
                 username="gabriel",
                 role="admin",
                 password="gggr181330",
                 is_active=True
             )
-            
-            # Hash password and create user
+
             password_hash = hash_password(admin_data.password)
             admin_obj = UserInDB(
                 **admin_data.dict(exclude={"password"}),
                 password_hash=password_hash
             )
-            
-            # Prepare for MongoDB and insert
             admin_mongo_data = prepare_user_for_mongo(admin_obj.dict())
             await db.users.insert_one(admin_mongo_data)
-            
             logger.info("Default admin user created: gabriel")
         else:
             logger.info("Admin user already exists")
-            
+
     except Exception as e:
-        logger.error(f"Error creating admin user: {e}")
+        logger.error(f"Error on startup: {e}")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
