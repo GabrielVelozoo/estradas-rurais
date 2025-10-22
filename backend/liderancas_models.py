@@ -16,7 +16,7 @@ class PedidoLiderancaBase(BaseModel):
     def validate_protocolo_format(cls, v):
         """Validar formato do protocolo apenas se fornecido"""
         if not v or v.strip() == '':
-            return None  # Aceitar vazio/null
+            return ''  # Retornar string vazia ao invés de None
             
         v = v.strip()
         
