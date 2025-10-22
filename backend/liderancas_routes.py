@@ -175,6 +175,11 @@ async def update_pedido(
         )
 
         updated_pedido = await db.pedidos_liderancas.find_one({"id": pedido_id})
+        
+        # Garantir que protocolo seja sempre string (nunca null)
+        if updated_pedido.get("protocolo") is None:
+            updated_pedido["protocolo"] = ""
+            
         return PedidoLiderancaResponse(**updated_pedido)
 
     except HTTPException:
