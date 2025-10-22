@@ -15,6 +15,45 @@ from liderancas_models import (
 
 router = APIRouter()
 
+
+def _normalize_lideranca(doc):
+    """
+    Normalizar documento do MongoDB para garantir que todos os campos existam
+    e estejam no formato correto antes de criar PedidoLiderancaResponse
+    """
+    if not doc:
+        return doc
+    
+    # Garantir que campos obrigatórios existam
+    doc["id"] = str(doc.get("id", ""))
+    doc["user_id"] = str(doc.get("user_id", ""))
+    doc["municipio_id"] = int(doc.get("municipio_id", 0))
+    doc["municipio_nome"] = str(doc.get("municipio_nome", ""))
+    doc["pedido_titulo"] = str(doc.get("pedido_titulo", ""))
+    doc["protocolo"] = str(doc.get("protocolo", "") or "")
+    doc["nome_lideranca"] = str(doc.get("nome_lideranca", ""))
+    doc["numero_lideranca"] = str(doc.get("numero_lideranca", ""))
+    doc["descricao"] = str(doc.get("descricao", "") or "")
+    
+    # Normalizar datas (aceitar datetime object ou string)
+    created_at = doc.get("created_at")
+    if hasattr(created_at, "isoformat"):
+        doc["created_at"] = created_at.isoformat()
+    elif isinstance(created_at, str):
+        doc["created_at"] = created_at
+    else:
+        doc["created_at"] = datetime.now(timezone.utc).isoformat()
+    
+    updated_at = doc.get("updated_at")
+    if hasattr(updated_at, "isoformat"):
+        doc["updated_at"] = updated_at.isoformat()
+    elif isinstance(updated_at, str):
+        doc["updated_at"] = updated_at
+    else:
+        doc["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    return doc
+
 # -----------------------------
 # CREATE
 # -----------------------------
