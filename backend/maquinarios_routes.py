@@ -149,7 +149,9 @@ async def get_pedido_maquinario(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail={"error": "Pedido não encontrado"},
             )
-        return PedidoMaquinarioResponse(**pedido)
+        
+        # Normalizar documento antes de criar response
+        return PedidoMaquinarioResponse(**_normalize_maquinario(pedido))
 
     except HTTPException:
         raise
