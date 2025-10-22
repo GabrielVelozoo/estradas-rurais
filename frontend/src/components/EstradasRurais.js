@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-const SHEET_ID = process.env.REACT_APP_SHEET_ID || "1jaHnRgqRyMLjZVvaRSkG2kOyZ4kMEBgsPhwYIGVj490";
-const API_KEY = process.env.REACT_APP_SHEETS_API_KEY || "AIzaSyBdd6E9Dz5W68XdhLCsLIlErt1ylwTt5Jk";
+const SHEET_ID = process.env.REACT_APP_SHEET_ID;
+const API_KEY = process.env.REACT_APP_SHEETS_API_KEY;
 
 // Componente para linha da tabela com descrição expansível
 const TabelaLinha = ({ r, i }) => {
