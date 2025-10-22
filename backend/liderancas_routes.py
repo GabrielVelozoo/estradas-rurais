@@ -157,11 +157,8 @@ async def get_pedido(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Pedido não encontrado"
             )
 
-        # Garantir que protocolo seja sempre string (nunca null)
-        if pedido.get("protocolo") is None:
-            pedido["protocolo"] = ""
-
-        return PedidoLiderancaResponse(**pedido)
+        # Normalizar documento antes de criar response
+        return PedidoLiderancaResponse(**_normalize_lideranca(pedido))
 
     except HTTPException:
         raise
