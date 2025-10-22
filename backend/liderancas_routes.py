@@ -124,14 +124,10 @@ async def list_pedidos(
             query["municipio_id"] = municipio_id
 
         cursor = db.pedidos_liderancas.find(query).sort("created_at", -1)
-        pedidos = await cursor.to_list(length=10000)
+        raw_pedidos = await cursor.to_list(length=10000)
 
-        # Garantir que protocolo seja sempre string (nunca null)
-        for pedido in pedidos:
-            if pedido.get("protocolo") is None:
-                pedido["protocolo"] = ""
-
-        return [PedidoLiderancaResponse(**pedido) for pedido in pedidos]
+        # Normalizar todos os documentos antes de criar o response
+        return [PedidoLiderancaResponse(**_normalize_lideranca(doc)) for doc in raw_pedidos]
 
     except Exception as e:
         raise HTTPException(
