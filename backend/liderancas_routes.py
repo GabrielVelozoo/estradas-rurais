@@ -208,11 +208,8 @@ async def update_pedido(
 
         updated_pedido = await db.pedidos_liderancas.find_one({"id": pedido_id})
         
-        # Garantir que protocolo seja sempre string (nunca null)
-        if updated_pedido.get("protocolo") is None:
-            updated_pedido["protocolo"] = ""
-            
-        return PedidoLiderancaResponse(**updated_pedido)
+        # Normalizar documento antes de criar response
+        return PedidoLiderancaResponse(**_normalize_lideranca(updated_pedido))
 
     except HTTPException:
         raise
