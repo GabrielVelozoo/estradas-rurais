@@ -61,7 +61,7 @@ class PedidoLiderancaUpdate(BaseModel):
     def validate_protocolo_format(cls, v):
         """Validar formato do protocolo se fornecido"""
         if v is None or v.strip() == '':
-            return None
+            return ''  # Retornar string vazia ao invés de None
             
         v = v.strip()
         pattern = r'^\d{2}\.\d{3}\.\d{3}-\d{1}$'
