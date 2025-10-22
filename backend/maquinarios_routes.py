@@ -205,7 +205,9 @@ async def update_pedido_maquinario(
         )
 
         updated_pedido = await db.pedidos_maquinarios_v2.find_one({"id": pedido_id})
-        return PedidoMaquinarioResponse(**updated_pedido)
+        
+        # Normalizar documento antes de criar response
+        return PedidoMaquinarioResponse(**_normalize_maquinario(updated_pedido))
 
     except HTTPException:
         raise
