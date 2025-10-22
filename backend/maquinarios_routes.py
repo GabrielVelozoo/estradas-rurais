@@ -117,8 +117,10 @@ async def list_pedidos_maquinarios(
             query["municipio"] = municipio
 
         cursor = db.pedidos_maquinarios_v2.find(query).sort("created_at", -1)
-        pedidos = await cursor.to_list(length=10000)
-        return [PedidoMaquinarioResponse(**pedido) for pedido in pedidos]
+        raw_pedidos = await cursor.to_list(length=10000)
+        
+        # Normalizar todos os documentos antes de criar o response
+        return [PedidoMaquinarioResponse(**_normalize_maquinario(doc)) for doc in raw_pedidos]
 
     except Exception as e:
         raise HTTPException(
