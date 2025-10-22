@@ -87,6 +87,11 @@ async def list_pedidos(
         cursor = db.pedidos_liderancas.find(query).sort("created_at", -1)
         pedidos = await cursor.to_list(length=10000)
 
+        # Garantir que protocolo seja sempre string (nunca null)
+        for pedido in pedidos:
+            if pedido.get("protocolo") is None:
+                pedido["protocolo"] = ""
+
         return [PedidoLiderancaResponse(**pedido) for pedido in pedidos]
 
     except Exception as e:
