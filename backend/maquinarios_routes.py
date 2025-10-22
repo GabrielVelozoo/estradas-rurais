@@ -15,6 +15,43 @@ from maquinarios_models import (
 
 router = APIRouter()
 
+
+def _normalize_maquinario(doc):
+    """
+    Normalizar documento do MongoDB para garantir que todos os campos existam
+    e estejam no formato correto antes de criar PedidoMaquinarioResponse
+    """
+    if not doc:
+        return doc
+    
+    # Garantir que campos obrigatórios existam
+    doc["id"] = str(doc.get("id", ""))
+    doc["user_id"] = str(doc.get("user_id", ""))
+    doc["municipio"] = str(doc.get("municipio", ""))
+    doc["lideranca"] = str(doc.get("lideranca", ""))
+    doc["equipamentos"] = doc.get("equipamentos", [])
+    doc["valor_total"] = float(doc.get("valor_total", 0.0))
+    doc["observacoes"] = str(doc.get("observacoes", "") or "")
+    
+    # Normalizar datas (aceitar datetime object ou string)
+    created_at = doc.get("created_at")
+    if hasattr(created_at, "isoformat"):
+        doc["created_at"] = created_at.isoformat()
+    elif isinstance(created_at, str):
+        doc["created_at"] = created_at
+    else:
+        doc["created_at"] = datetime.now(timezone.utc).isoformat()
+    
+    updated_at = doc.get("updated_at")
+    if hasattr(updated_at, "isoformat"):
+        doc["updated_at"] = updated_at.isoformat()
+    elif isinstance(updated_at, str):
+        doc["updated_at"] = updated_at
+    else:
+        doc["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    return doc
+
 # ----------------------------------------------------
 # CREATE
 # ----------------------------------------------------
